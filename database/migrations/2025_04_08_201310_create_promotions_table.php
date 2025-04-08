@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('promotions', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
+            $table->string('description');
+            $table->enum('type', ['pourcentage', 'montant_fixe', 'livraison_gratuite']);
+            $table->decimal('valeur', 10, 2);
+            $table->decimal('montant_minimum', 10, 2)->nullable();
+            $table->integer('utilisation_maximum')->nullable();
+            $table->integer('utilisation_actuelle')->default(0);
+            $table->dateTime('date_debut');
+            $table->dateTime('date_fin');
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
