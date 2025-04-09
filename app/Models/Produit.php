@@ -38,4 +38,9 @@ class Produit extends Model
     {
         return $this->hasOne(ImageProduit::class)->where('principale', true);
     }
+    public function avis()
+    {
+        return $this->hasMany(Avis::class);
+    }
+
 }
