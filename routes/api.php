@@ -34,6 +34,13 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function(){
             ]);
         });
     });
- 
+    Route::middleware('partenaire')->prefix('partner')->group(function () {
+        Route::get('/test', function () {
+            return response()->json([
+                'success' => true,
+                'message' => 'Vous avez accès en tant que partenaire'
+            ]);
+        });
+    });
 
 });
