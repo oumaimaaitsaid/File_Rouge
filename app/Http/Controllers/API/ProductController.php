@@ -54,6 +54,14 @@ class ProductController extends Controller
             else{
                 $query->orderBy('created_at','desc');
             }
+            //recherche par nom ou description
+            if($request->has('search') && !empty($request->search)){
+                $query->where(function($q) use ($search){
+                    $q->where('nom','like',"%{$search}%")
+                    ->orWhere('description','like',"%{$search}%")
+                    ->orWhere('ingredients','like',"%{$search}%");
+                });
+            }
         }
 
     }
