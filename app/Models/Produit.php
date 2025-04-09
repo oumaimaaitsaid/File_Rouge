@@ -34,4 +34,8 @@ class Produit extends Model
    {
        return $this->hasMany(ImageProduit::class);
    }
+   public function imagePrincipale()
+    {
+        return $this->hasOne(ImageProduit::class)->where('principale', true);
+    }
 }
