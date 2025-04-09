@@ -36,5 +36,8 @@ class User extends Model
    public function isPartenaire(){
     return $this->role === 'partenaire';
    }
-
+//check if user is client
+   public function isClient(){
+    return $this->role === 'client';
+}
 }
