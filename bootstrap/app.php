@@ -11,7 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        'partenaire' => \App\Http\Middleware\PartenaireMiddleware::class,
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
