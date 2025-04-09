@@ -17,15 +17,15 @@ class AuthController extends Controller
             'name'=>'required|string|max:255',
             'prenom'=>'required|string|max:255',
             'email'=>'required|string|email|max:255|unique:users',
-            'password'=>'required|string|min:8|confirmed',
+            'password'=>'required|string|min:8',
             'telephone'=>'required|string|max:255',
         ]);
         if($validator->fails()){
-            return response()->([
+            return response()->json([
                 'success'=>false,
                 'message'=>'Validation error',
                 'error'=>$validator->errors()
-            ],422)
+            ],422);
         }
         $user = User::create([
             'name'=>$request->name,
@@ -36,7 +36,7 @@ class AuthController extends Controller
             'role'=>'client',
         ]);
 
-        $toke= $user->createToken('auth_token')->plainTextToken;
+        $token= $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'success'=>true,
             'message'=>'User created successfully',
@@ -59,7 +59,7 @@ class AuthController extends Controller
                 'success'=>false,
                 'message'=>'Validation error',
                 'error'=>$validator->errors()
-            ],422)
+            ],422);
             
         }
             if(!Auth::attempt($request->only('email','password'))){
