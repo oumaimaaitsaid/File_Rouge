@@ -46,4 +46,7 @@ class Produit extends Model
     {
         return $this->hasMany(LigneCommande::class);
     }
+    public function noteMoyenne(){
+        return $this->avis()->where('approuve',true)->avg('note') ?? 0;
+    }
 }
