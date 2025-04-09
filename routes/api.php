@@ -16,7 +16,16 @@ Route::prefix('v1')->group(function(){
   
 });
 
+Route::prefix('v1')->middleware('auth:sanctum')->group(function(){
+    route::get('/user',function(Request $request){
+        return response()->json([
+            'success'=>true,
+            'data'=>$request->user()
+
+        ]);
+    });
 
   
  
 
+});
