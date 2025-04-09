@@ -26,7 +26,14 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function(){
     });
 
     Route::post('/logout',[AuthController::class,'logout']);
-  
+    Route::middleware('admin')->prefix('admin')->group(function () {
+        Route::get('/test', function () {
+            return response()->json([
+                'success' => true,
+                'message' => 'Vous avez accès en tant qu\'admin'
+            ]);
+        });
+    });
  
 
 });
