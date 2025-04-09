@@ -27,4 +27,7 @@ class Produit extends Model
     'disponible'=>'boolean',
     'featured'=>'boolean',
    ];
+   public function categorie(){
+    return $this->belongsTo(Categorie::class, 'category_id');
+   }
 }
