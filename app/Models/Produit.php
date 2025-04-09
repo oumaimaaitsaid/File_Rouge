@@ -30,4 +30,8 @@ class Produit extends Model
    public function categorie(){
     return $this->belongsTo(Categorie::class, 'category_id');
    }
+   public function images()
+   {
+       return $this->hasMany(ImageProduit::class);
+   }
 }
