@@ -49,7 +49,7 @@ class AuthController extends Controller
     }
 
     //login user
-    public function login($request){
+    public function login(Request $request){
         $validator =Validator::make($request->all(),[
             'email'=>'required|string|email|max:255',
             'password'=>'required|string|min:8',
@@ -61,6 +61,7 @@ class AuthController extends Controller
                 'error'=>$validator->errors()
             ],422)
             
+        }
             if(!Auth::attempt($request->only('email','password'))){
                 return response()->json([
                     'success'=>false,
@@ -78,6 +79,13 @@ class AuthController extends Controller
                     'token_type'=>'Bearer',
                 ]
                 ],200);
-        }
+    }
+    //logout user
+    public function logout(Request $request){
+        $request->user()->currentAccessToken()->delete();
+        return response()->json([
+            'success'=>true,
+            'message'=>'User logged out successfully',
+        ]);
     }
 }
