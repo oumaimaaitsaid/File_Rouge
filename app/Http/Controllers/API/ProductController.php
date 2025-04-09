@@ -62,6 +62,9 @@ class ProductController extends Controller
                     ->orWhere('ingredients','like',"%{$search}%");
                 });
             }
+            //pagination
+            $perPage =$request->get('per_page',10);
+            $products= $query->paginate($perPage);
         }
 
     }
