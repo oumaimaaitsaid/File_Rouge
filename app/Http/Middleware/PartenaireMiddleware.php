@@ -15,6 +15,13 @@ class PartenaireMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        if ($request->user() && $request->user()->isPartenaire()) {
+            return $next($request);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Unauthorized. Partner access required.'
+        ], 403);
     }
 }
