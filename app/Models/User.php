@@ -32,5 +32,9 @@ class User extends Model
    public function isAdmin(){
     return $this->role === 'admin';
    }
+//check if user is partenaire
+   public function isPartenaire(){
+    return $this->role === 'partenaire';
+   }
 
 }
