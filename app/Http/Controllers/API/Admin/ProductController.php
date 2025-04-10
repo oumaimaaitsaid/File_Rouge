@@ -326,4 +326,42 @@ class ProductController extends Controller
             ], 500);
         }
     }
- }}
+
+    //supprimer une image d'un produit
+
+    public function deleteImage($id, $imageId)
+    {
+        try {
+            $product = Produit::findOrFail($id);
+            $image = ImageProduit::where('produit_id', $id)->where('id', $imageId)->firstOrFail();
+            
+            if ($image->principale && $product->images()->count() > 1) {
+                $newMainImage = $product->images()->where('id', '!=', $imageId)->first();
+                $newMainImage->update(['principale' => true]);
+            } elseif ($image->principale && $product->images()->count() === 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot delete the only main image of the product'
+                ], 400);
+            }
+            
+            Storage::disk('public')->delete($image->chemin);
+            
+            $image->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Image deleted successfully'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deleting the image',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+   }
+ }
+}
+
