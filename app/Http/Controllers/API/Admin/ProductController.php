@@ -217,5 +217,37 @@ class ProductController extends Controller
         }
 
      }
+     //supprimer un produit
+     public function destroy($id){
+       try{ $product =Produit::findOrFail($id);
+        if($product->lignesCommandes()->count() > 0){
+            return response()->json([
+                'success' =>false,
+                'message' =>'Product cannot be deleted because it is associated with one or more orders',
+            ],400);
+            
+        }
+        //suprimer l'image de le produit
+        foreach($product->images as $image){
+            Storage::disk('public')->delete($image->chemin);
+            $image->delete();
+        }
+        //supprimer le produit
+        $product->delete();
+        return response()->json([
+            'success' =>true,
+            'message' =>'Product deleted successfully',
+        ]);
+     }
+ 
+ 
+ catch(\Exception $e){
+    return response()->json([
+        'success' =>false,
+        'message' =>'Failed to delete product',
+        'error' =>$e->getMessage(),
+    ],500);
+
  }
-}
+    }
+ }}
