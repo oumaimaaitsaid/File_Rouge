@@ -101,6 +101,49 @@ class ProductController extends Controller
         ],422)
     }
 
-   
+    try{
+        DB:beginTransaction();
+        $slug =Str::slug($request->name);
+
+        $product =Produit::create([
+            'nom' =>$request->name,
+            'slug' =>$slug,
+            'description' =>$request->description,
+            'ingredients' =>$request->ingredients,
+            'prix' =>$request->price,
+            'prix_promo' =>$request->promotional_price,
+            'stock' =>$request->stock,
+            'categorie_id' =>$request->category_id,
+            'disponible' => $request->has('available') ? $request->available : true,
+            'featured' => $request->has('featured') ? $request->featured : false,
+    
+        ]);
+        DB::commit();
+        return response()->json([
+            'success'=>true,
+            'message'=>'Product created successfully',
+            'data' =>[
+                'id' =>$product->id,
+                'name' =>$product->nom,
+                'slug' =>$product->slug,
+                'description' =>$product->description,
+                'ingredients' =>$product->ingredients,
+                'price' =>$product->prix,
+                'promotional_price' =>$product->prix_promo,
+                'stock' =>$product->stock,
+                'category_id' =>$product->categorie_id,
+                'available' =>(bool) $product->disponible,
+                'featured' =>(bool) $product->featured,
+                'created_at' =>$product->created_at->format('Y-m-d H:i:s'),
+                ]
+            ],201)
+    }catch (\Exception $e){
+        DB::rollBack();
+        return response()->json([
+            'success' =>false,
+            'message' =>'Failed to create product',
+            'error' =>$e->getMessage(),
+        ],500);
+    }
  }
 }
