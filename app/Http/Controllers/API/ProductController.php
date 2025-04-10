@@ -141,6 +141,29 @@ class ProductController extends Controller
                 'available'=>(bool) $product->disponible
                 'featured'=>(bool) $product->featured,
             ];
+            //prend des produit (en méme category)
+            $relatedProducts=Produit::where('category_id',$product->category_id)
+            ->where('id','!=',$product->id)
+            ->where('disponible',true)
+            ->with(['imagePrincipale'])
+            ->take(4)
+            ->get()
+            ->map(function($product){
+                return[
+                    'id' =>$product->id,
+                    'name' =>$product->nom,
+                    'slug' =>$product->slug,
+                    'price' =>$product->prix,
+                    'promotional_price' =>$product->prix_promo,
+                    'main_image' =>$product->imagePrincipale ? asset('storage/'.$product->imagePrincipale->chemin) :null,
+                     'average_rating'=>$product->noteMoyenne(),
+                ];
+            });
+            $result['related_products']=$relatedProducts;
+            return response()->json([
+                'success' =>true,
+                'data' =>$result,
+            ]);
          }
 
     }
