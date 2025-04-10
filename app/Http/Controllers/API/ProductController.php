@@ -51,7 +51,7 @@ class ProductController extends Controller
                     default:
                     $query->orderBy('created_at','desc');
             }
-            else{
+             }     else{
                 $query->orderBy('created_at','desc');
             }
             //recherche par nom ou description
@@ -70,7 +70,7 @@ class ProductController extends Controller
             $result =$products->map(function($product){
                 return[
                     'id' =>$product->id,
-                    'name' =>$producct->nom,
+                    'name' =>$product->nom,
                     'slug' =>$product->slug,
                     'description' =>$product->description,
                     'price' =>$product->prix,
@@ -84,7 +84,7 @@ class ProductController extends Controller
                     'average_rating' =>$product->noteMoyenne(),
                     'review_count' =>$product->avis()->where('approuve',true)->count(),
                     'stock' =>$product->stock,
-                    'available'=>(bool) $product->disponible
+                    'available'=>(bool) $product->disponible,
                     'featured'=>(bool) $product->featured,
                 ];
             });
@@ -103,7 +103,7 @@ class ProductController extends Controller
          }
          //display spefic produit
          public function show($slug){
-             $produit  = Product::where('slug',$slug)->with(['images','categorie','avis' => function($query)
+             $product  = Product::where('slug',$slug)->with(['images','categorie','avis' => function($query)
          {
              $query->where('approuve',true)->with('user');}])->firstOrFail();
         
@@ -138,7 +138,7 @@ class ProductController extends Controller
                     ];
                 }),
                 'stock' =>$product->stock,
-                'available'=>(bool) $product->disponible
+                'available'=>(bool) $product->disponible,
                 'featured'=>(bool) $product->featured,
             ];
             //prend des produit (en méme category)
@@ -172,7 +172,7 @@ class ProductController extends Controller
         ->with(['imagePrincipale'])
         ->take(4)
         ->get()
-        ->map(fonction($product){
+        ->map(function($product){
             return[
                 'id'=> $product->id,
                 'name' =>$product->nom,
@@ -226,7 +226,36 @@ class ProductController extends Controller
         return response()->json([
             'success'=>true,
             'data' =>$recentProducts
-        ])
+        ]);
+      }
+      //recherche produit
+
+      public function search($query)
+      {
+        $products = Produit::where('disponible',true)
+        ->where(function($q) use ($query){
+            $q->where('nom','LIKE',"%{$query}%")
+            ->orWhere('description','LIKE',"%{$query}%")
+            ->orWhere('ingredients','LIKE',"%{$query}%");
+        })
+        ->with(['imagePrincipale','categorie'])
+        ->take(10)
+        ->get()
+        ->map(function($product){
+            return[
+                'id'=> $product->id,
+                'name' =>$product->nom,
+                'slug' =>$product->slug,
+                'price' =>$product->prix,
+                'main_image' =>$product->imagePrincipale ? asset('storage/'.$product->imagePrincipale->chemin) :null,
+                'promotional_price' =>$product->prix_promo,
+                'category' =>$product->categorie->nom,
+            ];
+            
+        });
+        return response()->json([
+            'success'=>true,
+            'data' =>$products
+        ]);
       }
     }
-}
