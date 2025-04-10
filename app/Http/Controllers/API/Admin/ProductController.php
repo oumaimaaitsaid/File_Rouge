@@ -167,7 +167,55 @@ class ProductController extends Controller
                 'message' =>'Validation failed',
                 'errors' =>$validator->errors(),
             ],422);
-        
-}
+            try{
+                DB::beginTransaction();
+                //changer le slug si le nom changed
+                if($product->nom !=$request->name){
+                    $slug = Str::slug($request->name);
+                    $product->slug =$slug;
+                }
+
+                $product->update([
+                    'nom' =>$request->name,
+                    'description' =>$request->description,
+                    'ingredients' =>$request->ingredients,
+                    'prix' =>$request->price,
+                    'prix_promo' =>$request->promotional_price,
+                    'stock' =>$request->stock,
+                    'categorie_id' =>$request->category_id,
+                    'disponible' =>$request->has('available') ? $request->available : $product->disponible,
+                    'featured' =>$request->has('featured') ? $request->featured : $product->featured,
+                ]);
+                DB::commit();
+                return response()->json([
+                    'success' =>true,
+                    'message' =>'Product updated successfully',
+                    'data' =>[
+                        'id' =>$product->id,
+                        'name' =>$product->nom,
+                        'slug' =>$product->slug,
+                        'description' =>$product->description,
+                        'ingredients' =>$product->ingredients,
+                        'price' =>$product->prix,
+                        'promotional_price' =>$product->prix_promo,
+                        'stock' =>$product->stock,
+                        'category_id' =>$product->categorie_id,
+                        'available' =>(bool) $product->disponible,
+                        'featured' =>(bool) $product->featured,
+                        'updated_at' =>$product->updated_at->format('Y-m-d H:i:s'),
+                    ]
+                    ]);
+            }
+            catch(\Exception $e){
+                DB::rollBack();
+                return response()->json([
+                    'success' =>false,
+                    'message' =>'Failed to update product',
+                    'error' =>$e->getMessage(),
+                ],500);
+            }
+        }
+
      }
-    
+ }
+}
