@@ -145,5 +145,29 @@ class ProductController extends Controller
             'error' =>$e->getMessage(),
         ],500);
     }
- }
+     //modifier un produit
+     public function update(Request $request ,$id)
+     {
+        $product =Produit::findOrFail($id);
+        $validator =Validator::make($request->all(),[
+            'name' =>['required','string','max:255' ,Rule::unique('produits','nom')->ignore($product->id)],
+            'description' =>'required|string',
+            'ingredients' =>'required|string',
+            'price' =>'required|numeric|min:0',
+            'promotional_price' =>'nullable|numeric|min:0|lt:price',
+            'stock' =>'required|integer|min:0',
+            'category_id' =>'required|exists:categories,id',
+            'available' =>'boolean',
+            'featured' =>'boolean',
+
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'success' =>false,
+                'message' =>'Validation failed',
+                'errors' =>$validator->errors(),
+            ],422);
+        
 }
+     }
+    
