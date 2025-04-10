@@ -65,6 +65,41 @@ class ProductController extends Controller
             //pagination
             $perPage =$request->get('per_page',10);
             $products= $query->paginate($perPage);
+
+            //pour transformer data à api
+            $result =$products->map(function($product){
+                return[
+                    'id' =>$product->id,
+                    'name' =>$producct->nom,
+                    'slug' =>$product->slug,
+                    'description' =>$product->description,
+                    'price' =>$product->prix,
+                    'promotional_price' =>$product->prix_promo,
+                    'main_image' =>$product->imagePrincipale ? asset('storage/' .$product->imagePrincipale->chemin) :null,
+                    'category' =>[
+                        'id' =>$product->categorie->id,
+                        'name' =>$product->categorie->nom,
+                        'slug' =>$product->categorie->slug,
+                    ],
+                    'average_rating' =>$product->noteMoyenne(),
+                    'review_count' =>$product->avis()->where('approuve',true)->count(),
+                    'stock' =>$product->stock,
+                    'available'=>(bool) $product->disponible
+                    'featured'=>(bool) $product->featured,
+                ];
+            });
+            return response()->json([
+                'success' =>true,
+                'data' =>$result,
+                'pagination' =>[
+                    'total' =>$products->total(),
+                    'per_page' =>$products->perPage(),
+                    'current_page' =>$products->currentPage(),
+                    'last_page' =>$products->lastPage(),
+                    'from' =>$products->firstItem(),
+                    'to' =>$products->lastItem(),
+                ]
+                ]);
         }
 
     }
