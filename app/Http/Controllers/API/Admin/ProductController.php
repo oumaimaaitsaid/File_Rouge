@@ -78,4 +78,29 @@ class ProductController extends Controller
         ]);
 
  }
+
+ //create new product
+ public function store(Request $request){
+    $validator =Validator::make($request->all(),
+    [
+        'name'=>'required|string|max:255',
+        'description'=>'required|string',
+        'ingredients'=>'required|string',
+        'price'=>'required|numeric|min:0',
+        'promotional_price'=>'nullable|numeric|min:0|lt:price',
+        'stock'=>'required|integer|min:0',
+        'category_id'=>'required|exists:categories,id',
+        'available'=>'boolean',
+        'featured'=>'boolean',  
+    ]);
+    if($validator->fails()){
+        return response()->json([
+            'success' =>false,
+            'message'=>'Validation failed',
+            'errors' =>$validator->errors(),
+        ],422)
+    }
+
+   
+ }
 }
