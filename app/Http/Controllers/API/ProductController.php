@@ -197,5 +197,36 @@ class ProductController extends Controller
         ]);
 
       }
+      //recent produit
+      public function recent(){
+        $recentProducts =Produit::where('disponible',true)
+        ->with(['imagePrincipale' ,'categorie'])
+        ->orderBy('created_at','desc')
+        ->take(8)
+        ->get()
+        ->map(function($product){
+            return[
+                'id'=> $product->id,
+                'name' =>$product->nom,
+                'slug' =>$product->slug,
+                'price' =>$product->prix,
+                'description' =>$product->description,
+                'main_image' =>$product->imagePrincipale ? asset('storage/'.$product->imagePrincipale->chemin) :null,
+                'promotional_price' =>$product->prix_promo,
+                'category' =>[
+                'id' =>$product->categorie->id,
+                'name' =>$product->categorie->nom,
+                'slug' =>$product->categorie->slug,
+            ],
+
+            'average_rating' =>$product->noteMoyenne(),
+            'review_count' =>$product->avis()->where('approuve',true)->count(),
+                ];
+        });
+        return response()->json([
+            'success'=>true,
+            'data' =>$recentProducts
+        ])
+      }
     }
 }
