@@ -100,7 +100,48 @@ class ProductController extends Controller
                     'to' =>$products->lastItem(),
                 ]
                 ]);
-        }
+         }
+         //display spefic produit
+         public function show($slug){
+             $produit  = Product::where('slug',$slug)->with(['images','categorie','avis' => function($query)
+         {
+             $query->where('approuve',true)->with('user');}])->firstOrFail();
+        
+             $result =[
+                'id' =>$product->id,
+                'name' =>$product->nom,
+                'slug'=>$product->slug,
+                'description' =>$product->description,
+                'ingredients' =>$product->ingredients,
+                'price' =>$product->prix,
+                'promotional_price' =>$product->prix_promo,
+                'image' => $product->images->map(function($image){
+                    return[
+                        'id' =$image->id,
+                        'url' =>asset('storage/'.$image->chemin),
+                        'is_main' =>(bool) $image->principale,
+                    ];
+                }),
+                'category' =>[
+                    'id' =>$product->categorie->id,
+                    'name' =>$product->categorie->nom,
+                    'slug' =>$product->categorie->slug,
+                ],
+                'average_rating' =>$product->noteMoyenne(),
+                'reviews' =>$product->avis->map(function($review){
+                    return [
+                        'id' =>$review->id,
+                        'user' =>$review->user->name .' '.$review->user->prenom,
+                        'rating' =>$review->note,
+                        'comment' =>$review->commentaire,
+                        'date' =>$review->created_at->format('Y--m-d'),
+                    ];
+                }),
+                'stock' =>$product->stock,
+                'available'=>(bool) $product->disponible
+                'featured'=>(bool) $product->featured,
+            ];
+         }
 
     }
 }
