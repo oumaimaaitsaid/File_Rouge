@@ -165,6 +165,37 @@ class ProductController extends Controller
                 'data' =>$result,
             ]);
          }
+      //featured produit
+      public function featured(){
+        $featuredProducts =Produit::where('featured', true)
+        ->where('disponible',true)
+        ->with(['imagePrincipale'])
+        ->take(4)
+        ->get()
+        ->map(fonction($product){
+            return[
+                'id'=> $product->id,
+                'name' =>$product->nom,
+                'slug' =>$product->slug,
+                'price' =>$product->prix,
+                'description' =>$product->description,
+                'main_image' =>$product->imagePrincipale ? asset('storage/'.$product->imagePrincipale->chemin) :null,
+                'promotional_price' =>$product->prix_promo,
+                'category' =>[
+                'id' =>$product->categorie->id,
+                'name' =>$product->categorie->nom,
+                'slug' =>$product->categorie->slug,
+            ],
+          
+            'average_rating' =>$product->noteMoyenne(),
+            'review_count' =>$product->avis()->where('approuve',true)->count(), 
+                ];
+        });
+        return response()->json([
+            'success' =>true,
+            'data' =>$featuredProducts,
+        ]);
 
+      }
     }
 }
