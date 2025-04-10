@@ -18,6 +18,9 @@ class ImageProduit extends Model
         'principale'=>'boolean',
         'order'=>'integer'
     ];
-    
+    public function produit()
+    {
+        return $this->belongTo(Produit::class);
+    }
 
 }
