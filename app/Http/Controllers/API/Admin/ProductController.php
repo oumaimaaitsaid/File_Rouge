@@ -250,4 +250,80 @@ class ProductController extends Controller
 
  }
     }
+    //télècharger les images d'un produit
+  
+    public function uploadImages(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'images' => 'required|array',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'main_image_index' => 'nullable|integer|min:0',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        try {
+            $product = Produit::findOrFail($id);
+            
+            if (!$request->hasFile('images')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No images uploaded'
+                ], 400);
+            }
+            
+            DB::beginTransaction();
+            
+            $images = $request->file('images');
+            $mainImageIndex = $request->input('main_image_index', 0);
+            $ordre = $product->images()->max('ordre') + 1;
+            $uploadedImages = [];
+            
+            foreach ($images as $index => $image) {
+                $path = $image->store('produits', 'public');
+                
+                $productImage = ImageProduit::create([
+                    'produit_id' => $product->id,
+                    'chemin' => $path,
+                    'principale' => ($index == $mainImageIndex),
+                    'ordre' => $ordre++,
+                ]);
+                
+                $uploadedImages[] = [
+                    'id' => $productImage->id,
+                    'url' => asset('storage/' . $productImage->chemin),
+                    'is_main' => (bool) $productImage->principale,
+                    'order' => $productImage->ordre,
+                ];
+            }
+            
+            if (isset($images[$mainImageIndex])) {
+                $product->images()
+                    ->where('id', '!=', $uploadedImages[$mainImageIndex]['id'])
+                    ->update(['principale' => false]);
+            }
+            
+            DB::commit();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Images uploaded successfully',
+                'data' => $uploadedImages
+            ]);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while uploading images',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
  }}
