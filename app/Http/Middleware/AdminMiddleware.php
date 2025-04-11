@@ -23,6 +23,6 @@ class AdminMiddleware
         [
             'success'=>false,
             'message'=>'Unauthorized,Admin only',
-        ],403)
+        ],403);
     }
 }

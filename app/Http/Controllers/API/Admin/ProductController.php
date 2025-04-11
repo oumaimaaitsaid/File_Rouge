@@ -15,7 +15,7 @@ use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
- public function index(){
+ public function index(Request $request){
     $query =Produit::with(['categorie','imagePrincipale']);
     if($request->has('category_id') && !empty($request->category_id)){
         $query->where('category_id',$request->category_id);
@@ -89,7 +89,7 @@ class ProductController extends Controller
         'price'=>'required|numeric|min:0',
         'promotional_price'=>'nullable|numeric|min:0|lt:price',
         'stock'=>'required|integer|min:0',
-        'category_id'=>'required|exists:categories,id',
+        'category_id'=>'required|exists:category,id',
         'available'=>'boolean',
         'featured'=>'boolean',  
     ]);
@@ -98,11 +98,11 @@ class ProductController extends Controller
             'success' =>false,
             'message'=>'Validation failed',
             'errors' =>$validator->errors(),
-        ],422)
+        ],422);
     }
 
     try{
-        DB:beginTransaction();
+        DB::beginTransaction();
         $slug =Str::slug($request->name);
 
         $product =Produit::create([
@@ -113,7 +113,7 @@ class ProductController extends Controller
             'prix' =>$request->price,
             'prix_promo' =>$request->promotional_price,
             'stock' =>$request->stock,
-            'categorie_id' =>$request->category_id,
+            'category_id' =>$request->category_id,
             'disponible' => $request->has('available') ? $request->available : true,
             'featured' => $request->has('featured') ? $request->featured : false,
     
@@ -131,13 +131,14 @@ class ProductController extends Controller
                 'price' =>$product->prix,
                 'promotional_price' =>$product->prix_promo,
                 'stock' =>$product->stock,
-                'category_id' =>$product->categorie_id,
+                'category_id' =>$product->category_id,
                 'available' =>(bool) $product->disponible,
                 'featured' =>(bool) $product->featured,
                 'created_at' =>$product->created_at->format('Y-m-d H:i:s'),
                 ]
-            ],201)
-    }catch (\Exception $e){
+            ],201);
+    }
+    catch (\Exception $e){
         DB::rollBack();
         return response()->json([
             'success' =>false,
@@ -145,6 +146,7 @@ class ProductController extends Controller
             'error' =>$e->getMessage(),
         ],500);
     }
+}
      //modifier un produit
      public function update(Request $request ,$id)
      {
@@ -156,7 +158,7 @@ class ProductController extends Controller
             'price' =>'required|numeric|min:0',
             'promotional_price' =>'nullable|numeric|min:0|lt:price',
             'stock' =>'required|integer|min:0',
-            'category_id' =>'required|exists:categories,id',
+            'category_id' =>'required|exists:category,id',
             'available' =>'boolean',
             'featured' =>'boolean',
 
@@ -167,6 +169,7 @@ class ProductController extends Controller
                 'message' =>'Validation failed',
                 'errors' =>$validator->errors(),
             ],422);
+        }
             try{
                 DB::beginTransaction();
                 //changer le slug si le nom changed
@@ -182,7 +185,7 @@ class ProductController extends Controller
                     'prix' =>$request->price,
                     'prix_promo' =>$request->promotional_price,
                     'stock' =>$request->stock,
-                    'categorie_id' =>$request->category_id,
+                    'category_id' =>$request->category_id,
                     'disponible' =>$request->has('available') ? $request->available : $product->disponible,
                     'featured' =>$request->has('featured') ? $request->featured : $product->featured,
                 ]);
@@ -199,7 +202,7 @@ class ProductController extends Controller
                         'price' =>$product->prix,
                         'promotional_price' =>$product->prix_promo,
                         'stock' =>$product->stock,
-                        'category_id' =>$product->categorie_id,
+                        'category_id' =>$product->category_id,
                         'available' =>(bool) $product->disponible,
                         'featured' =>(bool) $product->featured,
                         'updated_at' =>$product->updated_at->format('Y-m-d H:i:s'),
@@ -216,7 +219,7 @@ class ProductController extends Controller
             }
         }
 
-     }
+     
      //supprimer un produit
      public function destroy($id){
        try{ $product =Produit::findOrFail($id);
@@ -338,7 +341,8 @@ class ProductController extends Controller
             if ($image->principale && $product->images()->count() > 1) {
                 $newMainImage = $product->images()->where('id', '!=', $imageId)->first();
                 $newMainImage->update(['principale' => true]);
-            } elseif ($image->principale && $product->images()->count() === 1) {
+            } 
+            elseif ($image->principale && $product->images()->count() === 1) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Cannot delete the only main image of the product'
@@ -363,5 +367,5 @@ class ProductController extends Controller
         }
    }
  }
-}
+
 

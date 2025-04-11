@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\ProductController;
+
+use App\Http\Controllers\API\Admin\ProductController as ProductAdminController;
 
 
 /*
@@ -16,30 +19,31 @@ Route::prefix('v1')->group(function(){
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/featured', [ProductController::class, 'featured']);
     Route::get('/products/recent', [ProductController::class, 'recent']);
-    Route::get('/products/{slug}', [ProductController::class, 'show']);
     Route::get('/products/search/{query}', [ProductController::class, 'search']);
+    Route::get('/products/{slug}', [ProductController::class, 'show']);
 
   
 });
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function(){
-    route::get('/user',function(Request $request){
+    Route::get('/user',function(Request $request){
         return response()->json([
             'success'=>true,
             'data'=>$request->user()
 
         ]);
-        Route::apiResource('/products', \App\Http\Controllers\API\Admin\ProductController::class);
-    Route::post('/products/{id}/images', [\App\Http\Controllers\API\Admin\ProductController::class, 'uploadImages']);
-    Route::delete('/products/{id}/images/{imageId}', [\App\Http\Controllers\API\Admin\ProductController::class, 'deleteImage']);
     });
+    Route::apiResource('/products', ProductAdminController::class);
+    Route::post('/products/{id}/images', [ProductAdminController::class, 'uploadImages']);
+    Route::delete('/products/{id}/images/{imageId}', [ProductAdminController::class, 'deleteImage']);
+   
 
     Route::post('/logout',[AuthController::class,'logout']);
     Route::middleware('admin')->prefix('admin')->group(function () {
         Route::get('/test', function () {
             return response()->json([
                 'success' => true,
-                'message' => 'Vous avez accès en tant qu\'admin'
+                'message' => 'Vous avez accès en tant qu\'admin',
             ]);
         });
     });
@@ -47,7 +51,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function(){
         Route::get('/test', function () {
             return response()->json([
                 'success' => true,
-                'message' => 'Vous avez accès en tant que partenaire'
+                'message' => 'Vous avez accès en tant que partenaire',
             ]);
         });
     });

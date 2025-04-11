@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index(Request $request){
+public function index(Request $request){
         $query= Produit::where('disponible',true)
         ->with(['categorie','imagePrincipale']);
    
@@ -43,23 +43,21 @@ class ProductController extends Controller
                     $query->orderBy('created_at','asc');
                     break;
                 case 'popular':
-                    $query->withCount(['avis']=> function($q){
+                    $query->withCount(['avis'=> function($q){
                         $q->where('approuve',true);
-                    })
+                    }])
                     ->orderByDesc('avis_count','desc');
                     break;
-                    default:
-                    $query->orderBy('created_at','desc');
             }
              }     else{
                 $query->orderBy('created_at','desc');
             }
             //recherche par nom ou description
             if($request->has('search') && !empty($request->search)){
-                $query->where(function($q) use ($search){
-                    $q->where('nom','like',"%{$search}%")
-                    ->orWhere('description','like',"%{$search}%")
-                    ->orWhere('ingredients','like',"%{$search}%");
+                $query->where(function($q) use ($request){
+                    $q->where('nom','like',"%{$request->search}%")
+                    ->orWhere('description','like',"%{$request->search}%")
+                    ->orWhere('ingredients','like',"%{$request->search}%");
                 });
             }
             //pagination
@@ -103,7 +101,7 @@ class ProductController extends Controller
          }
          //display spefic produit
          public function show($slug){
-             $product  = Product::where('slug',$slug)->with(['images','categorie','avis' => function($query)
+             $product  = Produit::where('slug',$slug)->with(['images','categorie','avis' => function($query)
          {
              $query->where('approuve',true)->with('user');}])->firstOrFail();
         
@@ -117,7 +115,7 @@ class ProductController extends Controller
                 'promotional_price' =>$product->prix_promo,
                 'image' => $product->images->map(function($image){
                     return[
-                        'id' =$image->id,
+                        'id' => $image->id,
                         'url' =>asset('storage/'.$image->chemin),
                         'is_main' =>(bool) $image->principale,
                     ];
@@ -134,7 +132,7 @@ class ProductController extends Controller
                         'user' =>$review->user->name .' '.$review->user->prenom,
                         'rating' =>$review->note,
                         'comment' =>$review->commentaire,
-                        'date' =>$review->created_at->format('Y--m-d'),
+                        'date' =>$review->created_at->format('Y-m-d'),
                     ];
                 }),
                 'stock' =>$product->stock,
@@ -142,7 +140,7 @@ class ProductController extends Controller
                 'featured'=>(bool) $product->featured,
             ];
             //prend des produit (en méme category)
-            $relatedProducts=Produit::where('category_id',$product->category_id)
+            $relatedProducts=Produit::where('category_id',$product->categorie_id)
             ->where('id','!=',$product->id)
             ->where('disponible',true)
             ->with(['imagePrincipale'])

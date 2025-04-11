@@ -32,7 +32,7 @@ class Produit extends Model
    }
    public function images()
    {
-       return $this->hasMany(ImageProduit::class);
+       return $this->hasMany(ImageProduit::class,'produit_id');
    }
    public function imagePrincipale()
     {
