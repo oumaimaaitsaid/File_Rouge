@@ -63,6 +63,60 @@ class CategoryController extends Controller
         ]);
     }
     
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255|unique:categories,nom',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'active' => 'boolean',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        try {
+            $slug = Str::slug($request->name);
+            
+            $category = new Categorie();
+            $category->nom = $request->name;
+            $category->slug = $slug;
+            $category->description = $request->description;
+            $category->active = $request->has('active') ? $request->active : true;
+            
+            if ($request->hasFile('image')) {
+                $path = $request->file('image')->store('categories', 'public');
+                $category->image = $path;
+            }
+            
+            $category->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Catégorie créée avec succès',
+                'data' => [
+                    'id' => $category->id,
+                    'name' => $category->nom,
+                    'slug' => $category->slug,
+                    'description' => $category->description,
+                    'image' => $category->image ? asset('storage/' . $category->image) : null,
+                    'active' => (bool) $category->active,
+                ]
+            ], 201);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la création de la catégorie',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     
     
     
