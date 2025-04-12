@@ -152,6 +152,74 @@ class UserController extends Controller
         }
     }
 
+// update un utilisateur
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|required|string|max:255',
+            'prenom' => 'sometimes|required|string|max:255',
+            'email' => [
+                'sometimes',
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($user->id)
+            ],
+            'password' => 'sometimes|nullable|string|min:8',
+            'telephone' => 'sometimes|nullable|string|max:20',
+            'addresse' => 'sometimes|nullable|string|max:255',
+            'ville' => 'sometimes|nullable|string|max:100',
+            'code_postal' => 'sometimes|nullable|string|max:20',
+            'pays' => 'sometimes|nullable|string|max:100',
+            'role' => 'sometimes|required|in:client,admin,partenaire'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $fieldsToUpdate = ['name', 'prenom', 'email', 'telephone', 'addresse', 'ville', 'code_postal', 'pays', 'role'];
+            foreach ($fieldsToUpdate as $field) {
+                if ($request->has($field)) {
+                    $user->$field = $request->$field;
+                }
+            }
+            
+            if ($request->has('password') && !empty($request->password)) {
+                $user->password = Hash::make($request->password);
+            }
+            
+            $user->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Utilisateur mis à jour avec succès',
+                'data' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'prenom' => $user->prenom,
+                    'email' => $user->email,
+                    'telephone' => $user->telephone,
+                    'role' => $user->role
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour de l\'utilisateur',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
   
 }
