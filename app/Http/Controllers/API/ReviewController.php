@@ -139,4 +139,31 @@ class ReviewController extends Controller
         }
     }
     
+//afficher un review de user
+    public function userReviews()
+    {
+        $reviews = Avis::where('user_id', Auth::id())
+            ->with('produit')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function($review) {
+                return [
+                    'id' => $review->id,
+                    'product' => [
+                        'id' => $review->produit->id,
+                        'name' => $review->produit->nom,
+                        'slug' => $review->produit->slug
+                    ],
+                    'rating' => $review->note,
+                    'comment' => $review->commentaire,
+                    'approved' => (bool) $review->approuve,
+                    'created_at' => $review->created_at->format('Y-m-d H:i:s')
+                ];
+            });
+            
+        return response()->json([
+            'success' => true,
+            'data' => $reviews
+        ]);
+    }
 }
