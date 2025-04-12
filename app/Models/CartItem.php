@@ -21,4 +21,10 @@ class CartItem extends Model
         'prix_unitaire' => 'float',
     ];
 
+    public function cart()
+    {
+        return $this->belongsTo(Cart::class);
+    }
+
+
 }

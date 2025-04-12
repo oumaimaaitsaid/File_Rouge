@@ -24,7 +24,6 @@ class Cart extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Calculer le total du panier
     public function total()
     {
         return $this->items->sum(function ($item) {
@@ -32,7 +31,6 @@ class Cart extends Model
         });
     }
 
-    // Compter les articles du panier
     public function itemCount()
     {
         return $this->items->sum('quantite');
