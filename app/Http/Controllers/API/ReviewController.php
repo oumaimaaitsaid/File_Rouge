@@ -69,6 +69,51 @@ class ReviewController extends Controller
         }
     }
     
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|min:5|max:500'
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        try {
+            $review = Avis::where('id', $id)
+                ->where('user_id', Auth::id())
+                ->firstOrFail();
+                        $review->update([
+                'note' => $request->rating,
+                'commentaire' => $request->comment,
+                'approuve' => false 
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Votre avis a été mis à jour et sera visible après modération.',
+                'data' => [
+                    'id' => $review->id,
+                    'rating' => $review->note,
+                    'comment' => $review->commentaire,
+                    'approved' => $review->approuve,
+                    'updated_at' => $review->updated_at->format('Y-m-d H:i:s')
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour de l\'avis',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     
     
 }
