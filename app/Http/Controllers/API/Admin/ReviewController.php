@@ -110,6 +110,47 @@ class ReviewController extends Controller
     }
     
 
+    //approve ou rejite un avis
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'approved' => 'required|boolean'
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        try {
+            $review = Avis::findOrFail($id);
+            
+            $review->update([
+                'approuve' => $request->approved
+            ]);
+            
+            $status = $request->approved ? 'approuvé' : 'rejeté';
+            
+            return response()->json([
+                'success' => true,
+                'message' => "L'avis a été {$status} avec succès",
+                'data' => [
+                    'id' => $review->id,
+                    'approved' => (bool) $review->approuve
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => "Erreur lors de la mise à jour de l'avis",
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     
 
 
