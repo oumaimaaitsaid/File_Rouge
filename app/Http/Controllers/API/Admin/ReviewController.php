@@ -73,6 +73,41 @@ class ReviewController extends Controller
         ]);
     }
     
+//voir le détail d'un avis
+    public function show($id)
+    {
+        try {
+            $review = Avis::with(['user', 'produit'])->findOrFail($id);
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $review->id,
+                    'user' => [
+                        'id' => $review->user->id,
+                        'name' => $review->user->name,
+                        'email' => $review->user->email
+                    ],
+                    'product' => [
+                        'id' => $review->produit->id,
+                        'name' => $review->produit->nom,
+                        'slug' => $review->produit->slug
+                    ],
+                    'rating' => $review->note,
+                    'comment' => $review->commentaire,
+                    'approved' => (bool) $review->approuve,
+                    'created_at' => $review->created_at->format('Y-m-d H:i:s')
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Avis non trouvé',
+                'error' => $e->getMessage()
+            ], 404);
+        }
+    }
     
 
     
