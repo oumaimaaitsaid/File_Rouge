@@ -154,4 +154,24 @@ class ReviewController extends Controller
     
 
 
+    //supprimer un avis
+    public function destroy($id)
+    {
+        try {
+            $review = Avis::findOrFail($id);
+            $review->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => "L'avis a été supprimé avec succès"
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => "Erreur lors de la suppression de l'avis",
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
