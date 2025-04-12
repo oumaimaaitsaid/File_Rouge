@@ -21,11 +21,11 @@ Route::prefix('v1')->group(function(){
     Route::get('/products/recent', [ProductController::class, 'recent']);
     Route::get('/products/search/{query}', [ProductController::class, 'search']);
     Route::get('/products/{slug}', [ProductController::class, 'show']);
-
+    //categorie
   
 });
 
-Route::prefix('v1')->middleware('auth:sanctum')->group(function(){
+Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
     Route::get('/user',function(Request $request){
         return response()->json([
             'success'=>true,
@@ -33,9 +33,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function(){
 
         ]);
     });
-    Route::apiResource('/products', ProductAdminController::class);
-    Route::post('/products/{id}/images', [ProductAdminController::class, 'uploadImages']);
-    Route::delete('/products/{id}/images/{imageId}', [ProductAdminController::class, 'deleteImage']);
+
    
 
     Route::post('/logout',[AuthController::class,'logout']);
