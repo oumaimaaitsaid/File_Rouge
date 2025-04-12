@@ -91,7 +91,57 @@ class CartController extends Controller
         ]);
     }
 
-    
+    public function addItem(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'product_id' => 'required|exists:produits,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        try {
+            $cart = $this->getOrCreateCart($request);
+            $product = Produit::findOrFail($request->product_id);
+            
+            if (!$product->disponible || $product->stock < $request->quantity) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Le produit n\'est pas disponible dans la quantité demandée'
+                ], 400);
+            }
+            
+            $cartItem = $cart->items()->where('produit_id', $product->id)->first();
+            
+            if ($cartItem) {
+                $cartItem->update([
+                    'quantite' => $cartItem->quantite + $request->quantity,
+                    'prix_unitaire' => $product->getPrixActuel() // Utiliser le prix actuel (normal ou promo)
+                ]);
+            } else {
+                $cartItem = $cart->items()->create([
+                    'produit_id' => $product->id,
+                    'quantite' => $request->quantity,
+                    'prix_unitaire' => $product->getPrixActuel()
+                ]);
+            }
+            
+            return $this->index($request);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de l\'ajout du produit au panier',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
 
 
