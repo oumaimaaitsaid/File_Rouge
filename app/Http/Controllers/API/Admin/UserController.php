@@ -93,7 +93,64 @@ class UserController extends Controller
         }
     }
 
+//cree nouveau utilisateur
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'prenom' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'telephone' => 'nullable|string|max:20',
+            'addresse' => 'nullable|string|max:255',
+            'ville' => 'nullable|string|max:100',
+            'code_postal' => 'nullable|string|max:20',
+            'pays' => 'nullable|string|max:100',
+            'role' => 'required|in:client,admin,partenaire'
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'prenom' => $request->prenom,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'telephone' => $request->telephone,
+                'addresse' => $request->addresse,
+                'ville' => $request->ville,
+                'code_postal' => $request->code_postal,
+                'pays' => $request->pays,
+                'role' => $request->role
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Utilisateur créé avec succès',
+                'data' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'prenom' => $user->prenom,
+                    'email' => $user->email,
+                    'role' => $user->role
+                ]
+            ], 201);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la création de l\'utilisateur',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
 
   
