@@ -212,5 +212,28 @@ public function updateItem(Request $request)
         }
     }
 
-   
+    public function clear(Request $request)
+    {
+        try {
+            $cart = $this->getOrCreateCart($request);
+            $cart->items()->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Panier vidé avec succès',
+                'data' => [
+                    'items' => [],
+                    'total' => 0,
+                    'item_count' => 0
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la suppression du panier',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
