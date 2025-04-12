@@ -143,7 +143,56 @@ class CartController extends Controller
         }
     }
 
-
+public function updateItem(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'cart_item_id' => 'required|exists:cart_items,id',
+        'quantity' => 'required|integer|min:1'
+    ]);
+    
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation failed',
+            'errors' => $validator->errors()
+        ], 422);
+    }
+    
+    try {
+        $cartItem = CartItem::findOrFail($request->cart_item_id);
+        
+        $cart = $this->getOrCreateCart($request);
+        
+        if ($cartItem->cart_id != $cart->id) {
+            if (!Auth::check() || !Cart::where('id', $cartItem->cart_id)->where('user_id', Auth::id())->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vous n\'êtes pas autorisé à modifier cet élément'
+                ], 403);
+            }
+        }
+        
+        if ($cartItem->produit->stock < $request->quantity) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stock insuffisant'
+            ], 400);
+        }
+        
+        $cartItem->update([
+            'quantite' => $request->quantity
+        ]);
+        
+        return $this->index($request);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur lors de la mise à jour de l\'article',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 
     
 
