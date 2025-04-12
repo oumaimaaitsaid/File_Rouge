@@ -30,6 +30,12 @@ Route::prefix('v1')->group(function(){
     
 });
 Route::prefix('v1')->middleware('auth:sanctum')->group(function() {
+    //cart
+    Route::get('/cart', [App\Http\Controllers\API\CartController::class, 'index']);
+    Route::post('/cart/add', [App\Http\Controllers\API\CartController::class, 'addItem']);
+    Route::put('/cart/update', [App\Http\Controllers\API\CartController::class, 'updateItem']);
+    Route::delete('/cart/remove/{id}', [App\Http\Controllers\API\CartController::class, 'removeItem']);
+    Route::delete('/cart/clear', [App\Http\Controllers\API\CartController::class, 'clear']);
     // Afficher les avis de l'utilisateur
     //reviews
     Route::get('/user/reviews', [ReviewController::class, 'userReviews']);
