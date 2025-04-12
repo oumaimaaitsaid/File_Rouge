@@ -207,4 +207,35 @@ class CategoryController extends Controller
         }
     }
     
+    public function destroy($id)
+    {
+        try {
+            $category = Categorie::findOrFail($id);
+            
+            if ($category->produits()->count() > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Impossible de supprimer la catégorie car elle contient des produits'
+                ], 400);
+            }
+            
+            if ($category->image) {
+                Storage::disk('public')->delete($category->image);
+            }
+            
+            $category->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Catégorie supprimée avec succès'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la suppression de la catégorie',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
