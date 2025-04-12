@@ -26,24 +26,25 @@ Route::prefix('v1')->group(function(){
     //categorie
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{slug}', [CategoryController::class, 'show']);
-    //reviews
-    Route::prefix('v1')->middleware('auth:sanctum')->group(function() {
-        // Afficher les avis de l'utilisateur
-        Route::get('/user/reviews', [ReviewController::class, 'userReviews']);
-        
-        // Ajouter un avis
-        Route::post('/products/{productId}/reviews', [ReviewController::class, 'store']);
-        
-        // Mettre à jour un avis
-        Route::put('/reviews/{id}', [ReviewController::class, 'update']);
-        
-        // Supprimer un avis
-        Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
-    Route::put('/profile', [App\Http\Controllers\API\UserController::class, 'updateProfile']);
-    });
-
-  
+    
+    
 });
+Route::prefix('v1')->middleware('auth:sanctum')->group(function() {
+    // Afficher les avis de l'utilisateur
+    //reviews
+    Route::get('/user/reviews', [ReviewController::class, 'userReviews']);
+    
+    // Ajouter un avis
+    Route::post('/products/{productId}/reviews', [ReviewController::class, 'store']);
+    
+    // Mettre à jour un avis
+    Route::put('/reviews/{id}', [ReviewController::class, 'update']);
+    
+    // Supprimer un avis
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+Route::put('/profile', [App\Http\Controllers\API\UserController::class, 'updateProfile']);
+});
+
 
 Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
     Route::get('/user',function(Request $request){

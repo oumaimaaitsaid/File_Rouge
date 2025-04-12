@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'partenaire' => \App\Http\Middleware\PartenaireMiddleware::class,
+           'cate' => \App\Http\Middleware\CartSessionMiddleware::class,
         ]);
       })
     ->withExceptions(function (Exceptions $exceptions) {
