@@ -194,7 +194,23 @@ public function updateItem(Request $request)
     }
 }
 
-    
+    public function removeItem(Request $request, $id)
+    {
+        try {
+            $cart = $this->getOrCreateCart($request);
+            $cartItem = $cart->items()->findOrFail($id);
+            $cartItem->delete();
+            
+            return $this->index($request);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la suppression de l\'article',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
    
 }
