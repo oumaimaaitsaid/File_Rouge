@@ -147,5 +147,64 @@ class CategoryController extends Controller
         }
     }
     
+    public function update(Request $request, $id)
+    {
+        $category = Categorie::findOrFail($id);
+        
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255', Rule::unique('categories', 'nom')->ignore($category->id)],
+            'description' => 'nullable|string',
+            'image' => Rule::in([true,false,'true','false',1,0,'1','0']),
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        try {
+            if ($category->nom != $request->name) {
+                $category->slug = Str::slug($request->name);
+            }
+            
+            $category->nom = $request->name;
+            $category->description = $request->description;
+            $category->active = $request->has('active') ? $request->active : $category->active;
+            
+            if ($request->hasFile('image')) {
+                if ($category->image) {
+                    Storage::disk('public')->delete($category->image);
+                }
+                
+                $path = $request->file('image')->store('categories', 'public');
+                $category->image = $path;
+            }
+            
+            $category->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Catégorie mise à jour avec succès',
+                'data' => [
+                    'id' => $category->id,
+                    'name' => $category->nom,
+                    'slug' => $category->slug,
+                    'description' => $category->description,
+                    'image' => $category->image ? asset('storage/' . $category->image) : null,
+                    'active' => (bool) $category->active,
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour de la catégorie',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     
 }
