@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\Categorie;
 
 use App\Http\Controllers\API\Admin\ProductController as ProductAdminController;
 
@@ -22,6 +23,9 @@ Route::prefix('v1')->group(function(){
     Route::get('/products/search/{query}', [ProductController::class, 'search']);
     Route::get('/products/{slug}', [ProductController::class, 'show']);
     //categorie
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/categories/{slug}', [CategoryController::class, 'show']);
+
   
 });
 
@@ -44,6 +48,11 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
                 'message' => 'Vous avez accès en tant qu\'admin',
             ]);
         });
+        Route::apiResource('/products', ProductAdminController::class);
+        Route::post('/products/{id}/images', [ProductAdminController::class, 'uploadImages']);
+        Route::delete('/products/{id}/images/{imageId}', [ProductAdminController::class, 'deleteImage']);
+        Route::apiResource('/categories', App\Http\Controllers\API\Admin\CategoryController::class);
+    
     });
     Route::middleware('partenaire')->prefix('partner')->group(function () {
         Route::get('/test', function () {
