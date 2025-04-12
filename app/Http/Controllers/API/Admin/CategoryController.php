@@ -118,6 +118,34 @@ class CategoryController extends Controller
         }
     }
     
+    public function show($id)
+    {
+        try {
+            $category = Categorie::findOrFail($id);
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $category->id,
+                    'name' => $category->nom,
+                    'slug' => $category->slug,
+                    'description' => $category->description,
+                    'image' => $category->image ? asset('storage/' . $category->image) : null,
+                    'active' => (bool) $category->active,
+                    'product_count' => $category->produits()->count(),
+                    'created_at' => $category->created_at->format('Y-m-d H:i:s'),
+                    'updated_at' => $category->updated_at->format('Y-m-d H:i:s'),
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Catégorie non trouvée',
+                'error' => $e->getMessage()
+            ], 404);
+        }
+    }
     
     
 }
