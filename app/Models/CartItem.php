@@ -31,4 +31,8 @@ class CartItem extends Model
         return $this->belongsTo(Produit::class);
     }
 
+    public function sousTotal()
+    {
+        return $this->quantite * $this->prix_unitaire;
+    }
 }
