@@ -61,7 +61,35 @@ class CartController extends Controller
         );
     }
 
-    
+    public function index(Request $request)
+    {
+        $cart = $this->getOrCreateCart($request);
+        
+        $cartItems = $cart->items()->with('produit.imagePrincipale')->get()->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'product' => [
+                    'id' => $item->produit->id,
+                    'name' => $item->produit->nom,
+                    'slug' => $item->produit->slug,
+                    'price' => $item->prix_unitaire,
+                    'image' => $item->produit->imagePrincipale ? asset('storage/' . $item->produit->imagePrincipale->chemin) : null
+                ],
+                'quantity' => $item->quantite,
+                'unit_price' => $item->prix_unitaire,
+                'subtotal' => $item->sousTotal()
+            ];
+        });
+        
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'items' => $cartItems,
+                'total' => $cart->total(),
+                'item_count' => $cart->itemCount()
+            ]
+        ]);
+    }
 
     
 
