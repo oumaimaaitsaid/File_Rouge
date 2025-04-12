@@ -221,5 +221,32 @@ class UserController extends Controller
         }
     }
 
-  
+    // supprimer un utilisateur
+    public function destroy($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            
+            if ($user->commandes()->count() > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Impossible de supprimer cet utilisateur car il possède des commandes'
+                ], 400);
+            }
+            
+            $user->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Utilisateur supprimé avec succès'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la suppression de l\'utilisateur',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
