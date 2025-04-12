@@ -59,7 +59,39 @@ class UserController extends Controller
         ]);
     }
 
-
+// voir détail d un utilisateur
+    public function show($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'prenom' => $user->prenom,
+                    'email' => $user->email,
+                    'telephone' => $user->telephone,
+                    'adresse' => [
+                        'adresse' => $user->addresse,
+                        'ville' => $user->ville,
+                        'code_postal' => $user->code_postal,
+                        'pays' => $user->pays
+                    ],
+                    'role' => $user->role,
+                    'created_at' => $user->created_at->format('Y-m-d H:i:s')
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Utilisateur non trouvé',
+                'error' => $e->getMessage()
+            ], 404);
+        }
+    }
 
 
 
