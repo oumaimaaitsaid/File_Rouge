@@ -49,6 +49,27 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function() {
     // Supprimer un avis
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 Route::put('/profile', [App\Http\Controllers\API\UserController::class, 'updateProfile']);
+
+
+
+
+
+ Route::get('/checkout/validate-cart', [App\Http\Controllers\API\CheckoutController::class, 'validateCart']);
+    
+    // Créer une commande
+    Route::post('/checkout/create-order', [App\Http\Controllers\API\CheckoutController::class, 'createOrder']);
+    
+    // Confirmer le paiement d'une commande
+    Route::post('/checkout/confirm-payment/{orderId}', [App\Http\Controllers\API\CheckoutController::class, 'confirmPayment']);
+    
+    // Obtenir l'historique des commandes
+    Route::get('/orders', [App\Http\Controllers\API\CheckoutController::class, 'userOrders']);
+    
+    // Obtenir les détails d'une commande
+    Route::get('/orders/{orderId}', [App\Http\Controllers\API\CheckoutController::class, 'orderDetails']);
+    
+    // Annuler une commande
+    Route::post('/orders/{orderId}/cancel', [App\Http\Controllers\API\CheckoutController::class, 'cancelOrder']);
 });
 
 
@@ -80,6 +101,11 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
         Route::put('/reviews/{id}', [ReviewAdminController::class, 'update']);
         Route::delete('/reviews/{id}', [ReviewAdminController::class, 'destroy']);
         Route::apiResource('/users', App\Http\Controllers\API\Admin\UserController::class);
+        Route::get('/orders', [App\Http\Controllers\API\Admin\OrderController::class, 'index']);
+        Route::get('/orders/{id}', [App\Http\Controllers\API\Admin\OrderController::class, 'show']);
+        Route::put('/orders/{id}/status', [App\Http\Controllers\API\Admin\OrderController::class, 'updateStatus']);
+        Route::put('/orders/{id}/confirm-payment', [App\Http\Controllers\API\Admin\OrderController::class, 'confirmPayment']);
+        Route::get('/orders/statistics/summary', [App\Http\Controllers\API\Admin\OrderController::class, 'statistics']);
     
     });
     Route::middleware('partenaire')->prefix('partner')->group(function () {
