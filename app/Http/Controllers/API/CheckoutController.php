@@ -356,5 +356,56 @@ class CheckoutController extends Controller
         }
     }
 
-    
+    public function cancelOrder($orderId)
+    {
+        try {
+            $commande = Commande::where('id', $orderId)
+                ->where('user_id', Auth::id())
+                ->firstOrFail();
+
+            // Vérifier si la commande peut être annulée
+            if ($commande->statut != 'en_attente' && $commande->statut != 'confirmee') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cette commande ne peut plus être annulée'
+                ], 400);
+            }
+
+            DB::beginTransaction();
+
+            foreach ($commande->ligneCommandes as $ligne) {
+                $produit = Produit::find($ligne->produit_id);
+                if ($produit) {
+                    $produit->update([
+                        'stock' => $produit->stock + $ligne->quantite
+                    ]);
+                }
+            }
+
+            // Annuler la commande
+            $commande->update([
+                'statut' => 'annulee',
+                'statut_paiement' => 'annule'
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Commande annulée avec succès',
+                'data' => [
+                    'order_number' => $commande->numero_commande,
+                    'status' => $commande->statut
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de l\'annulation de la commande',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
