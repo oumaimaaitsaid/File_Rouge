@@ -280,7 +280,28 @@ class CheckoutController extends Controller
     }
 
     
-    
+    public function userOrders()
+    {
+        $commandes = Commande::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $commandes->map(function($commande) {
+                return [
+                    'id' => $commande->id,
+                    'order_number' => $commande->numero_commande,
+                    'date' => $commande->created_at->format('Y-m-d H:i:s'),
+                    'status' => $commande->statut,
+                    'total' => $commande->montant_total,
+                    'payment_method' => $commande->methode_paiement,
+                    'payment_confirmed' => $commande->paiement_confirme
+                ];
+            })
+        ]);
+    }
+
     
    
 
