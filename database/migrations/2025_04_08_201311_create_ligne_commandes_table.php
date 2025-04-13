@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lignes_commande', function (Blueprint $table) {
+        Schema::create('ligne_commandes ', function (Blueprint $table) {
             $table->id();
             $table->foreignId('commande_id')->constrained('commandes')->onDelete('cascade');
             $table->foreignId('produit_id')->constrained('produits')->onDelete('cascade');
+            $table->string('nom_produit');
             $table->integer('quantite');
             $table->decimal('prix_unitaire', 10, 2);
             $table->decimal('total', 10, 2);
