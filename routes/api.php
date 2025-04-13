@@ -68,6 +68,8 @@ Route::put('/profile', [App\Http\Controllers\API\UserController::class, 'updateP
     // Obtenir les détails d'une commande
     Route::get('/orders/{orderId}', [App\Http\Controllers\API\CheckoutController::class, 'orderDetails']);
     
+    // Annuler une commande
+    Route::post('/orders/{orderId}/cancel', [App\Http\Controllers\API\CheckoutController::class, 'cancelOrder']);
 });
 
 
