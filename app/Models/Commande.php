@@ -29,7 +29,13 @@ class Commande extends Model
         'date_paiement'
     ];
 
-  
+    protected $casts = [
+        'montant_total' => 'float',
+        'frais_livraison' => 'float',
+        'remise' => 'float',
+        'paiement_confirme' => 'boolean',
+        'date_paiement' => 'datetime',
+    ];
 
     
 
