@@ -98,7 +98,141 @@ class CheckoutController extends Controller
     }
 
    
-    
+    public function createOrder(Request $request)
+    {
+        // Valider les données
+        $validator = Validator::make($request->all(), [
+            'adresse_livraison' => 'required|string',
+            'ville_livraison' => 'required|string',
+            'code_postal_livraison' => 'required|string',
+            'pays_livraison' => 'required|string',
+            'telephone_livraison' => 'required|string',
+            'methode_paiement' => 'required|in:carte,paypal,virement,a_la_livraison',
+            'notes' => 'nullable|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation échouée',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // L'utilisateur doit être connecté
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vous devez être connecté pour passer une commande'
+            ], 401);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Récupérer le panier
+            $cart = Cart::where('user_id', Auth::id())->with('items.produit')->first();
+
+            // Vérifier si le panier existe et n'est pas vide
+            if (!$cart || $cart->items->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Votre panier est vide'
+                ], 400);
+            }
+
+            // Vérifier chaque article du panier et ajuster les stocks
+            foreach ($cart->items as $item) {
+                $product = $item->produit;
+                
+                // Vérifier si le produit est disponible
+                if (!$product->disponible) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Le produit '{$product->nom}' n'est plus disponible"
+                    ], 400);
+                }
+                
+                // Vérifier le stock
+                if ($product->stock < $item->quantite) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Stock insuffisant pour '{$product->nom}'. Disponible: {$product->stock}, Demandé: {$item->quantite}"
+                    ], 400);
+                }
+                
+                // Mettre à jour le stock
+                $product->update([
+                    'stock' => $product->stock - $item->quantite
+                ]);
+            }
+
+            // Calculer les totaux
+            $sousTotal = $cart->total();
+            $fraisLivraison = 30.00; // À adapter selon votre logique
+            $total = $sousTotal + $fraisLivraison;
+
+            // Générer un numéro de commande unique
+            $numeroCommande = 'TS-' . date('Ymd') . '-' . strtoupper(Str::random(6));
+
+            // Créer la commande
+            $commande = Commande::create([
+                'numero_commande' => $numeroCommande,
+                'user_id' => Auth::id(),
+                'montant_total' => $total,
+                'frais_livraison' => $fraisLivraison,
+                'remise' => 0, // À adapter si vous avez des réductions
+                'statut' => 'en_attente',
+                'adresse_livraison' => $request->adresse_livraison,
+                'ville_livraison' => $request->ville_livraison,
+                'code_postal_livraison' => $request->code_postal_livraison,
+                'pays_livraison' => $request->pays_livraison,
+                'telephone_livraison' => $request->telephone_livraison,
+                'notes' => $request->notes,
+                'methode_paiement' => $request->methode_paiement,
+                'paiement_confirme' => $request->methode_paiement === 'a_la_livraison',
+            ]);
+
+            foreach ($cart->items as $item) {
+                LigneCommande::create([
+                    'commande_id' => $commande->id,
+                    'produit_id' => $item->produit_id,
+                    'nom_produit' => $item->produit->nom,
+                    'quantite' => $item->quantite,
+                    'prix_unitaire' => $item->prix_unitaire,
+                    'total' => $item->quantite * $item->prix_unitaire 
+                ]);
+            }
+
+            $cart->items()->delete();
+
+            DB::commit();
+
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Commande créée avec succès',
+                'data' => [
+                    'order_id' => $commande->id,
+                    'order_number' => $commande->numero_commande,
+                    'total' => $commande->montant_total,
+                    'status' => $commande->statut,
+                    'payment_method' => $commande->methode_paiement,
+                    'payment_confirmed' => $commande->paiement_confirme
+                ]
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la création de la commande',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
    
 
