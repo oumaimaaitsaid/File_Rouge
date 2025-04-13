@@ -149,7 +149,78 @@ class OrderController extends Controller
     }
     
    
-     
+    public function updateStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:en_attente,confirmee,en_preparation,en_livraison,livree,annulee',
+            'admin_notes' => 'nullable|string'
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation échouée',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        try {
+            $order = Commande::findOrFail($id);
+            
+            // Si la commande passe de non-annulée à annulée, remettre les produits en stock
+            if ($order->statut != 'annulee' && $request->status == 'annulee') {
+                DB::beginTransaction();
+                
+                // Restaurer les stocks
+                foreach ($order->ligneCommandes as $ligne) {
+                    $produit = $ligne->produit;
+                    if ($produit) {
+                        $produit->update([
+                            'stock' => $produit->stock + $ligne->quantite
+                        ]);
+                    }
+                }
+                
+                // Mettre à jour la commande
+                $order->update([
+                    'statut' => $request->status,
+                    'notes_admin' => $request->has('admin_notes') ? $request->admin_notes : $order->notes_admin
+                ]);
+                
+                DB::commit();
+            } else {
+                // Mise à jour normale
+                $order->update([
+                    'statut' => $request->status,
+                    'notes_admin' => $request->has('admin_notes') ? $request->admin_notes : $order->notes_admin
+                ]);
+            }
+            
+            // TODO: Envoyer une notification au client sur le changement de statut
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Statut de la commande mis à jour avec succès',
+                'data' => [
+                    'id' => $order->id,
+                    'order_number' => $order->numero_commande,
+                    'status' => $order->statut,
+                    'admin_notes' => $order->notes_admin
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            if (isset($db) && DB::transactionLevel() > 0) {
+                DB::rollBack();
+            }
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour du statut',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     
    
      
