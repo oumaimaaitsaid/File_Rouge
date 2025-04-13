@@ -283,5 +283,54 @@ class OrderController extends Controller
     }
     
    
-     
+    public function statistics()
+    {
+        try {
+            // Total des commandes
+            $totalOrders = Commande::count();
+            
+            // Total des commandes par statut
+            $ordersByStatus = Commande::select('statut', DB::raw('count(*) as total'))
+                ->groupBy('statut')
+                ->get()
+                ->pluck('total', 'statut')
+                ->toArray();
+            
+            // Revenus totaux (commandes payées)
+            $totalRevenue = Commande::where('paiement_confirme', true)
+                ->sum('montant_total');
+            
+            // Commandes du jour
+            $todayOrders = Commande::whereDate('created_at', today())->count();
+            
+            // Revenus du jour
+            $todayRevenue = Commande::whereDate('created_at', today())
+                ->where('paiement_confirme', true)
+                ->sum('montant_total');
+            
+            // Commandes en attente de paiement
+            $pendingPayments = Commande::where('paiement_confirme', false)
+                ->where('statut', '!=', 'annulee')
+                ->count();
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'total_orders' => $totalOrders,
+                    'orders_by_status' => $ordersByStatus,
+                    'total_revenue' => $totalRevenue,
+                    'today_orders' => $todayOrders,
+                    'today_revenue' => $todayRevenue,
+                    'pending_payments' => $pendingPayments
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des statistiques',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
