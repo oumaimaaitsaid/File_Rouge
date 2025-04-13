@@ -18,7 +18,11 @@ class LigneCommande extends Model
         'total'
     ];
 
-   
+    protected $casts = [
+        'quantite' => 'integer',
+        'prix_unitaire' => 'float'
+    ];
+
    
 
   
