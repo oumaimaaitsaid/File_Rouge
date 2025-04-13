@@ -234,7 +234,50 @@ class CheckoutController extends Controller
         }
     }
 
-   
+    public function confirmPayment(Request $request, $orderId)
+    {
+        try {
+            $commande = Commande::where('id', $orderId)
+                ->where('user_id', Auth::id())
+                ->firstOrFail();
+
+            // Vérifier si le paiement est déjà confirmé
+            if ($commande->paiement_confirme) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Le paiement de cette commande est déjà confirmé'
+                ], 400);
+            }
+
+            // Simuler la confirmation du paiement
+            $commande->update([
+                'paiement_confirme' => true,
+                'date_paiement' => now(),
+                'reference_paiement' => 'PAY-' . strtoupper(Str::random(10)),
+                'statut' => 'confirmee'
+            ]);
+
+            // TODO: Envoyer un email de confirmation de paiement
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Paiement confirmé avec succès',
+                'data' => [
+                    'order_number' => $commande->numero_commande,
+                    'status' => $commande->statut,
+                    'payment_reference' => $commande->reference_paiement,
+                    'payment_date' => $commande->date_paiement
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la confirmation du paiement',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
     
     
