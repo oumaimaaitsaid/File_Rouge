@@ -37,7 +37,10 @@ class Commande extends Model
         'date_paiement' => 'datetime',
     ];
 
-    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     
 
