@@ -62,6 +62,8 @@ Route::put('/profile', [App\Http\Controllers\API\UserController::class, 'updateP
     // Confirmer le paiement d'une commande
     Route::post('/checkout/confirm-payment/{orderId}', [App\Http\Controllers\API\CheckoutController::class, 'confirmPayment']);
     
+    // Obtenir l'historique des commandes
+    Route::get('/orders', [App\Http\Controllers\API\CheckoutController::class, 'userOrders']);
     
     
 });
