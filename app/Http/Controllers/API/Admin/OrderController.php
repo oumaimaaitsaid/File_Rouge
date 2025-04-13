@@ -223,7 +223,64 @@ class OrderController extends Controller
     }
     
    
-     
+    public function confirmPayment(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'payment_reference' => 'nullable|string',
+            'admin_notes' => 'nullable|string'
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation échouée',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        try {
+            $order = Commande::findOrFail($id);
+            
+            // Vérifier si le paiement est déjà confirmé
+            if ($order->paiement_confirme) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Le paiement de cette commande est déjà confirmé'
+                ], 400);
+            }
+            
+            // Confirmer le paiement
+            $order->update([
+                'paiement_confirme' => true,
+                'date_paiement' => now(),
+                'reference_paiement' => $request->payment_reference ?? ('ADM-' . strtoupper(uniqid())),
+                'notes_admin' => $request->has('admin_notes') ? $request->admin_notes : $order->notes_admin,
+                'statut' => $order->statut == 'en_attente' ? 'confirmee' : $order->statut
+            ]);
+            
+            // TODO: Envoyer une notification au client
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Paiement confirmé avec succès',
+                'data' => [
+                    'id' => $order->id,
+                    'order_number' => $order->numero_commande,
+                    'payment_confirmed' => $order->paiement_confirme,
+                    'payment_date' => $order->date_paiement->format('Y-m-d H:i:s'),
+                    'payment_reference' => $order->reference_paiement,
+                    'status' => $order->statut
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la confirmation du paiement',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     
    
      
