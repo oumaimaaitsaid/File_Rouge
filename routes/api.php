@@ -49,6 +49,19 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function() {
     // Supprimer un avis
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 Route::put('/profile', [App\Http\Controllers\API\UserController::class, 'updateProfile']);
+
+
+
+
+
+ Route::get('/checkout/validate-cart', [App\Http\Controllers\API\CheckoutController::class, 'validateCart']);
+    
+    // Créer une commande
+    Route::post('/checkout/create-order', [App\Http\Controllers\API\CheckoutController::class, 'createOrder']);
+    
+    
+    
+    
 });
 
 
