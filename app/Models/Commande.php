@@ -47,5 +47,9 @@ class Commande extends Model
         return $this->hasMany(LigneCommande::class);
     }
 
-   
+    // Générer un numéro de commande unique
+    public static function generateOrderNumber()
+    {
+        return 'TS-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
+    }
 }
