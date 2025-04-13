@@ -303,7 +303,58 @@ class CheckoutController extends Controller
     }
 
     
-   
+    public function orderDetails($orderId)
+    {
+        try {
+            $commande = Commande::where('id', $orderId)
+                ->where('user_id', Auth::id())
+                ->with('ligneCommandes.produit')
+                ->firstOrFail();
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $commande->id,
+                    'order_number' => $commande->numero_commande,
+                    'date' => $commande->created_at->format('Y-m-d H:i:s'),
+                    'status' => $commande->statut,
+                    'subtotal' => $commande->montant_total - $commande->frais_livraison,
+                    'shipping_fee' => $commande->frais_livraison,
+                    'discount' => $commande->remise,
+                    'total' => $commande->montant_total,
+                    'payment_method' => $commande->methode_paiement,
+                    'payment_confirmed' => $commande->paiement_confirme,
+                    'payment_date' => $commande->date_paiement ? $commande->date_paiement->format('Y-m-d H:i:s') : null,
+                    'payment_reference' => $commande->reference_paiement,
+                    'shipping_address' => [
+                        'address' => $commande->adresse_livraison,
+                        'city' => $commande->ville_livraison,
+                        'postal_code' => $commande->code_postal_livraison,
+                        'country' => $commande->pays_livraison,
+                        'phone' => $commande->telephone_livraison
+                    ],
+                    'notes' => $commande->notes,
+                    'items' => $commande->ligneCommandes->map(function($ligne) {
+                        return [
+                            'id' => $ligne->id,
+                            'product_id' => $ligne->produit_id,
+                            'product_name' => $ligne->nom_produit,
+                            'quantity' => $ligne->quantite,
+                            'unit_price' => $ligne->prix_unitaire,
+                            'subtotal' => $ligne->quantite * $ligne->prix_unitaire
+                        ];
+                    })
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Commande non trouvée',
+                'error' => $e->getMessage()
+            ], 404);
+        }
+    }
 
     
 }
