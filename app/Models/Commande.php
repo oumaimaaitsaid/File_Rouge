@@ -42,7 +42,10 @@ class Commande extends Model
         return $this->belongsTo(User::class);
     }
 
-    
+    public function ligneCommandes()
+    {
+        return $this->hasMany(LigneCommande::class);
+    }
 
    
 }
