@@ -85,7 +85,68 @@ class OrderController extends Controller
     }
     
     
-     
+    public function show($id)
+    {
+        try {
+            $order = Commande::with(['user', 'ligneCommandes.produit'])->findOrFail($id);
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $order->id,
+                    'order_number' => $order->numero_commande,
+                    'customer' => [
+                        'id' => $order->user->id,
+                        'name' => $order->user->name.' '.$order->user->prenom,
+                        'email' => $order->user->email,
+                        'phone' => $order->user->telephone
+                    ],
+                    'subtotal' => $order->montant_total - $order->frais_livraison + $order->remise,
+                    'shipping_fee' => $order->frais_livraison,
+                    'discount' => $order->remise,
+                    'total' => $order->montant_total,
+                    'status' => $order->statut,
+                    'payment_method' => $order->methode_paiement,
+                    'payment_confirmed' => $order->paiement_confirme,
+                    'payment_date' => $order->date_paiement ? $order->date_paiement->format('Y-m-d H:i:s') : null,
+                    'payment_reference' => $order->reference_paiement,
+                    'shipping_address' => [
+                        'address' => $order->adresse_livraison,
+                        'city' => $order->ville_livraison,
+                        'postal_code' => $order->code_postal_livraison,
+                        'country' => $order->pays_livraison,
+                        'phone' => $order->telephone_livraison
+                    ],
+                    'notes' => $order->notes,
+                    'admin_notes' => $order->notes_admin,
+                    'created_at' => $order->created_at->format('Y-m-d H:i:s'),
+                    'items' => $order->ligneCommandes->map(function($item) {
+                        return [
+                            'id' => $item->id,
+                            'product_id' => $item->produit_id,
+                            'product_name' => $item->nom_produit,
+                            'quantity' => $item->quantite,
+                            'unit_price' => $item->prix_unitaire,
+                            'subtotal' => $item->quantite * $item->prix_unitaire,
+                            'product' => $item->produit ? [
+                                'id' => $item->produit->id,
+                                'name' => $item->produit->nom,
+                                'slug' => $item->produit->slug,
+                                'image' => $item->produit->imagePrincipale ? asset('storage/' . $item->produit->imagePrincipale->chemin) : null
+                            ] : null
+                        ];
+                    })
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Commande non trouvée',
+                'error' => $e->getMessage()
+            ], 404);
+        }
+    }
     
    
      
