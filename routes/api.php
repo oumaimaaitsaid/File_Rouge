@@ -101,6 +101,11 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
         Route::put('/reviews/{id}', [ReviewAdminController::class, 'update']);
         Route::delete('/reviews/{id}', [ReviewAdminController::class, 'destroy']);
         Route::apiResource('/users', App\Http\Controllers\API\Admin\UserController::class);
+        Route::get('/orders', [App\Http\Controllers\API\Admin\OrderController::class, 'index']);
+        Route::get('/orders/{id}', [App\Http\Controllers\API\Admin\OrderController::class, 'show']);
+        Route::put('/orders/{id}/status', [App\Http\Controllers\API\Admin\OrderController::class, 'updateStatus']);
+        Route::put('/orders/{id}/confirm-payment', [App\Http\Controllers\API\Admin\OrderController::class, 'confirmPayment']);
+        Route::get('/orders/statistics/summary', [App\Http\Controllers\API\Admin\OrderController::class, 'statistics']);
     
     });
     Route::middleware('partenaire')->prefix('partner')->group(function () {
