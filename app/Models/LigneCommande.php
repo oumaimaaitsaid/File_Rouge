@@ -33,5 +33,9 @@ class LigneCommande extends Model
         return $this->belongsTo(Produit::class);
     }
 
-    
+    // Calculer le sous-total de cette ligne
+    public function sousTotal()
+    {
+        return $this->quantite * $this->prix_unitaire;
+    }
 }
