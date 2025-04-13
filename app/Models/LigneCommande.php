@@ -23,7 +23,10 @@ class LigneCommande extends Model
         'prix_unitaire' => 'float'
     ];
 
-   
+    public function commande()
+    {
+        return $this->belongsTo(Commande::class);
+    }
 
   
 
