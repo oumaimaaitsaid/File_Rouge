@@ -65,6 +65,8 @@ Route::put('/profile', [App\Http\Controllers\API\UserController::class, 'updateP
     // Obtenir l'historique des commandes
     Route::get('/orders', [App\Http\Controllers\API\CheckoutController::class, 'userOrders']);
     
+    // Obtenir les détails d'une commande
+    Route::get('/orders/{orderId}', [App\Http\Controllers\API\CheckoutController::class, 'orderDetails']);
     
 });
 
