@@ -59,6 +59,8 @@ Route::put('/profile', [App\Http\Controllers\API\UserController::class, 'updateP
     // Créer une commande
     Route::post('/checkout/create-order', [App\Http\Controllers\API\CheckoutController::class, 'createOrder']);
     
+    // Confirmer le paiement d'une commande
+    Route::post('/checkout/confirm-payment/{orderId}', [App\Http\Controllers\API\CheckoutController::class, 'confirmPayment']);
     
     
     
