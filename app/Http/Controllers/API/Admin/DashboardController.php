@@ -171,7 +171,81 @@ class DashboardController extends Controller
         }
     }
     
-  
+   //stats product
+    public function productStats()
+    {
+        try {
+            // Top 10 des produits les plus vendus
+            $topProduits = DB::table('ligne_commandes')
+                          ->join('commandes', 'ligne_commandes.commande_id', '=', 'commandes.id')
+                          ->where('commandes.statut', '!=', 'annulee')
+                          ->select(
+                              'ligne_commandes.produit_id',
+                              'ligne_commandes.nom_produit',
+                              DB::raw('SUM(ligne_commandes.quantite) as total_vendus'),
+                              DB::raw('SUM(ligne_commandes.quantite * ligne_commandes.prix_unitaire) as chiffre_affaires')
+                          )
+                          ->groupBy('ligne_commandes.produit_id', 'ligne_commandes.nom_produit')
+                          ->orderBy('total_vendus', 'desc')
+                          ->limit(10)
+                          ->get();
+            
+            // Produits à faible stock
+            $produitsStockBas = Produit::where('stock', '<=', 5)
+                               ->where('stock', '>', 0)
+                               ->get()
+                               ->map(function($produit) {
+                                   return [
+                                       'id' => $produit->id,
+                                       'nom' => $produit->nom,
+                                       'stock' => $produit->stock,
+                                       'prix' => $produit->prix
+                                   ];
+                               });
+            
+            // Produits en rupture de stock
+            $produitsRupture = Produit::where('stock', 0)
+                              ->get()
+                              ->map(function($produit) {
+                                  return [
+                                      'id' => $produit->id,
+                                      'nom' => $produit->nom,
+                                      'prix' => $produit->prix
+                                  ];
+                              });
+            
+            // Répartition des ventes par catégorie
+            $ventesParCategorie = DB::table('ligne_commandes')
+                                 ->join('produits', 'ligne_commandes.produit_id', '=', 'produits.id')
+                                 ->join('categories', 'produits.category_id', '=', 'categories.id')
+                                 ->select(
+                                     'categories.id as categorie_id',
+                                     'categories.nom as categorie_nom',
+                                     DB::raw('SUM(ligne_commandes.quantite) as total_vendus'),
+                                     DB::raw('SUM(ligne_commandes.quantite * ligne_commandes.prix_unitaire) as chiffre_affaires')
+                                 )
+                                 ->groupBy('categories.id', 'categories.nom')
+                                 ->orderBy('chiffre_affaires', 'desc')
+                                 ->get();
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'top_produits' => $topProduits,
+                    'produits_stock_bas' => $produitsStockBas,
+                    'produits_rupture' => $produitsRupture,
+                    'ventes_par_categorie' => $ventesParCategorie
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des statistiques des produits',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     
    
 }
