@@ -11,7 +11,12 @@ class PromotionUtilisation extends Model
 
     protected $table = 'promotion_utilisations';
 
-   
+    protected $fillable = [
+        'promotion_id',
+        'user_id',
+        'commande_id',
+        'date_utilisation'
+    ];
 
   
    
