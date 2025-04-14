@@ -106,6 +106,18 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
         Route::put('/orders/{id}/status', [App\Http\Controllers\API\Admin\OrderController::class, 'updateStatus']);
         Route::put('/orders/{id}/confirm-payment', [App\Http\Controllers\API\Admin\OrderController::class, 'confirmPayment']);
         Route::get('/orders/statistics/summary', [App\Http\Controllers\API\Admin\OrderController::class, 'statistics']);
+
+         // Tableau de bord général
+    Route::get('/dashboard', [App\Http\Controllers\API\Admin\DashboardController::class, 'index']);
+    
+    // Statistiques des ventes
+    Route::get('/dashboard/sales', [App\Http\Controllers\API\Admin\DashboardController::class, 'salesStats']);
+    
+    // Statistiques des produits
+    Route::get('/dashboard/products', [App\Http\Controllers\API\Admin\DashboardController::class, 'productStats']);
+    
+    // Statistiques des clients
+    Route::get('/dashboard/customers', [App\Http\Controllers\API\Admin\DashboardController::class, 'customerStats']);
     
     });
     Route::middleware('partenaire')->prefix('partner')->group(function () {
