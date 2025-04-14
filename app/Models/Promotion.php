@@ -36,8 +36,57 @@ class Promotion extends Model
     ];
 
    
+    public function estValide($montantPanier = null, $userId = null)
+    {
+        // Vérifier si le code est actif
+        if (!$this->active) {
+            return [
+                'valide' => false,
+                'message' => 'Ce code promo n\'est pas actif.'
+            ];
+        }
 
-    
+        // Vérifier les dates de validité
+        $now = Carbon::now();
+        if ($now->lt($this->date_debut) || $now->gt($this->date_fin)) {
+            return [
+                'valide' => false,
+                'message' => 'Ce code promo n\'est pas valide à cette date.'
+            ];
+        }
+
+        // Vérifier le nombre maximum d'utilisations
+        if ($this->utilisation_max !== null && $this->utilisation_actuelle >= $this->utilisation_max) {
+            return [
+                'valide' => false,
+                'message' => 'Ce code promo a atteint son nombre maximum d\'utilisations.'
+            ];
+        }
+
+        // Vérifier si l'utilisateur a déjà utilisé ce code (si usage unique par client)
+        if ($userId && $this->usage_unique_par_client) {
+            $utilisation = $this->utilisations()->where('user_id', $userId)->first();
+            if ($utilisation) {
+                return [
+                    'valide' => false,
+                    'message' => 'Vous avez déjà utilisé ce code promo.'
+                ];
+            }
+        }
+
+        // Vérifier le montant minimum d'achat
+        if ($montantPanier !== null && $this->montant_minimum !== null && $montantPanier < $this->montant_minimum) {
+            return [
+                'valide' => false,
+                'message' => "Le montant minimum d'achat pour ce code promo est de {$this->montant_minimum} MAD."
+            ];
+        }
+
+        return [
+            'valide' => true,
+            'message' => 'Code promo valide.'
+        ];
+    }
 
    
    
