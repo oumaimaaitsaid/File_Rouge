@@ -70,7 +70,65 @@ class PromotionController extends Controller
     }
 
     
-    
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|string|unique:promotions,code',
+            'description' => 'nullable|string',
+            'type' => 'required|in:pourcentage,montant_fixe,livraison_gratuite',
+            'valeur' => 'required_if:type,pourcentage,montant_fixe|nullable|numeric',
+            'montant_minimum' => 'nullable|numeric',
+            'utilisation_max' => 'nullable|integer|min:1',
+            'usage_unique_par_client' => 'boolean',
+            'date_debut' => 'required|date',
+            'date_fin' => 'required|date|after:date_debut',
+            'active' => 'boolean'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Validation supplémentaire pour le type pourcentage
+        if ($request->type === 'pourcentage' && ($request->valeur < 0 || $request->valeur > 100)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Le pourcentage doit être compris entre 0 et 100.'
+            ], 422);
+        }
+
+        try {
+            $promotion = Promotion::create([
+                'code' => strtoupper($request->code),
+                'description' => $request->description,
+                'type' => $request->type,
+                'valeur' => $request->valeur,
+                'montant_minimum' => $request->montant_minimum,
+                'utilisation_max' => $request->utilisation_max,
+                'usage_unique_par_client' => $request->has('usage_unique_par_client') ? $request->usage_unique_par_client : false,
+                'date_debut' => $request->date_debut,
+                'date_fin' => $request->date_fin,
+                'active' => $request->has('active') ? $request->active : true
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Promotion créée avec succès',
+                'data' => $promotion
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la création de la promotion',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
     
 
