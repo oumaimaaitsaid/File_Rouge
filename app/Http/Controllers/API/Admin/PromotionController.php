@@ -149,7 +149,88 @@ class PromotionController extends Controller
         }
     }
 
-    
+    c function update(Request $request, $id)
+    {
+        $promotion = Promotion::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'code' => 'sometimes|required|string|unique:promotions,code,' . $id,
+            'description' => 'nullable|string',
+            'type' => 'sometimes|required|in:pourcentage,montant_fixe,livraison_gratuite',
+            'valeur' => 'required_if:type,pourcentage,montant_fixe|nullable|numeric',
+            'montant_minimum' => 'nullable|numeric',
+            'utilisation_max' => 'nullable|integer|min:1',
+            'usage_unique_par_client' => 'boolean',
+            'date_debut' => 'sometimes|required|date',
+            'date_fin' => 'sometimes|required|date|after:date_debut',
+            'active' => 'boolean'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Validation supplémentaire pour le type pourcentage
+        if ($request->has('type') && $request->type === 'pourcentage' && $request->has('valeur') && ($request->valeur < 0 || $request->valeur > 100)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Le pourcentage doit être compris entre 0 et 100.'
+            ], 422);
+        }
+
+        try {
+            $fieldsToUpdate = [
+                'description',
+                'valeur',
+                'montant_minimum',
+                'utilisation_max',
+                'usage_unique_par_client',
+                'active'
+            ];
+
+            foreach ($fieldsToUpdate as $field) {
+                if ($request->has($field)) {
+                    $promotion->$field = $request->$field;
+                }
+            }
+
+            // Champs nécessitant un traitement spécial
+            if ($request->has('code')) {
+                $promotion->code = strtoupper($request->code);
+            }
+
+            if ($request->has('type')) {
+                $promotion->type = $request->type;
+            }
+
+            if ($request->has('date_debut')) {
+                $promotion->date_debut = $request->date_debut;
+            }
+
+            if ($request->has('date_fin')) {
+                $promotion->date_fin = $request->date_fin;
+            }
+
+            $promotion->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Promotion mise à jour avec succès',
+                'data' => $promotion
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour de la promotion',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
    
    
