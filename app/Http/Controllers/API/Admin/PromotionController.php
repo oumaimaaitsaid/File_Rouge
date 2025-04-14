@@ -263,5 +263,28 @@ class PromotionController extends Controller
     }
 
    
-    
+    public function toggleActive($id)
+    {
+        try {
+            $promotion = Promotion::findOrFail($id);
+            $promotion->active = !$promotion->active;
+            $promotion->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Statut de la promotion modifié avec succès',
+                'data' => [
+                    'id' => $promotion->id,
+                    'active' => $promotion->active
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la modification du statut',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
