@@ -233,6 +233,35 @@ class PromotionController extends Controller
     }
 
    
+    public function destroy($id)
+    {
+        try {
+            $promotion = Promotion::findOrFail($id);
+            
+            // Vérifier si la promotion a déjà été utilisée
+            if ($promotion->utilisation_actuelle > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Impossible de supprimer cette promotion car elle a déjà été utilisée.'
+                ], 400);
+            }
+            
+            $promotion->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Promotion supprimée avec succès'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la suppression de la promotion',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
    
     
 }
