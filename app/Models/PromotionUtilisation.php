@@ -27,7 +27,10 @@ class PromotionUtilisation extends Model
         return $this->belongsTo(Promotion::class);
     }
 
-    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
    
 }
