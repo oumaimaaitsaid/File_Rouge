@@ -18,7 +18,10 @@ class PromotionUtilisation extends Model
         'date_utilisation'
     ];
 
-  
+    protected $casts = [
+        'date_utilisation' => 'datetime'
+    ];
+
    
     
 
