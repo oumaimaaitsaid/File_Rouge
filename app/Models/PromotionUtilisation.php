@@ -22,7 +22,11 @@ class PromotionUtilisation extends Model
         'date_utilisation' => 'datetime'
     ];
 
-   
+    public function promotion()
+    {
+        return $this->belongsTo(Promotion::class);
+    }
+
     
 
    
