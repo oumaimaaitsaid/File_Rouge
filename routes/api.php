@@ -26,6 +26,8 @@ Route::prefix('v1')->group(function(){
     //categorie
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{slug}', [CategoryController::class, 'show']);
+    //verification de code_promo
+    Route::post('/promo/validate', [App\Http\Controllers\API\PromotionController::class, 'validerCode']);
     
     
 });
