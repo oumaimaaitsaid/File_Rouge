@@ -130,7 +130,24 @@ class PromotionController extends Controller
         }
     }
 
-    
+    public function show($id)
+    {
+        try {
+            $promotion = Promotion::with('utilisations.user')->findOrFail($id);
+
+            return response()->json([
+                'success' => true,
+                'data' => $promotion
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Promotion non trouvée',
+                'error' => $e->getMessage()
+            ], 404);
+        }
+    }
 
     
 
