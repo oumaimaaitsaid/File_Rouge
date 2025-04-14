@@ -89,7 +89,23 @@ class Promotion extends Model
     }
 
    
-   
+    public function calculerReduction($montant)
+    {
+        switch ($this->type) {
+            case 'pourcentage':
+                return $montant * ($this->valeur / 100);
+            
+            case 'montant_fixe':
+                return min($montant, $this->valeur); // La réduction ne peut pas dépasser le montant total
+            
+            case 'livraison_gratuite':
+                return 0; // La réduction de la livraison sera appliquée séparément
+            
+            default:
+                return 0;
+        }
+    }
+
    
    
 
