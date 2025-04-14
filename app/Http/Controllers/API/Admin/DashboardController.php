@@ -247,5 +247,75 @@ class DashboardController extends Controller
         }
     }
     
-   
+   //stats clients
+    public function customerStats()
+    {
+        try {
+            // Top clients par nombre de commandes
+            $topClientsCommandes = DB::table('commandes')
+                                  ->join('users', 'commandes.user_id', '=', 'users.id')
+                                  ->where('commandes.paiement_confirme', true)
+                                  ->select(
+                                      'users.id',
+                                      'users.name',
+                                      'users.prenom',
+                                      'users.email',
+                                      DB::raw('COUNT(commandes.id) as total_commandes'),
+                                      DB::raw('SUM(commandes.montant_total) as montant_total')
+                                  )
+                                  ->groupBy('users.id', 'users.name', 'users.prenom', 'users.email')
+                                  ->orderBy('total_commandes', 'desc')
+                                  ->limit(10)
+                                  ->get();
+            
+            // Top clients par montant dépensé
+            $topClientsMontant = DB::table('commandes')
+                                ->join('users', 'commandes.user_id', '=', 'users.id')
+                                ->where('commandes.paiement_confirme', true)
+                                ->select(
+                                    'users.id',
+                                    'users.name',
+                                    'users.prenom',
+                                    'users.email',
+                                    DB::raw('COUNT(commandes.id) as total_commandes'),
+                                    DB::raw('SUM(commandes.montant_total) as montant_total')
+                                )
+                                ->groupBy('users.id', 'users.name', 'users.prenom', 'users.email')
+                                ->orderBy('montant_total', 'desc')
+                                ->limit(10)
+                                ->get();
+            
+            // Nouveaux clients par mois (12 derniers mois)
+            $nouveauxClientsParMois = [];
+            for ($i = 11; $i >= 0; $i--) {
+                $moisDebut = Carbon::now()->subMonths($i)->startOfMonth();
+                $moisFin = Carbon::now()->subMonths($i)->endOfMonth();
+                
+                $total = User::where('role', 'client')
+                         ->whereBetween('created_at', [$moisDebut, $moisFin])
+                         ->count();
+                
+                $nouveauxClientsParMois[] = [
+                    'mois' => $moisDebut->format('m/Y'),
+                    'total' => $total
+                ];
+            }
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'top_clients_commandes' => $topClientsCommandes,
+                    'top_clients_montant' => $topClientsMontant,
+                    'nouveaux_clients_par_mois' => $nouveauxClientsParMois
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des statistiques des clients',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
