@@ -112,4 +112,14 @@ class Promotion extends Model
         return $this->hasMany(PromotionUtilisation::class);
     }
 
+    public function enregistrerUtilisation($userId, $commandeId)
+    {
+        $this->utilisations()->create([
+            'user_id' => $userId,
+            'commande_id' => $commandeId,
+            'date_utilisation' => Carbon::now()
+        ]);
+
+        $this->increment('utilisation_actuelle');
+    }
 }
