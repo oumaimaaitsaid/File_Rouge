@@ -95,6 +95,72 @@ class CheckoutController extends Controller
                 'total' => $total
             ]
         ]);
+if ($request->has('promo_code') && !empty($request->promo_code)) {
+    $promotion = Promotion::where('code', $request->promo_code)->first();
+    
+    if (!$promotion) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Code promo invalide.'
+        ], 404);
+    }
+    
+    $validation = $promotion->estValide($sousTotal, Auth::id());
+    
+    if (!$validation['valide']) {
+        return response()->json([
+            'success' => false,
+            'message' => $validation['message']
+        ], 400);
+    }
+    
+    // Calculer la réduction
+    $reduction = 0;
+    $fraisLivraisonGratuits = false;
+    
+    if ($promotion->type === 'livraison_gratuite') {
+        $fraisLivraisonGratuits = true;
+        $fraisLivraison = 0;
+    } else {
+        $reduction = $promotion->calculerReduction($sousTotal);
+    }
+    
+    $total = $sousTotal + $fraisLivraison - $reduction;
+    
+    // Ajouter les infos de promotion à la réponse
+    $responseData['promo_code'] = [
+        'code' => $promotion->code,
+        'reduction' => $reduction,
+        'livraison_gratuite' => $fraisLivraisonGratuits
+    ];
+}
+
+// Dans la méthode createOrder, ajoutez ce code pour appliquer une promotion
+if ($request->has('promo_code') && !empty($request->promo_code)) {
+    $promotion = Promotion::where('code', $request->promo_code)->first();
+    
+    if ($promotion && $promotion->estValide($sousTotal, Auth::id())['valide']) {
+        // Calculer la réduction
+        $reduction = 0;
+        
+        if ($promotion->type === 'livraison_gratuite') {
+            $fraisLivraison = 0;
+        } else {
+            $reduction = $promotion->calculerReduction($sousTotal);
+        }
+        
+        $total = $sousTotal + $fraisLivraison - $reduction;
+        
+        // Mettre à jour l'objet commande
+        $commande->remise = $reduction;
+        $commande->code_promo = $promotion->code;
+        $commande->montant_total = $total;
+        $commande->save();
+        
+        // Enregistrer l'utilisation du code
+        $promotion->enregistrerUtilisation(Auth::id(), $commande->id);
+    }
+}
     }
 
    
