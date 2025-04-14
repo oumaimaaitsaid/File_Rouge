@@ -110,6 +110,15 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
          // Tableau de bord général
     Route::get('/dashboard', [App\Http\Controllers\API\Admin\DashboardController::class, 'index']);
     
+    // Statistiques des ventes
+    Route::get('/dashboard/sales', [App\Http\Controllers\API\Admin\DashboardController::class, 'salesStats']);
+    
+    // Statistiques des produits
+    Route::get('/dashboard/products', [App\Http\Controllers\API\Admin\DashboardController::class, 'productStats']);
+    
+    // Statistiques des clients
+    Route::get('/dashboard/customers', [App\Http\Controllers\API\Admin\DashboardController::class, 'customerStats']);
+    
     });
     Route::middleware('partenaire')->prefix('partner')->group(function () {
         Route::get('/test', function () {
