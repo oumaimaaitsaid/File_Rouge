@@ -24,10 +24,20 @@ class Promotion extends Model
         'active'
     ];
 
-   
+    protected $casts = [
+        'valeur' => 'float',
+        'montant_minimum' => 'float',
+        'utilisation_max' => 'integer',
+        'utilisation_actuelle' => 'integer',
+        'usage_unique_par_client' => 'boolean',
+        'date_debut' => 'datetime',
+        'date_fin' => 'datetime',
+        'active' => 'boolean'
+    ];
 
    
-  
+
+    
 
    
    
