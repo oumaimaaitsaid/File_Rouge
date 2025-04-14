@@ -110,7 +110,66 @@ class DashboardController extends Controller
         }
     }
     
-   
+    //sts de ventes de chaque période
+    public function salesStats(Request $request)
+    {
+        try {
+            $periode = $request->get('periode', 'semaine');
+            $dateDebut = null;
+            $dateFin = Carbon::now();
+            $format = '';
+            $groupBy = '';
+            
+            switch ($periode) {
+                case 'semaine':
+                    $dateDebut = Carbon::now()->subDays(7);
+                    $format = 'YYYY-MM-DD';
+                    $groupBy = 'date';
+                    break;
+                case 'mois':
+                    $dateDebut = Carbon::now()->subDays(30);
+                    $format = 'YYYY-MM-DD';
+                    $groupBy = 'date';
+                    break;
+                case 'annee':
+                    $dateDebut = Carbon::now()->subMonths(12);
+                    $format = 'YYYY-MM';
+                    $groupBy = 'mois';
+                    break;
+                default:
+                    $dateDebut = Carbon::now()->subDays(7);
+                    $format = 'YYYY-MM-DD';
+                    $groupBy = 'date';
+            }
+            
+            $ventes = Commande::where('created_at', '>=', $dateDebut)
+                    ->where('created_at', '<=', $dateFin)
+                    ->where('paiement_confirme', true)
+                    ->select(
+                        DB::raw("TO_CHAR(created_at, '{$format}') as {$groupBy}"),
+                        DB::raw('SUM(montant_total) as total'),
+                        DB::raw('COUNT(*) as commandes')
+                    )
+                    ->groupBy($groupBy)
+                    ->orderBy($groupBy)
+                    ->get();
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'periode' => $periode,
+                    'ventes' => $ventes
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des statistiques de ventes',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     
   
     
