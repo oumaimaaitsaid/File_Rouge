@@ -110,16 +110,22 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
         Route::get('/orders/statistics/summary', [App\Http\Controllers\API\Admin\OrderController::class, 'statistics']);
 
          // Tableau de bord général
-    Route::get('/dashboard', [App\Http\Controllers\API\Admin\DashboardController::class, 'index']);
+        Route::get('/dashboard', [App\Http\Controllers\API\Admin\DashboardController::class, 'index']);
     
     // Statistiques des ventes
-    Route::get('/dashboard/sales', [App\Http\Controllers\API\Admin\DashboardController::class, 'salesStats']);
+       Route::get('/dashboard/sales', [App\Http\Controllers\API\Admin\DashboardController::class, 'salesStats']);
     
     // Statistiques des produits
     Route::get('/dashboard/products', [App\Http\Controllers\API\Admin\DashboardController::class, 'productStats']);
     
     // Statistiques des clients
     Route::get('/dashboard/customers', [App\Http\Controllers\API\Admin\DashboardController::class, 'customerStats']);
+
+     // CRUD des promotions
+     Route::apiResource('/promotions', App\Http\Controllers\API\Admin\PromotionController::class);
+    
+     // Activer/désactiver une promotion
+     Route::patch('/promotions/{id}/toggle-active', [App\Http\Controllers\API\Admin\PromotionController::class, 'toggleActive']);
     
     });
     Route::middleware('partenaire')->prefix('partner')->group(function () {
