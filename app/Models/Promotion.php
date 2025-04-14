@@ -107,6 +107,9 @@ class Promotion extends Model
     }
 
    
-   
+    public function utilisations()
+    {
+        return $this->hasMany(PromotionUtilisation::class);
+    }
 
 }
