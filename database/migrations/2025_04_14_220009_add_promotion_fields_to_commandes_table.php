@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::table('commandes', function (Blueprint $table) {
             $table->string('code_promo')->nullable()->after('total');
-            $table->decimal('remise', 10, 2)->default(0)->after('code_promo');
         });
     }
 
@@ -23,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('commandes', function (Blueprint $table) {
-            $table->dropColumn(['code_promo', 'remise']);
+            $table->dropColumn(['code_promo']);
         });
     }
 };

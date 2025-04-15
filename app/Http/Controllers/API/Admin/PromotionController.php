@@ -108,7 +108,7 @@ class PromotionController extends Controller
                 'type' => $request->type,
                 'valeur' => $request->valeur,
                 'montant_minimum' => $request->montant_minimum,
-                'utilisation_max' => $request->utilisation_max,
+                'utilisation_max' => $request->utilisation_maximum,
                 'usage_unique_par_client' => $request->has('usage_unique_par_client') ? $request->usage_unique_par_client : false,
                 'date_debut' => $request->date_debut,
                 'date_fin' => $request->date_fin,
@@ -149,7 +149,7 @@ class PromotionController extends Controller
         }
     }
 
-    c function update(Request $request, $id)
+     function update(Request $request, $id)
     {
         $promotion = Promotion::findOrFail($id);
 
