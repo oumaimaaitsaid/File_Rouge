@@ -80,7 +80,40 @@ document.addEventListener('DOMContentLoaded', function() {
             const originalText = submitButton.textContent;
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Connexion en cours...';
-
+            fetch('/api/v1/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('token', data.data.access_token);
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                    
+                    window.location.href = '/';
+                } else {
+                    errorMessage.textContent = data.message || 'Les identifiants fournis ne correspondent pas à nos enregistrements.';
+                    errorMessage.classList.remove('hidden');
+                    
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                }
+            })
+            .catch(error => {
+                errorMessage.textContent = 'Une erreur est survenue lors de la connexion. Veuillez réessayer plus tard.';
+                errorMessage.classList.remove('hidden');
+                submitButton.disabled = false;
+                submitButton.textContent = originalText;
+                console.error('Login error:', error);
+            });
         });
     }
 });
