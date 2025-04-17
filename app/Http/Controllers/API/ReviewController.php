@@ -10,6 +10,37 @@ use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller
 {
+
+    public function index(Request $request)
+{
+    $reviews = Avis::with(['produit', 'user']) // optionnel : tu peux aussi vouloir charger les utilisateurs
+        ->orderBy('created_at', 'desc')
+        ->get()
+        ->map(function ($review) {
+            return [
+                'id' => $review->id,
+                'product' => [
+                    'id' => $review->produit->id,
+                    'name' => $review->produit->nom,
+                    'slug' => $review->produit->slug,
+                ],
+                'user' => [
+                    'id' => $review->user->id ?? null,
+                    'name' => $review->user->name ?? 'Utilisateur inconnu'
+                ],
+                'rating' => $review->note,
+                'comment' => $review->commentaire,
+                'approved' => (bool) $review->approuve,
+                'created_at' => $review->created_at->format('Y-m-d H:i:s')
+            ];
+        });
+
+    return response()->json([
+        'success' => true,
+        'data' => $reviews
+    ]);
+}
+
     //enregistrer un avis
     public function store(Request $request, $productId)
     {

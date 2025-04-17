@@ -28,6 +28,8 @@ Route::prefix('v1')->group(function(){
     Route::get('/categories/{slug}', [CategoryController::class, 'show']);
     //verification de code_promo
     Route::post('/promo/validate', [App\Http\Controllers\API\PromotionController::class, 'validerCode']);
+    Route::get('/reviews', [ReviewController::class, 'index']);
+
     
     
 });
