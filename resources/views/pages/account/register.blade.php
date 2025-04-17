@@ -91,3 +91,81 @@
 </div>
 @endsection
 
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const registerForm = document.getElementById('register-form');
+    const errorMessage = document.getElementById('error-message');
+    
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const passwordConfirmation = document.getElementById('password_confirmation').value;
+            
+            if (password !== passwordConfirmation) {
+                errorMessage.textContent = 'Les mots de passe ne correspondent pas.';
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+            
+            errorMessage.classList.add('hidden');
+            
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Création du compte...';
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                prenom: document.getElementById('prenom').value,
+                email: document.getElementById('email').value,
+                telephone: document.getElementById('telephone').value,
+                password: password
+            };
+            
+            fetch('/api/v1/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('token', data.data.access_token);
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                    
+                    window.location.href = '/';
+                } else {
+                    let errorMsg = data.message || 'Une erreur est survenue lors de l\'inscription.';
+                    
+                    if (data.error) {
+                        errorMsg = Object.values(data.error).flat().join('<br>');
+                    }
+                    
+                    errorMessage.innerHTML = errorMsg;
+                    errorMessage.classList.remove('hidden');
+                    
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                }
+            })
+            .catch(error => {
+                errorMessage.textContent = 'Une erreur est survenue lors de l\'inscription. Veuillez réessayer plus tard.';
+                errorMessage.classList.remove('hidden');
+                
+                submitButton.disabled = false;
+                submitButton.textContent = originalText;
+                
+                console.error('Registration error:', error);
+            });
+        });
+    }
+});
+</script>
+@endsection
