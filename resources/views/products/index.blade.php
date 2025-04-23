@@ -69,6 +69,27 @@
                 </div>
             </div>
             
+            <!-- Liste des produits -->
+            <div class="lg:w-3/4">
+                <!-- En-tête des résultats -->
+                <div class="bg-white rounded-lg shadow-md p-4 mb-6 flex justify-between items-center">
+                    <div>
+                        <p class="text-gray-600">
+                            Affichage de <span class="font-medium">{{ $products->firstItem() ?? 0 }}</span> à 
+                            <span class="font-medium">{{ $products->lastItem() ?? 0 }}</span> sur 
+                            <span class="font-medium">{{ $products->total() }}</span> produits
+                        </p>
+                    </div>
+                    <div>
+                        <select class="p-2 border border-gray-300 rounded-md" onchange="window.location.href = this.value">
+                            <option value="{{ route('products.index', ['category' => request('category'), 'sort' => request('sort'), 'search' => request('search'), 'per_page' => 12]) }}" {{ request('per_page') == 12 || !request('per_page') ? 'selected' : '' }}>12 par page</option>
+                            <option value="{{ route('products.index', ['category' => request('category'), 'sort' => request('sort'), 'search' => request('search'), 'per_page' => 24]) }}" {{ request('per_page') == 24 ? 'selected' : '' }}>24 par page</option>
+                            <option value="{{ route('products.index', ['category' => request('category'), 'sort' => request('sort'), 'search' => request('search'), 'per_page' => 36]) }}" {{ request('per_page') == 36 ? 'selected' : '' }}>36 par page</option>
+                        </select>
+                    </div>
+                </div>
+                
+            </div>
         </div>
     </div>
 </div>
