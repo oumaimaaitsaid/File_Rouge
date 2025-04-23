@@ -26,7 +26,44 @@ class PaymentController extends Controller
         return view('payment.card', compact('commande'));
     }
     
-   
+    public function processCardPayment(Request $request, $orderId)
+    {
+        $commande = Commande::where('id', $orderId)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+        
+        Stripe::setApiKey(config('services.stripe.secret'));
+        
+        try {
+            $session = StripeSession::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [
+                    [
+                        'price_data' => [
+                            'currency' => 'mad',
+                            'product_data' => [
+                                'name' => 'Commande #' . $commande->numero_commande,
+                            ],
+                            'unit_amount' => $commande->montant_total * 100, // En centimes
+                        ],
+                        'quantity' => 1,
+                    ],
+                ],
+                'mode' => 'payment',
+                'success_url' => route('payment.stripe.success', ['orderId' => $commande->id]),
+                'cancel_url' => route('payment.stripe.cancel', ['orderId' => $commande->id]),
+                'metadata' => [
+                    'order_id' => $commande->id,
+                ]
+            ]);
+            
+            return redirect($session->url);
+            
+        } catch (ApiErrorException $e) {
+            return redirect()->back()->with('error', 'Erreur lors de la création du paiement : ' . $e->getMessage());
+        }
+    }
+    
     
     
      
