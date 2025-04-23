@@ -49,8 +49,9 @@ class Produit extends Model
     public function noteMoyenne(){
         return $this->avis()->where('approuve',true)->avg('note') ?? 0;
     }
-    public function getPrixActuel()
-    {
-        return $this->prix_promo ?? $this->prix;
-    }
+    // Dans le modèle Produit, ajoutez cette méthode si elle n'existe pas
+public function getPrixActuel()
+{
+    return ($this->prix_promo && $this->prix_promo < $this->prix) ? $this->prix_promo : $this->prix;
+}
 }
