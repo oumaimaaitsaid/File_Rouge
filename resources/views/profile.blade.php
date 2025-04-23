@@ -212,7 +212,57 @@
                     </div>
                 </section>
                 
-              
+                <!-- Sécurité (Mot de passe) -->
+                <section id="security" class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-accent">Sécurité</h2>
+                        <p class="text-sm text-gray-500">Modifiez votre mot de passe</p>
+                    </div>
+                    
+                    <div class="p-6">
+                        <form method="POST" action="{{ route('profile.update') }}">
+                            @csrf
+                            @method('PUT')
+                            
+                            <div class="space-y-4 max-w-xl">
+                                <!-- Mot de passe actuel -->
+                                <div>
+                                    <label for="current_password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe actuel</label>
+                                    <input id="current_password" type="password" name="current_password" 
+                                        class="py-2 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                                    @error('current_password')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <!-- Nouveau mot de passe -->
+                                <div>
+                                    <label for="new_password" class="block text-sm font-medium text-gray-700 mb-1">Nouveau mot de passe</label>
+                                    <input id="new_password" type="password" name="new_password" 
+                                        class="py-2 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                                    <p class="mt-1 text-xs text-gray-500">Au moins 8 caractères, incluant lettres et chiffres</p>
+                                    @error('new_password')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <!-- Confirmation nouveau mot de passe -->
+                                <div>
+                                    <label for="new_password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirmer le nouveau mot de passe</label>
+                                    <input id="new_password_confirmation" type="password" name="new_password_confirmation" 
+                                        class="py-2 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                                </div>
+                                
+                                <!-- Bouton de mise à jour -->
+                                <div class="pt-2">
+                                    <button type="submit" class="inline-flex items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200">
+                                        <i class="fas fa-key mr-2"></i> Changer le mot de passe
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </section>
                 
                 
             </div>
