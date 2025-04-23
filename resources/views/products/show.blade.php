@@ -111,7 +111,23 @@
                         </span>
                     </div>
                     
-                  
+                    <!-- Prix -->
+                    <div class="mb-6">
+                        @if($product->prix_promo && $product->prix_promo < $product->prix)
+                            <div class="flex items-center">
+                                <span class="font-bold text-primary text-2xl">{{ number_format($product->prix_promo, 2) }} MAD</span>
+                                <span class="text-gray-500 text-lg line-through ml-3">{{ number_format($product->prix, 2) }} MAD</span>
+                                @php
+                                    $reduction = round((($product->prix - $product->prix_promo) / $product->prix) * 100);
+                                @endphp
+                                <span class="ml-3 bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
+                                    -{{ $reduction }}%
+                                </span>
+                            </div>
+                        @else
+                            <span class="font-bold text-primary text-2xl">{{ number_format($product->prix, 2) }} MAD</span>
+                        @endif
+                    </div>
                     
                   
                     
