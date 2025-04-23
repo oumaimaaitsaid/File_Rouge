@@ -94,7 +94,85 @@ class CartController extends Controller
         ]);
     }
 
- 
+    public function addItem(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'product_id' => 'required|exists:produits,id',
+        'quantity' => 'required|integer|min:1'
+    ]);
+    
+    if ($validator->fails()) {
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput();
+    }
+    
+    try {
+        $cart = $this->getOrCreateCart($request);
+        $product = Produit::findOrFail($request->product_id);
+        
+        if (!$product->disponible || $product->stock < $request->quantity) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Le produit n\'est pas disponible dans la quantité demandée'
+                ], 400);
+            }
+            
+            return redirect()->back()
+                ->with('error', 'Le produit n\'est pas disponible dans la quantité demandée');
+        }
+        
+        $cartItem = $cart->items()->where('produit_id', $product->id)->first();
+        
+        if ($cartItem) {
+            $cartItem->update([
+                'quantite' => $cartItem->quantite + $request->quantity,
+                'prix_unitaire' => $product->getPrixActuel() 
+            ]);
+        } else {
+            $cartItem = $cart->items()->create([
+                'produit_id' => $product->id,
+                'quantite' => $request->quantity,
+                'prix_unitaire' => $product->getPrixActuel()
+            ]);
+        }
+        
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Produit ajouté au panier',
+                'data' => [
+                    'itemCount' => $cart->itemCount(),
+                    'total' => $cart->total()
+                ]
+            ]);
+        }
+        
+        return redirect()->route('cart.index')
+            ->with('success', 'Produit ajouté au panier');
+        
+    } catch (\Exception $e) {
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de l\'ajout du produit au panier',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+        
+        return redirect()->back()
+            ->with('error', 'Erreur lors de l\'ajout du produit au panier: ' . $e->getMessage());
+    }
+}
 
    
    
