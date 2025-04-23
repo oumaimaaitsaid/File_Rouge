@@ -81,7 +81,40 @@
                         <div class="border-t border-gray-200 pt-6 mb-6">
                             <h3 class="text-lg font-medium text-gray-800 mb-4">Méthode de paiement</h3>
                             
-                            
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <input type="radio" id="carte" name="methode_paiement" value="carte" 
+                                           {{ old('methode_paiement') == 'carte' ? 'checked' : '' }} required
+                                           class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                                    <label for="carte" class="ml-3 text-sm font-medium text-gray-700">
+                                        Carte bancaire
+                                    </label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="paypal" name="methode_paiement" value="paypal" 
+                                           {{ old('methode_paiement') == 'paypal' ? 'checked' : '' }}
+                                           class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                                    <label for="paypal" class="ml-3 text-sm font-medium text-gray-700">
+                                        PayPal
+                                    </label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="virement" name="methode_paiement" value="virement" 
+                                           {{ old('methode_paiement') == 'virement' ? 'checked' : '' }}
+                                           class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                                    <label for="virement" class="ml-3 text-sm font-medium text-gray-700">
+                                        Virement bancaire
+                                    </label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="a_la_livraison" name="methode_paiement" value="a_la_livraison" 
+                                           {{ old('methode_paiement', 'a_la_livraison') == 'a_la_livraison' ? 'checked' : '' }}
+                                           class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                                    <label for="a_la_livraison" class="ml-3 text-sm font-medium text-gray-700">
+                                        Paiement à la livraison
+                                    </label>
+                                </div>
+                            </div>
                            
                         </div>
                         
