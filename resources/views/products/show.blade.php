@@ -272,7 +272,44 @@
                             </div>
                         @endif
                         
-                     
+                        <!-- Formulaire d'avis (visible seulement si connecté) -->
+                        @auth
+                            <div class="mt-8 bg-gray-50 p-6 rounded-lg">
+                                <h3 class="text-lg font-medium text-accent mb-4">Laisser un avis</h3>
+                                <form action="{{ route('products.review', $product->id) }}" method="POST">
+                                    @csrf
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Note</label>
+                                        <div class="flex text-2xl text-gray-400">
+                                            <span class="cursor-pointer hover:text-yellow-400" onclick="setRating(1)"><i id="star1" class="far fa-star"></i></span>
+                                            <span class="cursor-pointer hover:text-yellow-400" onclick="setRating(2)"><i id="star2" class="far fa-star"></i></span>
+                                            <span class="cursor-pointer hover:text-yellow-400" onclick="setRating(3)"><i id="star3" class="far fa-star"></i></span>
+                                            <span class="cursor-pointer hover:text-yellow-400" onclick="setRating(4)"><i id="star4" class="far fa-star"></i></span>
+                                            <span class="cursor-pointer hover:text-yellow-400" onclick="setRating(5)"><i id="star5" class="far fa-star"></i></span>
+                                        </div>
+                                        <input type="hidden" name="note" id="rating" value="5">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="commentaire" class="block text-sm font-medium text-gray-700 mb-2">Commentaire</label>
+                                        <textarea id="commentaire" name="commentaire" rows="4" 
+                                                  class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                                  required></textarea>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <button type="submit" class="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-md transition-colors duration-200">
+                                            Soumettre mon avis
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        @else
+                            <div class="mt-8 bg-gray-50 p-6 rounded-lg text-center">
+                                <p class="text-gray-700 mb-3">Vous devez être connecté pour laisser un avis.</p>
+                                <a href="{{ route('login') }}" class="inline-block bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-md transition-colors duration-200">
+                                    Se connecter
+                                </a>
+                            </div>
+                        @endauth
                     </div>
                 </div>
             </div>
