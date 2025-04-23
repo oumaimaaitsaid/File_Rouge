@@ -217,7 +217,21 @@ class CartController extends Controller
         }
     }
 
-   
+    public function removeItem(Request $request, $id)
+    {
+        try {
+            $cart = $this->getOrCreateCart($request);
+            $cartItem = $cart->items()->findOrFail($id);
+            $cartItem->delete();
+            
+            return redirect()->route('cart.index')
+                ->with('success', 'Article supprimé du panier');
+            
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la suppression de l\'article: ' . $e->getMessage());
+        }
+    }
 
    
 }
