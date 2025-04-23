@@ -115,7 +115,9 @@
                                     </label>
                                 </div>
                             </div>
-                           
+                            @error('methode_paiement')
+                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         
                         <div class="flex justify-between">
