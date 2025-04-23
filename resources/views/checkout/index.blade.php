@@ -132,7 +132,53 @@
                 </div>
             </div>
             
-           
+            <div class="lg:w-1/3">
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-gray-800">Récapitulatif</h2>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="mb-6">
+                            <h3 class="font-medium text-gray-800 mb-3">Articles ({{ $cartItems->count() }})</h3>
+                            <div class="space-y-3">
+                                @foreach($cartItems as $item)
+                                    <div class="flex justify-between">
+                                        <div class="flex">
+                                            <span class="text-gray-600">{{ $item->quantite }} x </span>
+                                            <span class="ml-2 text-gray-800">{{ $item->produit->nom }}</span>
+                                        </div>
+                                        <span class="font-medium">{{ number_format($item->prix_unitaire * $item->quantite, 2) }} MAD</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-gray-200 pt-4">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600">Sous-total:</span>
+                                <span>{{ number_format($sousTotal, 2) }} MAD</span>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600">Frais de livraison:</span>
+                                <span>{{ number_format($fraisLivraison, 2) }} MAD</span>
+                            </div>
+                            
+                            @if($reduction > 0 || isset($promoCode))
+                                <div class="flex justify-between mb-2 text-green-600">
+                                    <span>Réduction:</span>
+                                    <span>-{{ number_format($reduction, 2) }} MAD</span>
+                                </div>
+                            @endif
+                            
+                            <div class="flex justify-between font-bold text-lg border-t border-gray-200 pt-3 mt-3">
+                                <span class="text-gray-800">Total:</span>
+                                <span class="text-primary">{{ number_format($total, 2) }} MAD</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
