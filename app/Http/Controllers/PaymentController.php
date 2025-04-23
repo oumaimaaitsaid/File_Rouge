@@ -64,7 +64,22 @@ class PaymentController extends Controller
         }
     }
     
-    
+    public function handleStripeSuccess(Request $request, $orderId)
+    {
+        $commande = Commande::where('id', $orderId)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+        
+        $commande->update([
+            'statut' => 'confirmee',
+            'paiement_confirme' => true,
+            'date_paiement' => now(),
+            'reference_paiement' => 'STRIPE-' . strtoupper(substr(md5(rand()), 0, 10))
+        ]);
+        
+        return redirect()->route('checkout.success', ['orderId' => $commande->id])
+            ->with('success', 'Paiement effectué avec succès !');
+    }
     
      
 }
