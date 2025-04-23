@@ -81,5 +81,9 @@ class PaymentController extends Controller
             ->with('success', 'Paiement effectué avec succès !');
     }
     
-     
+    public function handleStripeCancel(Request $request, $orderId)
+    {
+        return redirect()->route('checkout.index')
+            ->with('error', 'Le paiement a été annulé.');
+    }
 }
