@@ -89,6 +89,102 @@
                     </div>
                 </div>
                 
+                @if($products->count() > 0)
+                    <!-- Grille des produits -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @foreach($products as $product)
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg h-full flex flex-col">
+                                @if($product->prix_promo && $product->prix_promo < $product->prix)
+                                    <div class="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">Promo</div>
+                                @endif
+                                
+                                <a href="{{ route('products.show', $product->slug) }}" class="block relative">
+                                    <img src="{{ $product->imagePrincipale ? asset('storage/' . $product->imagePrincipale->chemin) : asset('images/placeholder.jpg') }}" alt="{{ $product->nom }}" class="w-full h-64 object-cover">
+                                    <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                        <button type="button" class="bg-white text-accent hover:text-primary transition-colors duration-200 rounded-full p-3 mx-1 transform hover:scale-110" title="Aperçu rapide">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" 
+                                            onclick="addToCart({{ $product->id }}, '{{ $product->nom }}', {{ $product->prix_promo ?? $product->prix }}, '{{ $product->imagePrincipale ? asset('storage/' . $product->imagePrincipale->chemin) : asset('images/placeholder.jpg') }}')"
+                                            class="bg-white text-accent hover:text-primary transition-colors duration-200 rounded-full p-3 mx-1 transform hover:scale-110" 
+                                            title="Ajouter au panier">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </button>
+                                        <button type="button" class="bg-white text-accent hover:text-primary transition-colors duration-200 rounded-full p-3 mx-1 transform hover:scale-110" title="Ajouter aux favoris">
+                                            <i class="far fa-heart"></i>
+                                        </button>
+                                    </div>
+                                </a>
+                                
+                                <div class="p-4 flex-grow flex flex-col">
+                                    <a href="{{ route('products.show', $product->slug) }}" class="font-playfair font-semibold text-lg text-accent hover:text-primary transition-colors duration-200 mb-2 line-clamp-2">
+                                        {{ $product->nom }}
+                                    </a>
+                                    
+                                    <div class="flex items-center mb-2">
+                                        <div class="flex text-yellow-400">
+                                            @php
+                                                $rating = $product->noteMoyenne();
+                                                $fullStars = floor($rating);
+                                                $halfStar = round($rating) > $fullStars;
+                                            @endphp
+                                            
+                                            @for($i = 1; $i <= 5; $i++)
+                                                @if($i <= $fullStars)
+                                                    <i class="fas fa-star"></i>
+                                                @elseif($halfStar && $i == $fullStars + 1)
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                @else
+                                                    <i class="far fa-star"></i>
+                                                @endif
+                                            @endfor
+                                        </div>
+                                        <span class="text-xs text-gray-500 ml-1">({{ $product->avis()->where('approuve', true)->count() }})</span>
+                                    </div>
+                                    
+                                    <p class="text-gray-600 text-sm mb-4 line-clamp-2 flex-grow">
+                                        {{ $product->description }}
+                                    </p>
+                                    
+                                    <div class="mt-auto">
+                                        @if($product->prix_promo && $product->prix_promo < $product->prix)
+                                            <div class="flex items-center">
+                                                <span class="font-bold text-primary text-lg">{{ number_format($product->prix_promo, 2) }} MAD</span>
+                                                <span class="text-gray-500 text-sm line-through ml-2">{{ number_format($product->prix, 2) }} MAD</span>
+                                            </div>
+                                        @else
+                                            <span class="font-bold text-primary text-lg">{{ number_format($product->prix, 2) }} MAD</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <div class="px-4 pb-4">
+                                    <button 
+                                        onclick="addToCart({{ $product->id }}, '{{ $product->nom }}', {{ $product->prix_promo ?? $product->prix }}, '{{ $product->imagePrincipale ? asset('storage/' . $product->imagePrincipale->chemin) : asset('images/placeholder.jpg') }}')"
+                                        class="w-full bg-accent hover:bg-primary text-white py-2 px-4 rounded transition-colors duration-200 flex items-center justify-center">
+                                        <i class="fas fa-shopping-cart mr-2"></i> Ajouter au panier
+                                    </button>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="mt-8">
+                        {{ $products->appends(request()->query())->links() }}
+                    </div>
+                @else
+                    <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                        <div class="text-gray-400 mb-4">
+                            <i class="fas fa-search fa-3x"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-accent mb-2">Aucun produit trouvé</h3>
+                        <p class="text-gray-600">Essayez de modifier vos filtres ou d'effectuer une nouvelle recherche.</p>
+                        <a href="{{ route('products.index') }}" class="inline-block mt-4 bg-primary text-white py-2 px-4 rounded hover:bg-primary-dark transition-colors duration-200">
+                            Voir tous les produits
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
