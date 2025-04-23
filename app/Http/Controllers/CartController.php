@@ -174,7 +174,49 @@ class CartController extends Controller
     }
 }
 
-   
+    public function updateItem(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'cart_item_id' => 'required|exists:cart_items,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
+        
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        
+        try {
+            $cartItem = CartItem::findOrFail($request->cart_item_id);
+            
+            $cart = $this->getOrCreateCart($request);
+            
+            if ($cartItem->cart_id != $cart->id) {
+                if (!Auth::check() || !Cart::where('id', $cartItem->cart_id)->where('user_id', Auth::id())->exists()) {
+                    return redirect()->back()
+                        ->with('error', 'Vous n\'êtes pas autorisé à modifier cet élément');
+                }
+            }
+            
+            if ($cartItem->produit->stock < $request->quantity) {
+                return redirect()->back()
+                    ->with('error', 'Stock insuffisant');
+            }
+            
+            $cartItem->update([
+                'quantite' => $request->quantity
+            ]);
+            
+            return redirect()->route('cart.index')
+                ->with('success', 'Panier mis à jour');
+            
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la mise à jour de l\'article: ' . $e->getMessage());
+        }
+    }
+
    
 
    
