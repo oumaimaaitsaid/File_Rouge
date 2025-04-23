@@ -84,7 +84,32 @@
                         </a>
                     @endif
                     
-                  
+                    <!-- Nom du produit -->
+                    <h1 class="font-playfair text-3xl font-bold text-accent mb-2">{{ $product->nom }}</h1>
+                    
+                    <!-- Notation -->
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-yellow-400">
+                            @php
+                                $rating = $product->noteMoyenne();
+                                $fullStars = floor($rating);
+                                $halfStar = round($rating) > $fullStars;
+                            @endphp
+                            
+                            @for($i = 1; $i <= 5; $i++)
+                                @if($i <= $fullStars)
+                                    <i class="fas fa-star"></i>
+                                @elseif($halfStar && $i == $fullStars + 1)
+                                    <i class="fas fa-star-half-alt"></i>
+                                @else
+                                    <i class="far fa-star"></i>
+                                @endif
+                            @endfor
+                        </div>
+                        <span class="text-sm text-gray-500 ml-2">
+                            {{ $rating }} ({{ $product->avis()->where('approuve', true)->count() }} avis)
+                        </span>
+                    </div>
                     
                   
                     
