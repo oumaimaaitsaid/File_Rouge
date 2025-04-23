@@ -141,7 +141,21 @@
                         <p class="text-gray-700">{{ $product->ingredients }}</p>
                     </div>
                     
-                    
+                    <!-- Disponibilité -->
+                    <div class="mb-6">
+                        <h2 class="font-medium text-accent text-lg mb-2">Disponibilité</h2>
+                        @if($product->stock > 0)
+                            <div class="flex items-center text-green-600">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                <span>En stock ({{ $product->stock }} disponible{{ $product->stock > 1 ? 's' : '' }})</span>
+                            </div>
+                        @else
+                            <div class="flex items-center text-red-600">
+                                <i class="fas fa-times-circle mr-2"></i>
+                                <span>Rupture de stock</span>
+                            </div>
+                        @endif
+                    </div>
                     
                    
                 </div>
