@@ -268,7 +268,15 @@ class CheckoutController extends Controller
         }
     }
 
-    
+    public function userOrders()
+    {
+        $commandes = Commande::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('orders.index', compact('commandes'));
+    }
+
   
 
     
