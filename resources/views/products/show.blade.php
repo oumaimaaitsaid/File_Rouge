@@ -315,8 +315,124 @@
             </div>
         </div>
         
-       
+        <!-- Produits similaires -->
+        @if($relatedProducts->count() > 0)
+            <div class="mt-12">
+                <h2 class="font-playfair text-2xl font-bold text-accent mb-6">Produits similaires</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    @foreach($relatedProducts as $relatedProduct)
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg h-full flex flex-col">
+                            <a href="{{ route('products.show', $relatedProduct->slug) }}" class="block relative">
+                                <img src="{{ $relatedProduct->imagePrincipale ? asset('storage/' . $relatedProduct->imagePrincipale->chemin) : asset('images/placeholder.jpg') }}" 
+                                     alt="{{ $relatedProduct->nom }}" 
+                                     class="w-full h-48 object-cover">
+                            </a>
+                            
+                            <div class="p-4 flex-grow flex flex-col">
+                                <a href="{{ route('products.show', $relatedProduct->slug) }}" class="font-playfair font-semibold text-accent hover:text-primary transition-colors duration-200 mb-1">
+                                    {{ $relatedProduct->nom }}
+                                </a>
+                                
+                                <div class="flex items-center mb-2">
+                                    <div class="flex text-yellow-400 text-sm">
+                                        @php
+                                            $relatedRating = $relatedProduct->noteMoyenne();
+                                            $relatedFullStars = floor($relatedRating);
+                                            $relatedHalfStar = round($relatedRating) > $relatedFullStars;
+                                        @endphp
+                                        
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= $relatedFullStars)
+                                                <i class="fas fa-star"></i>
+                                            @elseif($relatedHalfStar && $i == $relatedFullStars + 1)
+                                                <i class="fas fa-star-half-alt"></i>
+                                            @else
+                                                <i class="far fa-star"></i>
+                                            @endif
+                                        @endfor
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-auto">
+                                    @if($relatedProduct->prix_promo && $relatedProduct->prix_promo < $relatedProduct->prix)
+                                        <div class="flex items-center">
+                                            <span class="font-bold text-primary">{{ number_format($relatedProduct->prix_promo, 2) }} MAD</span>
+                                            <span class="text-gray-500 text-sm line-through ml-2">{{ number_format($relatedProduct->prix, 2) }} MAD</span>
+                                        </div>
+                                    @else
+                                        <span class="font-bold text-primary">{{ number_format($relatedProduct->prix, 2) }} MAD</span>
+                                    @endif
+                                </div>
+                            </div>
+                            
+                            <div class="px-4 pb-4">
+                                <button 
+                                    onclick="addToCart({{ $relatedProduct->id }}, '{{ $relatedProduct->nom }}', {{ $relatedProduct->prix_promo ?? $relatedProduct->prix }}, '{{ $relatedProduct->imagePrincipale ? asset('storage/' . $relatedProduct->imagePrincipale->chemin) : asset('images/placeholder.jpg') }}')"
+                                    class="w-full bg-accent hover:bg-primary text-white py-2 px-4 rounded transition-colors duration-200 flex items-center justify-center">
+                                    <i class="fas fa-shopping-cart mr-2"></i> Ajouter
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
     </div>
 </div>
 
+<script>
+    // Pour les sélecteurs de quantité
+    function decrementQuantity() {
+        const quantityInput = document.getElementById('quantity');
+        const currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+        }
+    }
+    
+    function incrementQuantity() {
+        const quantityInput = document.getElementById('quantity');
+        const currentValue = parseInt(quantityInput.value);
+        const maxValue = parseInt(quantityInput.max);
+        if (currentValue < maxValue) {
+            quantityInput.value = currentValue + 1;
+        }
+    }
+    
+    // Pour l'ajout au panier avec quantité
+    function addToCartWithQuantity(productId, productName, price, image) {
+        const quantity = parseInt(document.getElementById('quantity').value);
+        // Si vous avez déjà une fonction addToCart, vous pouvez l'étendre pour prendre en compte la quantité
+        // Sinon, voici une implémentation de base
+        if (window.addToCart) {
+            for (let i = 0; i < quantity; i++) {
+                window.addToCart(productId, productName, price, image);
+            }
+            showNotification(`${quantity} × ${productName} ajouté au panier`, 'success');
+        } else {
+            console.log(`Added ${quantity} of product ${productId} to cart`);
+        }
+    }
+    
+    // Pour les étoiles de notation
+    function setRating(stars) {
+        document.getElementById('rating').value = stars;
+        
+        // Mise à jour visuelle des étoiles
+        for (let i = 1; i <= 5; i++) {
+            const starElement = document.getElementById('star' + i);
+            if (i <= stars) {
+                starElement.className = 'fas fa-star';
+            } else {
+                starElement.className = 'far fa-star';
+            }
+        }
+    }
+    
+    // Initialiser les étoiles à 5
+    document.addEventListener('DOMContentLoaded', function() {
+        setRating(5);
+    });
+</script>
 @endsection
