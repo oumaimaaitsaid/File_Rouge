@@ -81,7 +81,18 @@ class CartController extends Controller
             'itemCount' => $cart->itemCount()
         ]);
     }
-   
+    public function index(Request $request)
+    {
+        $cart = $this->getOrCreateCart($request);
+        
+        $cartItems = $cart->items()->with('produit.imagePrincipale')->get();
+        
+        return view('cart.index', [
+            'cartItems' => $cartItems,
+            'total' => $cart->total(),
+            'itemCount' => $cart->itemCount()
+        ]);
+    }
 
  
 
