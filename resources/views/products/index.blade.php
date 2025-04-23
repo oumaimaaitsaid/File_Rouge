@@ -16,7 +16,6 @@
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <h2 class="font-bold text-lg text-accent mb-4">Filtres</h2>
                     
-                    <!-- Catégories -->
                     <div class="mb-6">
                         <h3 class="font-medium text-accent mb-2">Catégories</h3>
                         <ul class="space-y-2">
@@ -35,7 +34,6 @@
                         </ul>
                     </div>
                     
-                    <!-- Tri -->
                     <div class="mb-6">
                         <h3 class="font-medium text-accent mb-2">Trier par</h3>
                         <form action="{{ route('products.index') }}" method="GET" id="sort-form">
@@ -52,7 +50,6 @@
                         </form>
                     </div>
                     
-                    <!-- Recherche -->
                     <div>
                         <h3 class="font-medium text-accent mb-2">Recherche</h3>
                         <form action="{{ route('products.index') }}" method="GET">
@@ -69,9 +66,7 @@
                 </div>
             </div>
             
-            <!-- Liste des produits -->
             <div class="lg:w-3/4">
-                <!-- En-tête des résultats -->
                 <div class="bg-white rounded-lg shadow-md p-4 mb-6 flex justify-between items-center">
                     <div>
                         <p class="text-gray-600">
@@ -90,7 +85,6 @@
                 </div>
                 
                 @if($products->count() > 0)
-                    <!-- Grille des produits -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($products as $product)
                             <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg h-full flex flex-col">
@@ -169,7 +163,6 @@
                         @endforeach
                     </div>
                     
-                    <!-- Pagination -->
                     <div class="mt-8">
                         {{ $products->appends(request()->query())->links() }}
                     </div>
