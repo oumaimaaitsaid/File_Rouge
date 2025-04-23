@@ -237,7 +237,43 @@
                         </div>
                     </div>
                     
-                    
+                    <div x-show="activeTab === 'reviews'">
+                        <!-- Liste des avis -->
+                        @if($product->avis()->where('approuve', true)->count() > 0)
+                            <div class="space-y-6">
+                                @foreach($product->avis()->where('approuve', true)->with('user')->get() as $avis)
+                                    <div class="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <h4 class="font-medium text-accent">{{ $avis->user->name }} {{ $avis->user->prenom }}</h4>
+                                                <div class="flex text-yellow-400 my-1">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        @if($i <= $avis->note)
+                                                            <i class="fas fa-star"></i>
+                                                        @else
+                                                            <i class="far fa-star"></i>
+                                                        @endif
+                                                    @endfor
+                                                </div>
+                                            </div>
+                                            <span class="text-sm text-gray-500">{{ $avis->created_at->format('d/m/Y') }}</span>
+                                        </div>
+                                        <p class="text-gray-700 mt-2">{{ $avis->commentaire }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center py-8">
+                                <div class="text-gray-400 mb-4">
+                                    <i class="far fa-comment-dots fa-3x"></i>
+                                </div>
+                                <h3 class="text-lg font-medium text-accent mb-2">Aucun avis pour l'instant</h3>
+                                <p class="text-gray-600">Soyez le premier à donner votre avis sur ce produit !</p>
+                            </div>
+                        @endif
+                        
+                     
+                    </div>
                 </div>
             </div>
         </div>
