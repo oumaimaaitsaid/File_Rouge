@@ -207,7 +207,35 @@
                         </nav>
                     </div>
                     
-                    
+                    <!-- Contenu des onglets -->
+                    <div x-show="activeTab === 'description'">
+                        <div class="prose max-w-none">
+                            <p>{{ $product->description }}</p>
+                            
+                            <!-- Caractéristiques du produit -->
+                            <div class="mt-6">
+                                <h3 class="text-lg font-medium text-accent mb-4">Caractéristiques du produit</h3>
+                                <ul class="space-y-2">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                        <span>Produit artisanal fait main</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                        <span>Ingrédients de qualité supérieure</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                        <span>Recette traditionnelle marocaine</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                        <span>Conservation optimale pendant 7 jours</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                     
                     
                 </div>
