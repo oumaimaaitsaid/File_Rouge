@@ -5,7 +5,6 @@
 @section('content')
 <div class="bg-gray-50 py-12">
     <div class="container mx-auto px-4">
-        <!-- Fil d'Ariane -->
         <div class="mb-8">
             <nav class="flex" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-3">
@@ -45,12 +44,9 @@
             </nav>
         </div>
         
-        <!-- Section Produit -->
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <div class="md:flex">
-                <!-- Galerie d'images -->
                 <div class="md:w-1/2 p-6">
-                    <!-- Image principale -->
                     <div class="mb-4 rounded-lg overflow-hidden">
                         @if($product->images && $product->images->count() > 0)
                             @php
@@ -62,7 +58,6 @@
                         @endif
                     </div>
                     
-                    <!-- Miniatures -->
                     @if($product->images && $product->images->count() > 1)
                         <div class="grid grid-cols-4 gap-2">
                             @foreach($product->images as $image)
@@ -75,19 +70,15 @@
                     @endif
                 </div>
                 
-                <!-- Informations produit -->
                 <div class="md:w-1/2 p-6 bg-white">
-                    <!-- Badge de catégorie -->
                     @if($product->categorie)
                         <a href="{{ route('categories.show', $product->categorie->slug) }}" class="inline-block bg-gray-100 text-primary text-xs uppercase tracking-wide px-3 py-1 rounded-md mb-3">
                             {{ $product->categorie->nom }}
                         </a>
                     @endif
                     
-                    <!-- Nom du produit -->
                     <h1 class="font-playfair text-3xl font-bold text-accent mb-2">{{ $product->nom }}</h1>
                     
-                    <!-- Notation -->
                     <div class="flex items-center mb-4">
                         <div class="flex text-yellow-400">
                             @php
@@ -111,7 +102,6 @@
                         </span>
                     </div>
                     
-                    <!-- Prix -->
                     <div class="mb-6">
                         @if($product->prix_promo && $product->prix_promo < $product->prix)
                             <div class="flex items-center">
@@ -129,19 +119,16 @@
                         @endif
                     </div>
                     
-                    <!-- Description -->
                     <div class="mb-6">
                         <h2 class="font-medium text-accent text-lg mb-2">Description</h2>
                         <p class="text-gray-700">{{ $product->description }}</p>
                     </div>
                     
-                    <!-- Ingrédients -->
                     <div class="mb-6">
                         <h2 class="font-medium text-accent text-lg mb-2">Ingrédients</h2>
                         <p class="text-gray-700">{{ $product->ingredients }}</p>
                     </div>
                     
-                    <!-- Disponibilité -->
                     <div class="mb-6">
                         <h2 class="font-medium text-accent text-lg mb-2">Disponibilité</h2>
                         @if($product->stock > 0)
@@ -157,7 +144,6 @@
                         @endif
                     </div>
                     
-                    <!-- Sélecteur de quantité et ajout au panier -->
                     <div class="flex flex-wrap gap-4 items-center">
                         <div class="w-24">
                             <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantité</label>
@@ -186,10 +172,8 @@
                 </div>
             </div>
             
-            <!-- Détails supplémentaires -->
             <div class="border-t border-gray-200 p-6">
                 <div x-data="{ activeTab: 'description' }">
-                    <!-- Onglets -->
                     <div class="border-b border-gray-200 mb-6">
                         <nav class="flex space-x-8">
                             <button 
@@ -207,12 +191,10 @@
                         </nav>
                     </div>
                     
-                    <!-- Contenu des onglets -->
                     <div x-show="activeTab === 'description'">
                         <div class="prose max-w-none">
                             <p>{{ $product->description }}</p>
                             
-                            <!-- Caractéristiques du produit -->
                             <div class="mt-6">
                                 <h3 class="text-lg font-medium text-accent mb-4">Caractéristiques du produit</h3>
                                 <ul class="space-y-2">
@@ -238,7 +220,6 @@
                     </div>
                     
                     <div x-show="activeTab === 'reviews'">
-                        <!-- Liste des avis -->
                         @if($product->avis()->where('approuve', true)->count() > 0)
                             <div class="space-y-6">
                                 @foreach($product->avis()->where('approuve', true)->with('user')->get() as $avis)
@@ -272,7 +253,6 @@
                             </div>
                         @endif
                         
-                        <!-- Formulaire d'avis (visible seulement si connecté) -->
                         @auth
                             <div class="mt-8 bg-gray-50 p-6 rounded-lg">
                                 <h3 class="text-lg font-medium text-accent mb-4">Laisser un avis</h3>
@@ -315,7 +295,6 @@
             </div>
         </div>
         
-        <!-- Produits similaires -->
         @if($relatedProducts->count() > 0)
             <div class="mt-12">
                 <h2 class="font-playfair text-2xl font-bold text-accent mb-6">Produits similaires</h2>
@@ -382,7 +361,6 @@
 </div>
 
 <script>
-    // Pour les sélecteurs de quantité
     function decrementQuantity() {
         const quantityInput = document.getElementById('quantity');
         const currentValue = parseInt(quantityInput.value);
@@ -400,11 +378,8 @@
         }
     }
     
-    // Pour l'ajout au panier avec quantité
     function addToCartWithQuantity(productId, productName, price, image) {
         const quantity = parseInt(document.getElementById('quantity').value);
-        // Si vous avez déjà une fonction addToCart, vous pouvez l'étendre pour prendre en compte la quantité
-        // Sinon, voici une implémentation de base
         if (window.addToCart) {
             for (let i = 0; i < quantity; i++) {
                 window.addToCart(productId, productName, price, image);
@@ -415,11 +390,9 @@
         }
     }
     
-    // Pour les étoiles de notation
     function setRating(stars) {
         document.getElementById('rating').value = stars;
         
-        // Mise à jour visuelle des étoiles
         for (let i = 1; i <= 5; i++) {
             const starElement = document.getElementById('star' + i);
             if (i <= stars) {
@@ -430,7 +403,6 @@
         }
     }
     
-    // Initialiser les étoiles à 5
     document.addEventListener('DOMContentLoaded', function() {
         setRating(5);
     });
