@@ -264,7 +264,48 @@
                     </div>
                 </section>
                 
-                
+                <!-- Activités récentes -->
+                <section class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-accent">Activités récentes</h2>
+                        <p class="text-sm text-gray-500">Historique de vos dernières activités</p>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <!-- Exemple d'activités récentes (à remplacer par des données dynamiques) -->
+                            <div class="flex items-start space-x-3">
+                                <div class="mt-1 bg-blue-100 rounded-full p-1">
+                                    <i class="fas fa-sign-in-alt text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-900">Connexion réussie</h4>
+                                    <p class="text-xs text-gray-500">Il y a 2 jours</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-3">
+                                <div class="mt-1 bg-green-100 rounded-full p-1">
+                                    <i class="fas fa-shopping-cart text-green-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-900">Commande #12345 confirmée</h4>
+                                    <p class="text-xs text-gray-500">Il y a 5 jours</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-3">
+                                <div class="mt-1 bg-yellow-100 rounded-full p-1">
+                                    <i class="fas fa-user-edit text-yellow-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-900">Profil mis à jour</h4>
+                                    <p class="text-xs text-gray-500">Il y a 2 semaines</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
