@@ -233,5 +233,18 @@ class CartController extends Controller
         }
     }
 
-   
+    public function clear(Request $request)
+    {
+        try {
+            $cart = $this->getOrCreateCart($request);
+            $cart->items()->delete();
+            
+            return redirect()->route('cart.index')
+                ->with('success', 'Panier vidé avec succès');
+            
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la suppression du panier: ' . $e->getMessage());
+        }
+    }
 }
