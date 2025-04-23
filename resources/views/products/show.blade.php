@@ -77,7 +77,12 @@
                 
                 <!-- Informations produit -->
                 <div class="md:w-1/2 p-6 bg-white">
-                  
+                    <!-- Badge de catégorie -->
+                    @if($product->categorie)
+                        <a href="{{ route('categories.show', $product->categorie->slug) }}" class="inline-block bg-gray-100 text-primary text-xs uppercase tracking-wide px-3 py-1 rounded-md mb-3">
+                            {{ $product->categorie->nom }}
+                        </a>
+                    @endif
                     
                   
                     
