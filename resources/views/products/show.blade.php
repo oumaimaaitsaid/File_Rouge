@@ -186,7 +186,32 @@
                 </div>
             </div>
             
-            
+            <!-- Détails supplémentaires -->
+            <div class="border-t border-gray-200 p-6">
+                <div x-data="{ activeTab: 'description' }">
+                    <!-- Onglets -->
+                    <div class="border-b border-gray-200 mb-6">
+                        <nav class="flex space-x-8">
+                            <button 
+                                @click="activeTab = 'description'"
+                                :class="{ 'border-primary text-primary': activeTab === 'description', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'description' }"
+                                class="py-4 px-1 border-b-2 font-medium text-sm">
+                                Description détaillée
+                            </button>
+                            <button 
+                                @click="activeTab = 'reviews'"
+                                :class="{ 'border-primary text-primary': activeTab === 'reviews', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'reviews' }"
+                                class="py-4 px-1 border-b-2 font-medium text-sm">
+                                Avis clients ({{ $product->avis()->where('approuve', true)->count() }})
+                            </button>
+                        </nav>
+                    </div>
+                    
+                    
+                    
+                    
+                </div>
+            </div>
         </div>
         
        
