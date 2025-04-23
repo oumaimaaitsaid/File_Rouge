@@ -59,7 +59,30 @@ class CartController extends Controller
             ['user_id' => null]
         );
     }
-  
+    public function getCartInfo(Request $request)
+    {
+        $cart = $this->getOrCreateCart($request);
+        
+        $cartItems = $cart->items()->with('produit.imagePrincipale')->get()->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'product_id' => $item->produit_id,
+                'name' => $item->produit->nom,
+                'quantity' => $item->quantite,
+                'price' => $item->prix_unitaire,
+                'subtotal' => $item->sousTotal(),
+                'image' => $item->produit->imagePrincipale ? asset('storage/' . $item->produit->imagePrincipale->chemin) : asset('images/placeholder.jpg'),
+            ];
+        });
+        
+        return response()->json([
+            'items' => $cartItems,
+            'total' => $cart->total(),
+            'itemCount' => $cart->itemCount()
+        ]);
+    }
+   
+
  
 
    
