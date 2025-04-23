@@ -48,4 +48,47 @@ class AuthController extends Controller
         return redirect()->route('home')->with('success', 'Compte créé avec succès');
     }
     
+    // Afficher le formulaire de connexion
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+    
+    // Traiter la connexion
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|min:8',
+        ]);
+        
+        if ($validator->fails()) {
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        
+        if (!Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
+            return redirect()
+                ->back()
+                ->withErrors(['email' => 'Les identifiants fournis ne correspondent pas à nos enregistrements.'])
+                ->withInput();
+        }
+        
+        $request->session()->regenerate();
+        
+        return redirect()->intended(route('home'));
+    }
+    
+    // Déconnexion
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect()->route('login')->with('success', 'Vous avez été déconnecté');
+    }
 }
