@@ -157,7 +157,32 @@
                         @endif
                     </div>
                     
-                   
+                    <!-- Sélecteur de quantité et ajout au panier -->
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <div class="w-24">
+                            <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantité</label>
+                            <div class="flex border border-gray-300 rounded-md">
+                                <button type="button" class="px-3 py-1 text-gray-500 hover:text-primary" onclick="decrementQuantity()">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" id="quantity" name="quantity" min="1" max="{{ $product->stock }}" value="1" 
+                                       class="w-10 text-center border-x border-gray-300 focus:outline-none">
+                                <button type="button" class="px-3 py-1 text-gray-500 hover:text-primary" onclick="incrementQuantity()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button 
+                            onclick="addToCartWithQuantity({{ $product->id }}, '{{ $product->nom }}', {{ $product->prix_promo ?? $product->prix }}, '{{ $product->imagePrincipale ? asset('storage/' . $product->imagePrincipale->chemin) : asset('images/placeholder.jpg') }}')"
+                            class="flex-grow bg-primary hover:bg-primary-dark text-white py-3 px-4 rounded-md transition-colors duration-200 flex items-center justify-center">
+                            <i class="fas fa-shopping-cart mr-2"></i> Ajouter au panier
+                        </button>
+                        
+                        <button class="bg-white border border-gray-300 hover:border-primary text-gray-700 hover:text-primary p-3 rounded-md transition-colors duration-200">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             
