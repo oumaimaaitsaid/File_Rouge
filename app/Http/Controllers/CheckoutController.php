@@ -277,7 +277,21 @@ class CheckoutController extends Controller
         return view('orders.index', compact('commandes'));
     }
 
-  
+    public function orderDetails($orderId)
+    {
+        try {
+            $commande = Commande::where('id', $orderId)
+                ->where('user_id', Auth::id())
+                ->with('ligneCommandes.produit')
+                ->firstOrFail();
+
+            return view('orders.show', compact('commande'));
+
+        } catch (\Exception $e) {
+            return redirect()->route('orders.index')
+                ->with('error', 'Commande non trouvée');
+        }
+    }
 
     
 }
