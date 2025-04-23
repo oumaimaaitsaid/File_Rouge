@@ -129,7 +129,11 @@
                         @endif
                     </div>
                     
-                  
+                    <!-- Description -->
+                    <div class="mb-6">
+                        <h2 class="font-medium text-accent text-lg mb-2">Description</h2>
+                        <p class="text-gray-700">{{ $product->description }}</p>
+                    </div>
                     
                   
                     
