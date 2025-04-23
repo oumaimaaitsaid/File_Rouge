@@ -97,7 +97,120 @@
             
             <!-- Contenu principal -->
             <div class="lg:w-3/4 space-y-8">
-              
+                <!-- Informations personnelles -->
+                <section id="infos-perso" class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-accent">Informations personnelles</h2>
+                        <p class="text-sm text-gray-500">Mettez à jour vos informations personnelles</p>
+                    </div>
+                    
+                    <div class="p-6">
+                        <form method="POST" action="{{ route('profile.update') }}">
+                            @csrf
+                            @method('PUT')
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <!-- Nom -->
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                                    <input id="name" type="text" name="name" value="{{ old('name', Auth::user()->name) }}" 
+                                        class="py-2 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                                        required>
+                                    @error('name')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <!-- Prénom -->
+                                <div>
+                                    <label for="prenom" class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                                    <input id="prenom" type="text" name="prenom" value="{{ old('prenom', Auth::user()->prenom) }}" 
+                                        class="py-2 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                                        required>
+                                    @error('prenom')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <!-- Email -->
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Adresse email</label>
+                                    <input id="email" type="email" name="email" value="{{ Auth::user()->email }}" 
+                                        class="py-2 px-4 block w-full border border-gray-300 rounded-md bg-gray-50 shadow-sm cursor-not-allowed"
+                                        disabled>
+                                    <p class="mt-1 text-xs text-gray-500">Pour changer votre email, contactez le service client</p>
+                                </div>
+                                
+                                <!-- Téléphone -->
+                                <div>
+                                    <label for="telephone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                                    <input id="telephone" type="text" name="telephone" value="{{ old('telephone', Auth::user()->telephone) }}" 
+                                        class="py-2 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                                    @error('telephone')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                            
+                            <h3 class="font-medium text-lg text-accent mb-3">Adresse</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <!-- Adresse -->
+                                <div class="md:col-span-2">
+                                    <label for="addresse" class="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
+                                    <input id="addresse" type="text" name="addresse" value="{{ old('addresse', Auth::user()->addresse) }}" 
+                                        class="py-2 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                                    @error('addresse')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <!-- Ville -->
+                                <div>
+                                    <label for="ville" class="block text-sm font-medium text-gray-700 mb-1">Ville</label>
+                                    <input id="ville" type="text" name="ville" value="{{ old('ville', Auth::user()->ville) }}" 
+                                        class="py-2 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                                    @error('ville')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <!-- Code postal -->
+                                <div>
+                                    <label for="code_postal" class="block text-sm font-medium text-gray-700 mb-1">Code postal</label>
+                                    <input id="code_postal" type="text" name="code_postal" value="{{ old('code_postal', Auth::user()->code_postal) }}" 
+                                        class="py-2 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                                    @error('code_postal')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <!-- Pays -->
+                                <div>
+                                    <label for="pays" class="block text-sm font-medium text-gray-700 mb-1">Pays</label>
+                                    <select id="pays" name="pays" 
+                                        class="py-2 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                                        <option value="Maroc" {{ Auth::user()->pays == 'Maroc' ? 'selected' : '' }}>Maroc</option>
+                                        <option value="France" {{ Auth::user()->pays == 'France' ? 'selected' : '' }}>France</option>
+                                        <option value="Belgique" {{ Auth::user()->pays == 'Belgique' ? 'selected' : '' }}>Belgique</option>
+                                        <option value="Canada" {{ Auth::user()->pays == 'Canada' ? 'selected' : '' }}>Canada</option>
+                                        <!-- Ajoutez d'autres pays selon vos besoins -->
+                                    </select>
+                                    @error('pays')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                            
+                            <!-- Bouton de mise à jour -->
+                            <div class="flex justify-end">
+                                <button type="submit" class="inline-flex items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200">
+                                    <i class="fas fa-save mr-2"></i> Enregistrer les modifications
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
                 
               
                 
