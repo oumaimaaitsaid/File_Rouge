@@ -223,7 +223,22 @@ class CheckoutController extends Controller
         }
     }
 
-   
+    public function success(Request $request, $orderId)
+    {
+        try {
+            $commande = Commande::where('id', $orderId)
+                ->where('user_id', Auth::id())
+                ->with('ligneCommandes.produit')
+                ->firstOrFail();
+                
+            return view('checkout.success', compact('commande'));
+                
+        } catch (\Exception $e) {
+            return redirect()->route('home')
+                ->with('error', 'Commande non trouvée');
+        }
+    }
+
    
 
     
