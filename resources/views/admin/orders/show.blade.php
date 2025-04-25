@@ -213,6 +213,46 @@
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                                 </tr>
                             </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach($order->ligneCommandes as $ligne)
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                @if(isset($ligne->produit) && $ligne->produit->imagePrincipale)
+                                                    <div class="flex-shrink-0 h-10 w-10">
+                                                        <img class="h-10 w-10 rounded-md object-cover" src="{{ asset('storage/' . $ligne->produit->imagePrincipale->chemin) }}" alt="{{ $ligne->nom_produit }}">
+                                                    </div>
+                                                @endif
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-accent">
+                                                        {{ $ligne->nom_produit }}
+                                                    </div>
+                                                    @if(isset($ligne->produit))
+                                                        <div class="text-xs text-gray-500">
+                                                            <a href="{{ route('admin.products.edit', $ligne->produit->id) }}" class="text-primary hover:text-primary-dark">
+                                                                Voir le produit
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                        <div class="text-xs text-gray-500 italic">
+                                                            Produit supprimé
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ number_format($ligne->prix_unitaire, 2) }} MAD
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $ligne->quantite }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {{ number_format($ligne->total, 2) }} MAD
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
                 </div>
