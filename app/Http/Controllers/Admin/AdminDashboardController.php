@@ -46,6 +46,10 @@ class AdminDashboardController extends Controller
             'popularProducts'
         ));
     }
+    public function statistics()
+{
+    return view('admin.statistics.index');
+}
 
 
 
