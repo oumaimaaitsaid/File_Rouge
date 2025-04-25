@@ -114,5 +114,30 @@ class AdminCategoryController extends Controller
         }
     }
     
-  
+    public function destroy($id)
+    {
+        try {
+            $category = Categorie::findOrFail($id);
+            
+            // Vérifier si la catégorie a des produits
+            if ($category->produits()->count() > 0) {
+                return redirect()->back()
+                    ->with('error', 'Impossible de supprimer cette catégorie car elle contient des produits');
+            }
+            
+            // Supprimer l'image si elle existe
+            if ($category->image) {
+                Storage::disk('public')->delete($category->image);
+            }
+            
+            $category->delete();
+            
+            return redirect()->route('admin.categories.index')
+                ->with('success', 'Catégorie supprimée avec succès');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la suppression de la catégorie: ' . $e->getMessage());
+        }
+    }
 }
