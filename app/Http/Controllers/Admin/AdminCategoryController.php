@@ -68,7 +68,51 @@ class AdminCategoryController extends Controller
         return view('admin.categories.edit', compact('category'));
     }
     
-   
+    public function update(Request $request, $id)
+    {
+        $category = Categorie::findOrFail($id);
+        
+        $validator = Validator::make($request->all(), [
+            'nom' => 'required|string|max:255|unique:categories,nom,'.$id,
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'active' => 'boolean'
+        ]);
+        
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        
+        try {
+            $data = [
+                'nom' => $request->nom,
+                'slug' => Str::slug($request->nom),
+                'description' => $request->description,
+                'active' => $request->has('active')
+            ];
+            
+            if ($request->hasFile('image')) {
+                // Supprimer l'ancienne image si elle existe
+                if ($category->image) {
+                    Storage::disk('public')->delete($category->image);
+                }
+                
+                $data['image'] = $request->file('image')->store('categories', 'public');
+            }
+            
+            $category->update($data);
+            
+            return redirect()->route('admin.categories.index')
+                ->with('success', 'Catégorie mise à jour avec succès');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la mise à jour de la catégorie: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
     
   
 }
