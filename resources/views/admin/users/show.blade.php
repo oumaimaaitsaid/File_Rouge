@@ -140,6 +140,32 @@
         
         <!-- Colonne 2-3: Activité de l'utilisateur -->
         <div class="md:col-span-2">
+            <!-- Statistiques -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+                <div class="bg-accent text-white p-4">
+                    <h3 class="font-bold text-lg">Statistiques</h3>
+                </div>
+                <div class="p-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-md">
+                            <div class="text-sm text-gray-500 mb-1">Commandes totales</div>
+                            <div class="text-2xl font-bold text-accent">{{ $user->commandes->count() }}</div>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 rounded-md">
+                            <div class="text-sm text-gray-500 mb-1">Montant total dépensé</div>
+                            <div class="text-2xl font-bold text-accent">
+                                {{ number_format($user->commandes->where('paiement_confirme', true)->sum('montant_total'), 2) }} MAD
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 rounded-md">
+                            <div class="text-sm text-gray-500 mb-1">Avis publiés</div>
+                            <div class="text-2xl font-bold text-accent">{{ $user->avis->count() }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
         </div>
     </div>
