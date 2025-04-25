@@ -63,6 +63,158 @@
         </div>
     </div>
     
-    
+    <!-- Tableau des commandes -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <a href="{{ route('admin.orders.index', array_merge(request()->except(['sort', 'direction']), ['sort' => 'numero_commande', 'direction' => request('sort') === 'numero_commande' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="flex items-center">
+                                N° Commande
+                                @if(request('sort') === 'numero_commande')
+                                    <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }} ml-1"></i>
+                                @else
+                                    <i class="fas fa-sort ml-1"></i>
+                                @endif
+                            </a>
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Client
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <a href="{{ route('admin.orders.index', array_merge(request()->except(['sort', 'direction']), ['sort' => 'montant_total', 'direction' => request('sort') === 'montant_total' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="flex items-center">
+                                Montant
+                                @if(request('sort') === 'montant_total')
+                                    <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }} ml-1"></i>
+                                @else
+                                    <i class="fas fa-sort ml-1"></i>
+                                @endif
+                            </a>
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <a href="{{ route('admin.orders.index', array_merge(request()->except(['sort', 'direction']), ['sort' => 'statut', 'direction' => request('sort') === 'statut' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="flex items-center">
+                                Statut
+                                @if(request('sort') === 'statut')
+                                    <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }} ml-1"></i>
+                                @else
+                                    <i class="fas fa-sort ml-1"></i>
+                                @endif
+                            </a>
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <a href="{{ route('admin.orders.index', array_merge(request()->except(['sort', 'direction']), ['sort' => 'paiement_confirme', 'direction' => request('sort') === 'paiement_confirme' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="flex items-center">
+                                Paiement
+                                @if(request('sort') === 'paiement_confirme')
+                                    <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }} ml-1"></i>
+                                @else
+                                    <i class="fas fa-sort ml-1"></i>
+                                @endif
+                            </a>
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <a href="{{ route('admin.orders.index', array_merge(request()->except(['sort', 'direction']), ['sort' => 'created_at', 'direction' => request('sort') === 'created_at' && request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="flex items-center">
+                                Date
+                                @if(request('sort') === 'created_at')
+                                    <i class="fas fa-sort-{{ request('direction') === 'asc' ? 'up' : 'down' }} ml-1"></i>
+                                @else
+                                    <i class="fas fa-sort ml-1"></i>
+                                @endif
+                            </a>
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($orders as $order)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-accent">
+                                    {{ $order->numero_commande }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">
+                                    {{ $order->user->name ?? 'Client supprimé' }}
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    {{ $order->user->email ?? 'N/A' }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">{{ number_format($order->montant_total, 2) }} MAD</div>
+                                @if($order->remise > 0)
+                                    <div class="text-xs text-gray-500">
+                                        Remise: {{ number_format($order->remise, 2) }} MAD
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($order->statut === 'en_attente')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        En attente
+                                    </span>
+                                @elseif($order->statut === 'confirmee')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        Confirmée
+                                    </span>
+                                @elseif($order->statut === 'preparee')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                        Préparée
+                                    </span>
+                                @elseif($order->statut === 'expediee')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                        Expédiée
+                                    </span>
+                                @elseif($order->statut === 'livree')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Livrée
+                                    </span>
+                                @elseif($order->statut === 'annulee')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        Annulée
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($order->paiement_confirme)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fas fa-check-circle mr-1"></i> Payée
+                                    </span>
+                                    @if($order->date_paiement)
+                                        <div class="text-xs text-gray-500 mt-1">
+                                            {{ \Carbon\Carbon::parse($order->date_paiement)->format('d/m/Y') }}
+                                        </div>
+                                    @endif
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        <i class="fas fa-times-circle mr-1"></i> Non payée
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $order->created_at->format('d/m/Y H:i') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="{{ route('admin.orders.show', $order->id) }}" class="text-primary hover:text-primary-dark" title="Voir les détails">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                Aucune commande trouvée
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        
+       
+    </div>
 </div>
 @endsection
