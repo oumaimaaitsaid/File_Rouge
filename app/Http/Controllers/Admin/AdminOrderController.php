@@ -75,5 +75,38 @@ class AdminOrderController extends Controller
         }
     }
     
-   
+    public function updatePaymentStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'paiement_confirme' => 'required|boolean',
+        ]);
+        
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        
+        try {
+            $order = Commande::findOrFail($id);
+            
+            $data = [
+                'paiement_confirme' => (bool)$request->paiement_confirme
+            ];
+            
+            if ($request->paiement_confirme && !$order->date_paiement) {
+                $data['date_paiement'] = now();
+                $data['reference_paiement'] = 'ADMIN-' . strtoupper(substr(md5(rand()), 0, 10));
+            }
+            
+            $order->update($data);
+            
+            return redirect()->route('admin.orders.show', $id)
+                ->with('success', 'Statut de paiement mis à jour avec succès');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la mise à jour du statut de paiement: ' . $e->getMessage());
+        }
+    }
 }
