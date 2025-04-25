@@ -53,7 +53,14 @@
         </form>
     </div>
     
-    
+    <!-- En-tête des résultats -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <div>
+            <h3 class="text-lg font-bold text-gray-700">
+                {{ $reviews->total() }} avis trouvé(s)
+            </h3>
+        </div>
+    </div>
     
     
 </div>
