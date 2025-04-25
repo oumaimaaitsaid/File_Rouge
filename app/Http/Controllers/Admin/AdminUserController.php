@@ -103,5 +103,25 @@ class AdminUserController extends Controller
         }
     }
     
-   
+    public function destroy($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            
+            // On ne peut pas supprimer l'utilisateur actuel
+            if ($user->id === auth()->id()) {
+                return redirect()->back()
+                    ->with('error', 'Vous ne pouvez pas supprimer votre propre compte');
+            }
+            
+            $user->delete();
+            
+            return redirect()->route('admin.users.index')
+                ->with('success', 'Utilisateur supprimé avec succès');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la suppression de l\'utilisateur: ' . $e->getMessage());
+        }
+    }
 }
