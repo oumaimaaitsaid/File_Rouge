@@ -159,5 +159,25 @@ class AdminPromotionController extends Controller
         }
     }
     
-   
+    public function destroy($id)
+    {
+        try {
+            $promotion = Promotion::findOrFail($id);
+            
+            // Vérifier si la promotion a été utilisée
+            if ($promotion->utilisations()->count() > 0) {
+                return redirect()->back()
+                    ->with('error', 'Cette promotion a déjà été utilisée et ne peut pas être supprimée');
+            }
+            
+            $promotion->delete();
+            
+            return redirect()->route('admin.promotions.index')
+                ->with('success', 'Promotion supprimée avec succès');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la suppression de la promotion: ' . $e->getMessage());
+        }
+    }
 }
