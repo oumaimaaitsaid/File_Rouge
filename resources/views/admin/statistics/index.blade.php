@@ -109,6 +109,24 @@
         </div>
     </div>
     
-    
+    <!-- Actions rapides -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="font-bold text-accent text-lg mb-4">Rapports disponibles</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{{ route('admin.statistics.sales', ['period' => 'this_month']) }}" class="flex items-center p-4 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors duration-300">
+                <i class="fas fa-file-invoice-dollar mr-3 text-xl"></i>
+                <span>Rapport des ventes mensuelles</span>
+            </a>
+            <a href="{{ route('admin.statistics.products', ['period' => 'this_month']) }}" class="flex items-center p-4 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg transition-colors duration-300">
+                <i class="fas fa-boxes mr-3 text-xl"></i>
+                <span>Rapport des produits populaires</span>
+            </a>
+            <a href="{{ route('admin.statistics.users', ['period' => 'this_month']) }}" class="flex items-center p-4 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg transition-colors duration-300">
+                <i class="fas fa-user-check mr-3 text-xl"></i>
+                <span>Rapport des clients fidèles</span>
+            </a>
+        </div>
+    </div>
 </div>
 @endsection
