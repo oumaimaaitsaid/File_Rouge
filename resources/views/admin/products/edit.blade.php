@@ -166,7 +166,39 @@
             </div>
         </div>
         
-      
+        <!-- Métadonnées et informations système -->
+        <div class="mb-8 bg-gray-50 p-4 rounded-md">
+            <h3 class="text-lg font-bold text-accent mb-4 border-b pb-2">Informations système</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                    <span class="text-gray-500">ID:</span>
+                    <span class="ml-2 font-medium">{{ $product->id }}</span>
+                </div>
+                <div>
+                    <span class="text-gray-500">Slug:</span>
+                    <span class="ml-2 font-medium">{{ $product->slug }}</span>
+                </div>
+                <div>
+                    <span class="text-gray-500">Date de création:</span>
+                    <span class="ml-2 font-medium">{{ $product->created_at ? $product->created_at->format('d/m/Y') : 'Indisponible' }}</span>
+                </div>
+                <div>
+                    <span class="text-gray-500">Dernière mise à jour:</span>
+                    <span class="ml-2 font-medium">{{ $product->updated_at ? $product->updated_at->format('d/m/Y H:i') :'Indisponible' }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Boutons de soumission -->
+        <div class="flex justify-end space-x-3">
+            <a href="{{ route('admin.products.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                Annuler
+            </a>
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                <i class="fas fa-save mr-2"></i> Enregistrer les modifications
+            </button>
+        </div>
     </form>
 </div>
 @endsection
