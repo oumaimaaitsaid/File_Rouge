@@ -59,7 +59,7 @@
                                             @elseif($commande->statut == 'annulee')
                                                 bg-red-100 text-red-800
                                             @endif
-                                        ">
+                                      "  >
                                             {{ ucfirst(str_replace('_', ' ', $commande->statut)) }}
                                         </span>
                                     </td>
