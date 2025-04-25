@@ -61,7 +61,50 @@ class AdminPromotionController extends Controller
         return view('admin.promotions.create');
     }
     
-    
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|string|max:20|unique:promotions',
+            'description' => 'required|string|max:255',
+            'type' => 'required|in:pourcentage,montant,livraison_gratuite',
+            'valeur' => 'required_if:type,pourcentage,montant|nullable|numeric|min:0',
+            'commande_minimum' => 'nullable|numeric|min:0',
+            'usage_maximum' => 'nullable|integer|min:1',
+            'usage_par_utilisateur' => 'nullable|integer|min:1',
+            'date_debut' => 'required|date',
+            'date_fin' => 'nullable|date|after_or_equal:date_debut',
+        ]);
+        
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        
+        try {
+            $data = [
+                'code' => strtoupper($request->code),
+                'description' => $request->description,
+                'type' => $request->type,
+                'valeur' => $request->valeur,
+                'commande_minimum' => $request->commande_minimum,
+                'usage_maximum' => $request->usage_maximum,
+                'usage_par_utilisateur' => $request->usage_par_utilisateur,
+                'date_debut' => $request->date_debut,
+                'date_fin' => $request->date_fin,
+            ];
+            
+            Promotion::create($data);
+            
+            return redirect()->route('admin.promotions.index')
+                ->with('success', 'Promotion créée avec succès');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la création de la promotion: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
     
    
    
