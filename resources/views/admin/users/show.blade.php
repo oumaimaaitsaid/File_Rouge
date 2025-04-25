@@ -102,6 +102,40 @@
                 </div>
             </div>
             
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-accent text-white p-4">
+                    <h3 class="font-bold text-lg">Adresse</h3>
+                </div>
+                <div class="p-6">
+                    @if($user->adresse)
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500">Adresse</h4>
+                                <p class="text-base">{{ $user->adresse }}</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-500">Ville</h4>
+                                    <p class="text-base">{{ $user->ville ?? 'Non renseignée' }}</p>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-500">Code postal</h4>
+                                    <p class="text-base">{{ $user->code_postal ?? 'Non renseigné' }}</p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500">Pays</h4>
+                                <p class="text-base">{{ $user->pays ?? 'Maroc' }}</p>
+                            </div>
+                        </div>
+                    @else
+                        <p class="text-gray-500 italic">Aucune adresse renseignée</p>
+                    @endif
+                </div>
+            </div>
         </div>
         
         <!-- Colonne 2-3: Activité de l'utilisateur -->
