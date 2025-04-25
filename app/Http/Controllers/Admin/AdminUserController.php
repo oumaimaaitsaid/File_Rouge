@@ -39,7 +39,11 @@ class AdminUserController extends Controller
         return view('admin.users.index', compact('users'));
     }
     
-    
+    public function show($id)
+    {
+        $user = User::with('commandes')->findOrFail($id);
+        return view('admin.users.show', compact('user'));
+    }
     
    
     
