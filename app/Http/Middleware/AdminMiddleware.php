@@ -8,15 +8,13 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
-        if(Auth::check() && Auth::user()->isAdmin())
-        return $next($request);
+        // Ne redirigez PAS vers des routes admin si l'utilisateur n'est pas admin
+        if (!Auth::check() || Auth::user()->isAdmin()) {
+            
+            return $next($request);
+        }
+        return redirect()->route('home')->with('error', 'Accès non autorisé.');
     }
-    return redirect()->route('home')->with('error', 'Vous n\'avez pas les autorisations nécessaires pour accéder à cette page.');
 }

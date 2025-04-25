@@ -8,8 +8,51 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminPromotionController;
+use App\Http\Controllers\Admin\AdminReviewController;
+
+//routes pour  l admin
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+    // Tableau de bord
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    
+    // Gestion des produits
+    Route::resource('products', AdminProductController::class);
+    
+    // Gestion des catégories
+    Route::resource('categories', AdminCategoryController::class);
+    
+    // Gestion des commandes
+    Route::resource('orders', AdminOrderController::class)->except(['create', 'store', 'destroy']);
+    Route::post('orders/{id}/update-status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
+    Route::post('orders/{id}/update-payment', [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.update-payment');
+    
+    // Gestion des utilisateurs
+    Route::resource('users', AdminUserController::class)->except(['create', 'store']);
+    
+    // Gestion des promotions
+    Route::resource('promotions', AdminPromotionController::class);
+    
+    // Gestion des avis
+    Route::get('reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
+    Route::post('reviews/{id}/approve', [AdminReviewController::class, 'approve'])->name('reviews.approve');
+    Route::post('reviews/{id}/reject', [AdminReviewController::class, 'reject'])->name('reviews.reject');
+    Route::delete('reviews/{id}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
+    
+    // Statistiques
+    Route::get('statistics', [AdminDashboardController::class, 'statistics'])->name('statistics');
+    Route::get('statistics/sales', [AdminDashboardController::class, 'salesStatistics'])->name('statistics.sales');
+    Route::get('statistics/products', [AdminDashboardController::class, 'productStatistics'])->name('statistics.products');
+    Route::get('statistics/users', [AdminDashboardController::class, 'userStatistics'])->name('statistics.users');
+});
 // Routes d'authentification
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -24,6 +67,8 @@ Route::post('/cart/add', [CartController::class, 'addItem'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'updateItem'])->name('cart.update');
 Route::delete('/cart/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
 Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
+
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/profile', [UserController::class, 'showProfile'])->name('profile.show');
@@ -41,14 +86,18 @@ Route::middleware('auth')->group(function () {
      Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
      Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
      Route::get('/checkout/success/{orderId}', [CheckoutController::class, 'success'])->name('checkout.success');
-     Route::post('/checkout/{orderId}/confirm-payment', [CheckoutController::class, 'confirmPayment'])->name('checkout.confirm-payment');
+
+
      
      // Routes pour les commandes
-     Route::get('/orders', [CheckoutController::class, 'userOrders'])->name('orders.index');
-     Route::get('/orders/{orderId}', [CheckoutController::class, 'orderDetails'])->name('orders.show');
-     Route::post('/orders/{orderId}/cancel', [CheckoutController::class, 'cancelOrder'])->name('orders.cancel');
-});
-
+     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+     Route::get('/orders/{orderId}', [OrderController::class, 'show'])->name('orders.show');
+     Route::post('/orders/{orderId}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+     
+     
+    });
+  
+   
 
 // Routes des produits
 Route::get('/catalog', [ProductController::class, 'catalog'])->name('products.catalog');
@@ -83,13 +132,23 @@ Route::get('/', function () {
 })->name('home');
 
 // Routes pour les pages statiques
-Route::get('/about', function () {
-    return view('about');
-})->name('about');
-
 Route::get('/contact', function () {
-    return view('contact');
+    return view('statics.contact');
 })->name('contact');
+  
+Route::get('/about', function () {
+    return view('statics.about');
+})->name('about');
+Route::get('/terms', function () {
+    return view('statics.terms');
+})->name('terms');
+Route::get('/privacy', function () {
+    return view('statics.privacy');
+})->name('privacy');
+Route::get('/faq', function () {
+    return view('statics.faq');
+})->name('faq');
+
 Route::get('/cart/info', [CartController::class, 'getCartInfo'])->name('cart.info');
 
 
@@ -100,5 +159,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/payment/stripe/{orderId}', [PaymentController::class, 'processCardPayment'])->name('payment.stripe.process');
     Route::get('/payment/stripe/success/{orderId}', [PaymentController::class, 'handleStripeSuccess'])->name('payment.stripe.success');
     Route::get('/payment/stripe/cancel/{orderId}', [PaymentController::class, 'handleStripeCancel'])->name('payment.stripe.cancel');
+    Route::get('/payment/card/{orderId}', [PaymentController::class, 'showCardForm'])->name('payment.card');
+    Route::post('/payment/confirm/{orderId}', [PaymentController::class, 'confirm'])->name('payment.confirm');
 });
-Route::get('/payment/card/{orderId}', [PaymentController::class, 'showCardForm'])->name('payment.card');

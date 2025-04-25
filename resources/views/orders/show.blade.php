@@ -179,7 +179,7 @@
                 @endif
                 
                 @if(!$commande->paiement_confirme && $commande->statut != 'annulee' && $commande->methode_paiement != 'a_la_livraison')
-                    <form action="{{ route('checkout.confirm-payment', $commande->id) }}" method="POST" class="inline ml-2">
+                    <form action="{{ route('payment.confirm', $commande->id) }}" method="POST" class="inline ml-2">
                         @csrf
                         <button type="submit" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md font-medium transition-colors duration-200">
                             <i class="fas fa-credit-card mr-2"></i> Confirmer le paiement
