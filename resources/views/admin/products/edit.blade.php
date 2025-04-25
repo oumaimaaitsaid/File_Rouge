@@ -89,7 +89,35 @@
             </div>
         </div>
         
-      
+        <!-- Images existantes -->
+        <div class="mb-8">
+            <h3 class="text-lg font-bold text-accent mb-4 border-b pb-2">Images existantes</h3>
+            
+            @if($product->images->count() > 0)
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    @foreach($product->images as $image)
+                        <div class="relative group bg-gray-100 rounded-md overflow-hidden">
+                            <img src="{{ asset('storage/' . $image->chemin) }}" alt="{{ $product->nom }}" class="object-cover w-full h-64">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 bg-black bg-opacity-50 transition-opacity">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <input type="radio" id="principal_{{ $image->id }}" name="image_principale" value="{{ $image->id }}" {{ $image->est_principale ? 'checked' : '' }} class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                                    <label for="principal_{{ $image->id }}" class="text-white text-sm">Image principale</label>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <input type="checkbox" id="delete_{{ $image->id }}" name="delete_images[]" value="{{ $image->id }}" class="h-4 w-4 text-red-500 focus:ring-red-500 border-gray-300 rounded">
+                                    <label for="delete_{{ $image->id }}" class="text-white text-sm">Supprimer</label>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-gray-500 text-center py-4">
+                    Aucune image pour ce produit. Veuillez en ajouter ci-dessous.
+                </div>
+            @endif
+        </div>
+        
        
         
         
