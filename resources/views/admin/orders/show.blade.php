@@ -197,6 +197,17 @@
         </div>
         
         <!-- Colonne 2: Détails de la commande -->
+        <div class="md:col-span-2">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+                <div class="bg-accent text-white p-4">
+                    <h3 class="font-bold text-lg">Détails de la commande</h3>
+                </div>
+            </div>
+            
+            <!-- Notes -->
+            
+            <!-- Chronologie -->
+        </div>
     </div>
 </div>
 @endsection
