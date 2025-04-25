@@ -72,6 +72,27 @@
                 </div>
             </div>
             
+            <div class="flex flex-col md:flex-row gap-2">
+                <!-- Formulaire de mise à jour du statut -->
+                <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST" class="inline-block">
+                    @csrf
+                    <div class="flex gap-2">
+                        <select name="statut" class="rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 text-sm">
+                            <option value="en_attente" {{ $order->statut === 'en_attente' ? 'selected' : '' }}>En attente</option>
+                            <option value="confirmee" {{ $order->statut === 'confirmee' ? 'selected' : '' }}>Confirmée</option>
+                            <option value="preparee" {{ $order->statut === 'preparee' ? 'selected' : '' }}>Préparée</option>
+                            <option value="expediee" {{ $order->statut === 'expediee' ? 'selected' : '' }}>Expédiée</option>
+                            <option value="livree" {{ $order->statut === 'livree' ? 'selected' : '' }}>Livrée</option>
+                            <option value="annulee" {{ $order->statut === 'annulee' ? 'selected' : '' }}>Annulée</option>
+                        </select>
+                        <button type="submit" class="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-md transition-colors duration-300 text-sm">
+                            Mettre à jour le statut
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Formulaire de mise à jour du paiement -->
+            </div>
         </div>
     </div>
     
