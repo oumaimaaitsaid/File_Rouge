@@ -103,7 +103,48 @@
     </div>
 </div>
 
-
+<!-- Tableau des produits les plus vendus -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+    <div class="bg-accent text-white p-4 flex justify-between items-center">
+        <h3 class="font-bold text-lg">Top produits par quantité vendue</h3>
+        <a href="{{ route('admin.products.index') }}" class="text-white hover:text-secondary transition-colors duration-200">
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rang</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produit</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantité vendue</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chiffre d'affaires</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @forelse($topProducts as $index => $product)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap font-medium">
+                            {{ number_format($product->total_amount, 2) }} MAD
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <a href="{{ route('admin.products.edit', $product->produit_id) }}" class="text-primary hover:text-primary-dark">
+                                <i class="fas fa-edit mr-1"></i> Éditer
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                            Aucune donnée disponible pour cette période
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
 
 
 </div>
