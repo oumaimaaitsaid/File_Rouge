@@ -46,7 +46,20 @@ class AdminReviewController extends Controller
         return view('admin.reviews.index', compact('reviews'));
     }
     
-    
+    public function approve($id)
+    {
+        try {
+            $review = Avis::findOrFail($id);
+            $review->update(['approuve' => true]);
+            
+            return redirect()->back()
+                ->with('success', 'Avis approuvé avec succès');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de l\'approbation de l\'avis: ' . $e->getMessage());
+        }
+    }
     
     
     
