@@ -62,6 +62,131 @@
         </div>
     </div>
     
-    
+    <!-- Tableau des avis -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produit</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Note</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commentaire</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($reviews as $review)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">
+                                    {{ $review->user->name ?? 'Client supprimé' }}
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    {{ $review->user->email ?? 'N/A' }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    @if(isset($review->produit) && $review->produit->imagePrincipale)
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-md object-cover" src="{{ asset('storage/' . $review->produit->imagePrincipale->chemin) }}" alt="{{ $review->produit->nom }}">
+                                        </div>
+                                    @else
+                                        <div class="flex-shrink-0 h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center">
+                                            <i class="fas fa-cookie text-gray-400"></i>
+                                        </div>
+                                    @endif
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-accent">
+                                            {{ $review->produit->nom ?? 'Produit supprimé' }}
+                                        </div>
+                                        @if(isset($review->produit))
+                                            <div class="text-xs text-gray-500">
+                                                <a href="{{ route('admin.products.edit', $review->produit->id) }}" class="text-primary hover:text-primary-dark">
+                                                    Voir le produit
+                                                </a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex text-yellow-400">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= $review->note)
+                                            <i class="fas fa-star"></i>
+                                        @else
+                                            <i class="far fa-star"></i>
+                                        @endif
+                                    @endfor
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">
+                                    {{ $review->note }}/5
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-900 max-w-xs truncate">
+                                    {{ $review->commentaire }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $review->created_at->format('d/m/Y H:i') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($review->approuve)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Approuvé
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        En attente
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex items-center justify-end space-x-3">
+                                    @if(!$review->approuve)
+                                        <form action="{{ route('admin.reviews.approve', $review->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="text-green-600 hover:text-green-800" title="Approuver">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <form action="{{ route('admin.reviews.reject', $review->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="text-yellow-600 hover:text-yellow-800" title="Mettre en attente">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                    <form action="{{ route('admin.reviews.destroy', $review->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet avis ?');" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-500 hover:text-red-700" title="Supprimer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                Aucun avis trouvé
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="px-6 py-4 border-t border-gray-200">
+            {{ $reviews->appends(request()->except('page'))->links() }}
+        </div>
+    </div>
 </div>
 @endsection
