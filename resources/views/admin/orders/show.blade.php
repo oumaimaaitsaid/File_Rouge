@@ -23,6 +23,14 @@
     </div>
     
     <!-- Statut de la commande et Actions -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div class="mb-4 md:mb-0">
+                <h3 class="text-lg font-bold text-accent mb-2">Statut de la commande</h3>
+            </div>
+            
+        </div>
+    </div>
     
 </div>
 @endsection
