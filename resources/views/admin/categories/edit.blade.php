@@ -140,3 +140,41 @@
 </div>
 @endsection
 
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Prévisualisation de l'image
+        const inputImage = document.getElementById('image');
+        const imagePreview = document.getElementById('image-preview');
+        const previewImg = document.getElementById('preview-img');
+        
+        inputImage.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                };
+                
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+        
+        // Gestion de la case à cocher pour supprimer l'image
+        const deleteImageCheckbox = document.getElementById('delete_image');
+        if (deleteImageCheckbox) {
+            deleteImageCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // Désactiver le champ de téléchargement de nouvelle image
+                    inputImage.disabled = true;
+                    imagePreview.classList.add('hidden');
+                } else {
+                    // Réactiver le champ
+                    inputImage.disabled = false;
+                }
+            });
+        }
+    });
+</script>
+@endsection
