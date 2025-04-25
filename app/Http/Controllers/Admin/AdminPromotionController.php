@@ -56,7 +56,10 @@ class AdminPromotionController extends Controller
         return view('admin.promotions.index', compact('promotions'));
     }
     
-    
+    public function create()
+    {
+        return view('admin.promotions.create');
+    }
     
     
     
