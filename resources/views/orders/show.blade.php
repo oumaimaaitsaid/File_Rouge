@@ -100,7 +100,7 @@
             <div class="p-6 border-b border-gray-200">
                 <h2 class="text-xl font-bold text-gray-800">Produits commandés</h2>
             </div>
-            11
+            
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-gray-50">
