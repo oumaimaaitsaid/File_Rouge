@@ -43,7 +43,12 @@ class AdminProductController extends Controller
         return view('admin.products.index', compact('products', 'categories'));
     }
     
-   
+    public function create()
+    {
+        $categories = Categorie::where('active', true)->get();
+        return view('admin.products.create', compact('categories'));
+    }
+    
    
    
     
