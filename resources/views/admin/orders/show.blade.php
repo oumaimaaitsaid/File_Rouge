@@ -301,6 +301,25 @@
                     </div>
                 </div>
                 
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="bg-accent text-white p-4">
+                        <h3 class="font-bold text-lg">Notes administratives</h3>
+                    </div>
+                    <div class="p-4">
+                        <form action="{{ route('admin.orders.update', $order->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="mb-3">
+                                <textarea name="notes_admin" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">{{ $order->notes_admin }}</textarea>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" class="bg-primary hover:bg-primary-dark text-white py-1 px-3 rounded-md transition-colors duration-300 text-sm">
+                                    Enregistrer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
             
             <!-- Chronologie -->
