@@ -61,7 +61,20 @@ class AdminReviewController extends Controller
         }
     }
     
-    
+    public function reject($id)
+    {
+        try {
+            $review = Avis::findOrFail($id);
+            $review->update(['approuve' => false]);
+            
+            return redirect()->back()
+                ->with('success', 'Avis rejeté avec succès');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors du rejet de l\'avis: ' . $e->getMessage());
+        }
+    }
     
    
 }
