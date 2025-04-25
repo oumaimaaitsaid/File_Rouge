@@ -148,6 +148,52 @@
                 </div>
             </div>
             
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-accent text-white p-4">
+                    <h3 class="font-bold text-lg">Paiement</h3>
+                </div>
+                <div class="p-4">
+                    <div class="mb-2">
+                        <span class="font-medium">Méthode de paiement:</span>
+                        @if($order->methode_paiement === 'carte')
+                            <span class="ml-2">Carte bancaire</span>
+                        @elseif($order->methode_paiement === 'livraison')
+                            <span class="ml-2">Paiement à la livraison</span>
+                        @elseif($order->methode_paiement === 'virement')
+                            <span class="ml-2">Virement bancaire</span>
+                        @else
+                            <span class="ml-2">{{ $order->methode_paiement }}</span>
+                        @endif
+                    </div>
+                    
+                    @if($order->reference_paiement)
+                        <div class="mb-2">
+                            <span class="font-medium">Référence:</span>
+                            <span class="ml-2">{{ $order->reference_paiement }}</span>
+                        </div>
+                    @endif
+                    
+                    @if($order->date_paiement)
+                        <div class="mb-2">
+                            <span class="font-medium">Date de paiement:</span>
+                            <span class="ml-2">{{ \Carbon\Carbon::parse($order->date_paiement)->format('d/m/Y H:i') }}</span>
+                        </div>
+                    @endif
+                    
+                    <div class="mb-2">
+                        <span class="font-medium">Statut:</span>
+                        @if($order->paiement_confirme)
+                            <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Payée
+                            </span>
+                        @else
+                            <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                Non payée
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Colonne 2: Détails de la commande -->
