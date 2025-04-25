@@ -321,6 +321,23 @@
         </div>
     </div>
     
-  
+    <!-- Actions rapides -->
+    <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+        <h3 class="font-bold text-lg text-accent mb-4">Actions rapides</h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <a href="{{ route('admin.products.create') }}" class="flex items-center justify-center p-4 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors duration-300">
+                <i class="fas fa-plus mr-2"></i> Ajouter un produit
+            </a>
+            <a href="{{ route('admin.categories.create') }}" class="flex items-center justify-center p-4 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-300">
+                <i class="fas fa-folder-plus mr-2"></i> Nouvelle catégorie
+            </a>
+            <a href="{{ route('admin.promotions.create') }}" class="flex items-center justify-center p-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-300">
+                <i class="fas fa-tag mr-2"></i> Créer une promotion
+            </a>
+            <a href="{{ route('admin.statistics.sales') }}" class="flex items-center justify-center p-4 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors duration-300">
+                <i class="fas fa-chart-line mr-2"></i> Voir les statistiques
+            </a>
+        </div>
+    </div>
 </div>
 @endsection
