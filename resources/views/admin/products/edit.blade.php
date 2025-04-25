@@ -145,7 +145,26 @@
             </div>
         </div>
         
-        
+        <!-- Options -->
+        <div class="mb-8">
+            <h3 class="text-lg font-bold text-accent mb-4 border-b pb-2">Options</h3>
+            
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center">
+                    <input type="checkbox" id="disponible" name="disponible" value="1" {{ old('disponible', $product->disponible) ? 'checked' : '' }} class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                    <label for="disponible" class="ml-2 block text-sm text-gray-700">
+                        Disponible à la vente
+                    </label>
+                </div>
+                
+                <div class="flex items-center">
+                    <input type="checkbox" id="featured" name="featured" value="1" {{ old('featured', $product->featured) ? 'checked' : '' }} class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                    <label for="featured" class="ml-2 block text-sm text-gray-700">
+                        Mettre en avant sur la page d'accueil
+                    </label>
+                </div>
+            </div>
+        </div>
         
       
     </form>
