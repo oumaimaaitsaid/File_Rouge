@@ -61,7 +61,90 @@
         </div>
     </div>
     
-    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- Commandes récentes -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-accent text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg">Commandes récentes</h3>
+                <a href="{{ route('admin.orders.index') }}" class="text-white hover:text-secondary transition-colors duration-200">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">N° Commande</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($recentOrders as $order)
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="{{ route('admin.orders.show', $order->id) }}" class="text-primary hover:text-primary-dark font-medium">
+                                        {{ $order->numero_commande }}
+                                    </a>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {{ $order->user->name ?? 'Client supprimé' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap font-medium">
+                                    {{ number_format($order->montant_total, 2) }} MAD
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if($order->statut === 'en_attente')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            En attente
+                                        </span>
+                                    @elseif($order->statut === 'confirmee')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            Confirmée
+                                        </span>
+                                    @elseif($order->statut === 'preparee')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                            Préparée
+                                        </span>
+                                    @elseif($order->statut === 'expediee')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                            Expédiée
+                                        </span>
+                                    @elseif($order->statut === 'livree')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            Livrée
+                                        </span>
+                                    @elseif($order->statut === 'annulee')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            Annulée
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $order->created_at->format('d/m/Y H:i') }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                    Aucune commande récente
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            <div class="px-6 py-4 bg-gray-50">
+                <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors duration-200">
+                    Voir toutes les commandes <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+        
+       
+    </div>
     
     
     
