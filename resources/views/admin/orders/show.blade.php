@@ -134,6 +134,19 @@
                 </div>
             </div>
             
+            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+                <div class="bg-accent text-white p-4">
+                    <h3 class="font-bold text-lg">Adresse de livraison</h3>
+                </div>
+                <div class="p-4">
+                    <p>{{ $order->adresse_livraison }}</p>
+                    <p>{{ $order->code_postal_livraison }} {{ $order->ville_livraison }}</p>
+                    <p>{{ $order->pays_livraison }}</p>
+                    <p class="mt-2">
+                        <span class="font-medium">Téléphone:</span> {{ $order->telephone_livraison }}
+                    </p>
+                </div>
+            </div>
             
         </div>
         
