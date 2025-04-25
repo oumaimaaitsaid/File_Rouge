@@ -323,6 +323,173 @@
             </div>
             
             <!-- Chronologie -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-accent text-white p-4">
+                    <h3 class="font-bold text-lg">Chronologie</h3>
+                </div>
+                <div class="p-4">
+                    <div class="flow-root">
+                        <ul class="-mb-8">
+                            <li>
+                                <div class="relative pb-8">
+                                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                    <div class="relative flex space-x-3">
+                                        <div>
+                                            <span class="h-8 w-8 rounded-full bg-primary flex items-center justify-center ring-8 ring-white">
+                                                <i class="fas fa-shopping-cart text-white"></i>
+                                            </span>
+                                        </div>
+                                        <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                            <div>
+                                                <p class="text-sm text-gray-500">Commande passée</p>
+                                            </div>
+                                            <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                                {{ $order->created_at->format('d/m/Y H:i') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            @if($order->paiement_confirme && $order->date_paiement)
+                                <li>
+                                    <div class="relative pb-8">
+                                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                        <div class="relative flex space-x-3">
+                                            <div>
+                                                <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
+                                                    <i class="fas fa-credit-card text-white"></i>
+                                                </span>
+                                            </div>
+                                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                                <div>
+                                                    <p class="text-sm text-gray-500">Paiement reçu</p>
+                                                </div>
+                                                <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                                    {{ \Carbon\Carbon::parse($order->date_paiement)->format('d/m/Y H:i') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
+                            
+                            @if($order->statut !== 'en_attente')
+                                <li>
+                                    <div class="relative pb-8">
+                                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                        <div class="relative flex space-x-3">
+                                            <div>
+                                                <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
+                                                    <i class="fas fa-check text-white"></i>
+                                                </span>
+                                            </div>
+                                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                                <div>
+                                                    <p class="text-sm text-gray-500">Commande confirmée</p>
+                                                </div>
+                                                <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                                    {{ $order->updated_at->format('d/m/Y') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
+                            
+                            @if(in_array($order->statut, ['preparee', 'expediee', 'livree']))
+                                <li>
+                                    <div class="relative pb-8">
+                                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                        <div class="relative flex space-x-3">
+                                            <div>
+                                                <span class="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center ring-8 ring-white">
+                                                    <i class="fas fa-box text-white"></i>
+                                                </span>
+                                            </div>
+                                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                                <div>
+                                                    <p class="text-sm text-gray-500">Commande préparée</p>
+                                                </div>
+                                                <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                                    {{ $order->updated_at->format('d/m/Y') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
+                            
+                            @if(in_array($order->statut, ['expediee', 'livree']))
+                                <li>
+                                    <div class="relative pb-8">
+                                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                        <div class="relative flex space-x-3">
+                                            <div>
+                                                <span class="h-8 w-8 rounded-full bg-purple-500 flex items-center justify-center ring-8 ring-white">
+                                                    <i class="fas fa-shipping-fast text-white"></i>
+                                                </span>
+                                            </div>
+                                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                                <div>
+                                                    <p class="text-sm text-gray-500">Commande expédiée</p>
+                                                </div>
+                                                <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                                    {{ $order->updated_at->format('d/m/Y') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
+                            
+                            @if($order->statut === 'livree')
+                                <li>
+                                    <div class="relative">
+                                        <div class="relative flex space-x-3">
+                                            <div>
+                                                <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
+                                                    <i class="fas fa-check-circle text-white"></i>
+                                                </span>
+                                            </div>
+                                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                                <div>
+                                                    <p class="text-sm text-gray-500">Commande livrée</p>
+                                                </div>
+                                                <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                                    {{ $order->updated_at->format('d/m/Y') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
+                            
+                            @if($order->statut === 'annulee')
+                                <li>
+                                    <div class="relative">
+                                        <div class="relative flex space-x-3">
+                                            <div>
+                                                <span class="h-8 w-8 rounded-full bg-red-500 flex items-center justify-center ring-8 ring-white">
+                                                    <i class="fas fa-times text-white"></i>
+                                                </span>
+                                            </div>
+                                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                                <div>
+                                                    <p class="text-sm text-gray-500">Commande annulée</p>
+                                                </div>
+                                                <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                                    {{ $order->updated_at->format('d/m/Y') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
