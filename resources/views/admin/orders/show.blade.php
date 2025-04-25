@@ -253,6 +253,34 @@
                                     </tr>
                                 @endforeach
                             </tbody>
+                            <tfoot class="bg-gray-50">
+                                <tr>
+                                    <td colspan="3" class="px-6 py-4 text-sm font-medium text-gray-900 text-right">Sous-total:</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ number_format($order->ligneCommandes->sum('total'), 2) }} MAD
+                                    </td>
+                                </tr>
+                                @if($order->remise > 0)
+                                    <tr>
+                                        <td colspan="3" class="px-6 py-4 text-sm font-medium text-gray-900 text-right">Remise:</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">
+                                            -{{ number_format($order->remise, 2) }} MAD
+                                        </td>
+                                    </tr>
+                                @endif
+                                <tr>
+                                    <td colspan="3" class="px-6 py-4 text-sm font-medium text-gray-900 text-right">Frais de livraison:</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ number_format($order->frais_livraison, 2) }} MAD
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="px-6 py-4 text-sm font-bold text-accent text-right">Total:</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-lg font-bold text-accent">
+                                        {{ number_format($order->montant_total, 2) }} MAD
+                                    </td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
