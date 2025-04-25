@@ -44,7 +44,11 @@ class AdminOrderController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
     
-   
+    public function show($id)
+    {
+        $order = Commande::with(['user', 'ligneCommandes.produit'])->findOrFail($id);
+        return view('admin.orders.show', compact('order'));
+    }
     
     
    
