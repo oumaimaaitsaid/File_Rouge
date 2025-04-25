@@ -51,7 +51,57 @@ class AdminUserController extends Controller
         return view('admin.users.edit', compact('user'));
     }
     
-    
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'prenom' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.$id,
+            'role' => 'required|in:client,admin',
+            'telephone' => 'nullable|string|max:20',
+            'adresse' => 'nullable|string|max:255',
+            'ville' => 'nullable|string|max:100',
+            'code_postal' => 'nullable|string|max:20',
+            'pays' => 'nullable|string|max:100',
+            'password' => 'nullable|string|min:8|confirmed',
+        ]);
+        
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        
+        try {
+            $data = [
+                'name' => $request->name,
+                'prenom' => $request->prenom,
+                'email' => $request->email,
+                'role' => $request->role,
+                'telephone' => $request->telephone,
+                'adresse' => $request->adresse,
+                'ville' => $request->ville,
+                'code_postal' => $request->code_postal,
+                'pays' => $request->pays,
+            ];
+            
+            if ($request->filled('password')) {
+                $data['password'] = Hash::make($request->password);
+            }
+            
+            $user->update($data);
+            
+            return redirect()->route('admin.users.index')
+                ->with('success', 'Utilisateur mis à jour avec succès');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la mise à jour de l\'utilisateur: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
     
    
 }
