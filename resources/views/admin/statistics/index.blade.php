@@ -54,7 +54,60 @@
         </a>
     </div>
     
-   
+    <!-- Résumé rapide -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h3 class="font-bold text-accent text-lg mb-4">Résumé des performances</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Total des ventes ce mois -->
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="text-gray-500 text-sm mb-1">Ventes du mois</div>
+                <div class="text-2xl font-bold text-accent">{{ number_format($monthlySales ?? 0, 2) }} MAD</div>
+                @if(isset($salesGrowth))
+                    <div class="flex items-center mt-2 text-sm {{ $salesGrowth >= 0 ? 'text-green-500' : 'text-red-500' }}">
+                        <i class="fas fa-{{ $salesGrowth >= 0 ? 'arrow-up' : 'arrow-down' }} mr-1"></i>
+                        {{ abs($salesGrowth) }}% vs mois dernier
+                    </div>
+                @endif
+            </div>
+            
+            <!-- Commandes ce mois -->
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="text-gray-500 text-sm mb-1">Commandes du mois</div>
+                <div class="text-2xl font-bold text-accent">{{ $monthlyOrders ?? 0 }}</div>
+                @if(isset($ordersGrowth))
+                    <div class="flex items-center mt-2 text-sm {{ $ordersGrowth >= 0 ? 'text-green-500' : 'text-red-500' }}">
+                        <i class="fas fa-{{ $ordersGrowth >= 0 ? 'arrow-up' : 'arrow-down' }} mr-1"></i>
+                        {{ abs($ordersGrowth) }}% vs mois dernier
+                    </div>
+                @endif
+            </div>
+            
+            <!-- Clients actifs -->
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="text-gray-500 text-sm mb-1">Clients actifs</div>
+                <div class="text-2xl font-bold text-accent">{{ $activeCustomers ?? 0 }}</div>
+                @if(isset($customersGrowth))
+                    <div class="flex items-center mt-2 text-sm {{ $customersGrowth >= 0 ? 'text-green-500' : 'text-red-500' }}">
+                        <i class="fas fa-{{ $customersGrowth >= 0 ? 'arrow-up' : 'arrow-down' }} mr-1"></i>
+                        {{ abs($customersGrowth) }}% vs mois dernier
+                    </div>
+                @endif
+            </div>
+            
+            <!-- Moyenne panier -->
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="text-gray-500 text-sm mb-1">Panier moyen</div>
+                <div class="text-2xl font-bold text-accent">{{ number_format($averageOrder ?? 0, 2) }} MAD</div>
+                @if(isset($avgOrderGrowth))
+                    <div class="flex items-center mt-2 text-sm {{ $avgOrderGrowth >= 0 ? 'text-green-500' : 'text-red-500' }}">
+                        <i class="fas fa-{{ $avgOrderGrowth >= 0 ? 'arrow-up' : 'arrow-down' }} mr-1"></i>
+                        {{ abs($avgOrderGrowth) }}% vs mois dernier
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
     
     
 </div>
