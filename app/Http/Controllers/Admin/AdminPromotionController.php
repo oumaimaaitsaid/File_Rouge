@@ -106,7 +106,12 @@ class AdminPromotionController extends Controller
         }
     }
     
-   
+    public function edit($id)
+    {
+        $promotion = Promotion::findOrFail($id);
+        return view('admin.promotions.edit', compact('promotion'));
+    }
+    
    
     
    
