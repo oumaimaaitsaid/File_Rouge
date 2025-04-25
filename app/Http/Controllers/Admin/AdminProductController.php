@@ -213,5 +213,25 @@ class AdminProductController extends Controller
         }
     }
     
-    
+    public function destroy($id)
+    {
+        try {
+            $product = Produit::findOrFail($id);
+            
+            // Supprimer les images associées
+            foreach ($product->images as $image) {
+                Storage::disk('public')->delete($image->chemin);
+            }
+            
+            $product->images()->delete();
+            $product->delete();
+            
+            return redirect()->route('admin.products.index')
+                ->with('success', 'Produit supprimé avec succès');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la suppression du produit: ' . $e->getMessage());
+        }
+    }
 }
