@@ -28,7 +28,48 @@
             </div>
         @endif
         
-       
+        <!-- Informations de base -->
+        <div class="mb-8">
+            <h3 class="text-lg font-bold text-accent mb-4 border-b pb-2">Informations de base</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="nom" class="block text-sm font-medium text-gray-700 mb-1">Nom du produit <span class="text-red-500">*</span></label>
+                    <input type="text" id="nom" name="nom" value="{{ old('nom') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                </div>
+                
+                <div>
+                    <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Catégorie <span class="text-red-500">*</span></label>
+                    <select id="category_id" name="category_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                        <option value="">Sélectionner une catégorie</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->nom }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="prix" class="block text-sm font-medium text-gray-700 mb-1">Prix (MAD) <span class="text-red-500">*</span></label>
+                    <input type="number" id="prix" name="prix" value="{{ old('prix') }}" required step="0.01" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                </div>
+                
+                <div>
+                    <label for="prix_promo" class="block text-sm font-medium text-gray-700 mb-1">Prix promotionnel (MAD)</label>
+                    <input type="number" id="prix_promo" name="prix_promo" value="{{ old('prix_promo') }}" step="0.01" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                </div>
+                
+                <div>
+                    <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">Stock <span class="text-red-500">*</span></label>
+                    <input type="number" id="stock" name="stock" value="{{ old('stock', 0) }}" required min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                </div>
+                
+                <div>
+                    <label for="poids" class="block text-sm font-medium text-gray-700 mb-1">Poids (grammes)</label>
+                    <input type="number" id="poids" name="poids" value="{{ old('poids') }}" step="0.01" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                </div>
+            </div>
+        </div>
         
       
         
