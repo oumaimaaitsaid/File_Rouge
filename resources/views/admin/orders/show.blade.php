@@ -287,6 +287,21 @@
             </div>
             
             <!-- Notes -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="bg-accent text-white p-4">
+                        <h3 class="font-bold text-lg">Notes du client</h3>
+                    </div>
+                    <div class="p-4">
+                        @if($order->notes)
+                            <p class="text-gray-700">{{ $order->notes }}</p>
+                        @else
+                            <p class="text-gray-500 italic">Aucune note</p>
+                        @endif
+                    </div>
+                </div>
+                
+            </div>
             
             <!-- Chronologie -->
         </div>
