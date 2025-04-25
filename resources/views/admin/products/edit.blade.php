@@ -72,6 +72,22 @@
             </div>
         </div>
         
+        <!-- Description et ingrédients -->
+        <div class="mb-8">
+            <h3 class="text-lg font-bold text-accent mb-4 border-b pb-2">Contenu</h3>
+            
+            <div class="mb-4">
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description <span class="text-red-500">*</span></label>
+                <textarea id="description" name="description" rows="5" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">{{ old('description', $product->description) }}</textarea>
+                <p class="mt-1 text-sm text-gray-500">Décrivez le produit en détail pour informer les clients.</p>
+            </div>
+            
+            <div>
+                <label for="ingredients" class="block text-sm font-medium text-gray-700 mb-1">Ingrédients</label>
+                <textarea id="ingredients" name="ingredients" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">{{ old('ingredients', $product->ingredients) }}</textarea>
+                <p class="mt-1 text-sm text-gray-500">Liste des ingrédients utilisés dans ce produit.</p>
+            </div>
+        </div>
         
       
        
