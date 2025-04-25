@@ -203,3 +203,40 @@
 </div>
 @endsection
 
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Prévisualisation des nouvelles images
+        const inputImages = document.getElementById('new_images');
+        const imagePreview = document.getElementById('image-preview');
+        
+        inputImages.addEventListener('change', function() {
+            imagePreview.innerHTML = '';
+            
+            for (let i = 0; i < this.files.length; i++) {
+                const file = this.files[i];
+                
+                if (!file.type.startsWith('image/')) continue;
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // Créer la prévisualisation
+                    const preview = document.createElement('div');
+                    preview.className = 'relative bg-gray-100 rounded-md overflow-hidden aspect-w-1 aspect-h-1';
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" alt="Image preview" class="object-cover w-full h-64">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-black bg-opacity-50 transition-opacity">
+                            <span class="text-white font-medium">Nouvelle image ${i+1}</span>
+                        </div>
+                    `;
+                    imagePreview.appendChild(preview);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>
+@endsection
