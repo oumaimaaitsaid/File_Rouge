@@ -239,96 +239,10 @@ class CheckoutController extends Controller
         }
     }
 
-    public function confirmPayment(Request $request, $orderId)
-    {
-        try {
-            $commande = Commande::where('id', $orderId)
-                ->where('user_id', Auth::id())
-                ->firstOrFail();
+   
 
-            if ($commande->paiement_confirme) {
-                return redirect()->back()
-                    ->with('error', 'Le paiement de cette commande est déjà confirmé');
-            }
+    
+   
 
-            $commande->update([
-                'paiement_confirme' => true,
-                'date_paiement' => now(),
-                'reference_paiement' => 'PAY-' . strtoupper(Str::random(10)),
-                'statut' => 'confirmee'
-            ]);
-
-
-            return redirect()->route('orders.show', $commande->id)
-                ->with('success', 'Paiement confirmé avec succès');
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Erreur lors de la confirmation du paiement: ' . $e->getMessage());
-        }
-    }
-
-    public function userOrders()
-    {
-        $commandes = Commande::where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return view('orders.index', compact('commandes'));
-    }
-
-    public function orderDetails($orderId)
-    {
-        try {
-            $commande = Commande::where('id', $orderId)
-                ->where('user_id', Auth::id())
-                ->with('ligneCommandes.produit')
-                ->firstOrFail();
-
-            return view('orders.show', compact('commande'));
-
-        } catch (\Exception $e) {
-            return redirect()->route('orders.index')
-                ->with('error', 'Commande non trouvée');
-        }
-    }
-
-    public function cancelOrder($orderId)
-    {
-        try {
-            $commande = Commande::where('id', $orderId)
-                ->where('user_id', Auth::id())
-                ->firstOrFail();
-
-            if ($commande->statut != 'en_attente' && $commande->statut != 'confirmee') {
-                return redirect()->back()
-                    ->with('error', 'Cette commande ne peut plus être annulée');
-            }
-
-            DB::beginTransaction();
-
-            foreach ($commande->ligneCommandes as $ligne) {
-                $produit = Produit::find($ligne->produit_id);
-                if ($produit) {
-                    $produit->update([
-                        'stock' => $produit->stock + $ligne->quantite
-                    ]);
-                }
-            }
-
-            $commande->update([
-                'statut' => 'annulee'
-            ]);
-
-            DB::commit();
-
-            return redirect()->route('orders.index')
-                ->with('success', 'Commande annulée avec succès');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->with('error', 'Erreur lors de l\'annulation de la commande: ' . $e->getMessage());
-        }
-    }
+    
 }
