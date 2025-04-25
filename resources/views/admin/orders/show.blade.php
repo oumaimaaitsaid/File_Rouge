@@ -114,6 +114,24 @@
                 <div class="bg-accent text-white p-4">
                     <h3 class="font-bold text-lg">Informations client</h3>
                 </div>
+                <div class="p-4">
+                    @if($order->user)
+                        <div class="mb-4">
+                            <h4 class="font-bold text-accent">{{ $order->user->name }} {{ $order->user->prenom }}</h4>
+                            <p class="text-gray-600">{{ $order->user->email }}</p>
+                            @if($order->user->telephone)
+                                <p class="text-gray-600">{{ $order->user->telephone }}</p>
+                            @endif
+                        </div>
+                        <div class="flex justify-end">
+                            <a href="{{ route('admin.users.show', $order->user->id) }}" class="text-primary hover:text-primary-dark text-sm">
+                                Voir le profil client <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    @else
+                        <p class="text-gray-500 italic">Client supprimé</p>
+                    @endif
+                </div>
             </div>
             
             
