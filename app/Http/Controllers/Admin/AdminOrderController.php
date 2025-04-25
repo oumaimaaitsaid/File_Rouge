@@ -50,6 +50,30 @@ class AdminOrderController extends Controller
         return view('admin.orders.show', compact('order'));
     }
     
+    public function updateStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'statut' => 'required|in:en_attente,confirmee,preparee,expediee,livree,annulee',
+        ]);
+        
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        
+        try {
+            $order = Commande::findOrFail($id);
+            $order->update(['statut' => $request->statut]);
+            
+            return redirect()->route('admin.orders.show', $id)
+                ->with('success', 'Statut de la commande mis à jour avec succès');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la mise à jour du statut: ' . $e->getMessage());
+        }
+    }
     
    
 }
