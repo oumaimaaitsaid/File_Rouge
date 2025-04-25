@@ -26,7 +26,98 @@
                 </div>
             @endif
             
+            <!-- Informations personnelles -->
+            <div class="mb-8">
+                <h3 class="text-lg font-bold text-accent mb-4 border-b pb-2">Informations personnelles</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Nom -->
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nom <span class="text-red-500">*</span></label>
+                        <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                    </div>
+                    
+                    <!-- Prénom -->
+                    <div>
+                        <label for="prenom" class="block text-sm font-medium text-gray-700 mb-1">Prénom <span class="text-red-500">*</span></label>
+                        <input type="text" id="prenom" name="prenom" value="{{ old('prenom', $user->prenom) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                    </div>
+                    
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+                        <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                    </div>
+                    
+                    <!-- Téléphone -->
+                    <div>
+                        <label for="telephone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                        <input type="text" id="telephone" name="telephone" value="{{ old('telephone', $user->telephone) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                    </div>
+                    
+                    <!-- Rôle -->
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Rôle <span class="text-red-500">*</span></label>
+                        <select id="role" name="role" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                            <option value="client" {{ old('role', $user->role) === 'client' ? 'selected' : '' }}>Client</option>
+                            <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Administrateur</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
             
+            <!-- Adresse -->
+            <div class="mb-8">
+                <h3 class="text-lg font-bold text-accent mb-4 border-b pb-2">Adresse</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Adresse -->
+                    <div class="md:col-span-2">
+                        <label for="adresse" class="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
+                        <input type="text" id="adresse" name="adresse" value="{{ old('adresse', $user->adresse) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                    </div>
+                    
+                    <!-- Ville -->
+                    <div>
+                        <label for="ville" class="block text-sm font-medium text-gray-700 mb-1">Ville</label>
+                        <input type="text" id="ville" name="ville" value="{{ old('ville', $user->ville) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                    </div>
+                    
+                    <!-- Code postal -->
+                    <div>
+                        <label for="code_postal" class="block text-sm font-medium text-gray-700 mb-1">Code postal</label>
+                        <input type="text" id="code_postal" name="code_postal" value="{{ old('code_postal', $user->code_postal) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                    </div>
+                    
+                    <!-- Pays -->
+                    <div>
+                        <label for="pays" class="block text-sm font-medium text-gray-700 mb-1">Pays</label>
+                        <input type="text" id="pays" name="pays" value="{{ old('pays', $user->pays) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sécurité -->
+            <div class="mb-8">
+                <h3 class="text-lg font-bold text-accent mb-4 border-b pb-2">Mot de passe</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Nouveau mot de passe -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Nouveau mot de passe</label>
+                        <input type="password" id="password" name="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                        <p class="mt-1 text-xs text-gray-500">
+                            Laissez vide pour conserver le mot de passe actuel.
+                        </p>
+                    </div>
+                    
+                    <!-- Confirmation du mot de passe -->
+                    <div>
+                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirmer le mot de passe</label>
+                        <input type="password" id="password_confirmation" name="password_confirmation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                    </div>
+                </div>
+            </div>
             
             <!-- Informations système -->
             <div class="mb-8 bg-gray-50 p-4 rounded-md">
