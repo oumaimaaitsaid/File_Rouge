@@ -46,5 +46,16 @@
         </div>
     </div>
     
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Colonne 1: Informations générales -->
+        <div class="md:col-span-1">
+            
+        </div>
+        
+        <!-- Colonne 2-3: Activité de l'utilisateur -->
+        <div class="md:col-span-2">
+            
+        </div>
+    </div>
 </div>
 @endsection
