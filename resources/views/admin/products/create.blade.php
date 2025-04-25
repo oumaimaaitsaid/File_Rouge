@@ -155,3 +155,48 @@
 </div>
 @endsection
 
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Prévisualisation des images
+        const inputImages = document.getElementById('images');
+        const imagePreview = document.getElementById('image-preview');
+        const imageMainSelect = document.getElementById('image_principale');
+        
+        inputImages.addEventListener('change', function() {
+            imagePreview.innerHTML = '';
+            imageMainSelect.innerHTML = '<option value="">Première image téléchargée</option>';
+            
+            for (let i = 0; i < this.files.length; i++) {
+                const file = this.files[i];
+                
+                if (!file.type.startsWith('image/')) continue;
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // Créer la prévisualisation
+                    const preview = document.createElement('div');
+                    preview.className = 'relative bg-gray-100 rounded-md overflow-hidden aspect-w-1 aspect-h-1';
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" alt="Image preview" class="object-cover w-full h-64">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-black bg-opacity-50 transition-opacity">
+                            <span class="text-white font-medium">Image ${i+1}</span>
+                        </div>
+                    `;
+                    imagePreview.appendChild(preview);
+                    
+                    // Ajouter l'option à la liste déroulante
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `Image ${i+1}`;
+                    imageMainSelect.appendChild(option);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>
+@endsection
