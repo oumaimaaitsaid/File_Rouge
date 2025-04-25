@@ -167,6 +167,146 @@
                 </div>
             </div>
             
+            <!-- Commandes récentes -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+                <div class="bg-accent text-white p-4 flex justify-between items-center">
+                    <h3 class="font-bold text-lg">Commandes récentes</h3>
+                    <a href="{{ route('admin.orders.index', ['search' => $user->email]) }}" class="text-white hover:text-secondary transition-colors duration-200">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">N° Commande</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse($user->commandes->sortByDesc('created_at')->take(5) as $order)
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <a href="{{ route('admin.orders.show', $order->id) }}" class="text-primary hover:text-primary-dark font-medium">
+                                            {{ $order->numero_commande }}
+                                        </a>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $order->created_at->format('d/m/Y H:i') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap font-medium">
+                                        {{ number_format($order->montant_total, 2) }} MAD
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($order->statut === 'en_attente')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                En attente
+                                            </span>
+                                        @elseif($order->statut === 'confirmee')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                Confirmée
+                                            </span>
+                                        @elseif($order->statut === 'preparee')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                                Préparée
+                                            </span>
+                                        @elseif($order->statut === 'expediee')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                                Expédiée
+                                            </span>
+                                        @elseif($order->statut === 'livree')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                Livrée
+                                            </span>
+                                        @elseif($order->statut === 'annulee')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                Annulée
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <a href="{{ route('admin.orders.show', $order->id) }}" class="text-primary hover:text-primary-dark">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                        Cet utilisateur n'a pas encore passé de commande
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Avis publiés -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-accent text-white p-4 flex justify-between items-center">
+                    <h3 class="font-bold text-lg">Avis publiés</h3>
+                    <a href="{{ route('admin.reviews.index', ['search' => $user->email]) }}" class="text-white hover:text-secondary transition-colors duration-200">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="p-4">
+                    @if($user->avis->count() > 0)
+                        <div class="space-y-6">
+                            @foreach($user->avis->sortByDesc('created_at')->take(3) as $review)
+                                <div class="border-b pb-6 last:border-b-0 last:pb-0">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <div class="flex items-center">
+                                                <div class="text-sm font-medium text-accent">
+                                                    {{ $review->produit->nom ?? 'Produit supprimé' }}
+                                                </div>
+                                                <div class="ml-2 flex text-yellow-400">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        @if($i <= $review->note)
+                                                            <i class="fas fa-star text-xs"></i>
+                                                        @else
+                                                            <i class="far fa-star text-xs"></i>
+                                                        @endif
+                                                    @endfor
+                                                </div>
+                                            </div>
+                                            <p class="mt-1 text-sm text-gray-600">{{ $review->commentaire }}</p>
+                                            <p class="mt-1 text-xs text-gray-500">{{ $review->created_at->format('d/m/Y') }}</p>
+                                        </div>
+                                        <div>
+                                            @if($review->approuve)
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    Approuvé
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                    En attente
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        
+                        @if($user->avis->count() > 3)
+                            <div class="mt-4 text-center">
+                                <a href="{{ route('admin.reviews.index', ['search' => $user->email]) }}" class="text-primary hover:text-primary-dark font-medium">
+                                    Voir tous les avis ({{ $user->avis->count() }})
+                                </a>
+                            </div>
+                        @endif
+                    @else
+                        <div class="text-center text-gray-500 py-4">
+                            Cet utilisateur n'a pas encore publié d'avis
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 </div>
