@@ -76,5 +76,18 @@ class AdminReviewController extends Controller
         }
     }
     
-   
+    public function destroy($id)
+    {
+        try {
+            $review = Avis::findOrFail($id);
+            $review->delete();
+            
+            return redirect()->back()
+                ->with('success', 'Avis supprimé avec succès');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la suppression de l\'avis: ' . $e->getMessage());
+        }
+    }
 }
