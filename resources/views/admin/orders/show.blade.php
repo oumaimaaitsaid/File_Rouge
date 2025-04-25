@@ -107,5 +107,19 @@
         </div>
     </div>
     
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Colonne 1: Informations client -->
+        <div class="md:col-span-1">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+                <div class="bg-accent text-white p-4">
+                    <h3 class="font-bold text-lg">Informations client</h3>
+                </div>
+            </div>
+            
+            
+        </div>
+        
+        <!-- Colonne 2: Détails de la commande -->
+    </div>
 </div>
 @endsection
