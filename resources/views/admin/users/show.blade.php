@@ -49,6 +49,58 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Colonne 1: Informations générales -->
         <div class="md:col-span-1">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+                <div class="bg-accent text-white p-4">
+                    <h3 class="font-bold text-lg">Informations personnelles</h3>
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-center mb-6">
+                        <div class="h-24 w-24 rounded-full bg-accent text-white flex items-center justify-center text-3xl">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500">Nom complet</h4>
+                            <p class="text-base font-medium">{{ $user->name }} {{ $user->prenom }}</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500">Email</h4>
+                            <p class="text-base">{{ $user->email }}</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500">Téléphone</h4>
+                            <p class="text-base">{{ $user->telephone ?? 'Non renseigné' }}</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500">Type de compte</h4>
+                            @if($user->role === 'admin')
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                    <i class="fas fa-user-shield mr-1"></i> Administrateur
+                                </span>
+                            @else
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <i class="fas fa-user mr-1"></i> Client
+                                </span>
+                            @endif
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500">Inscription</h4>
+                            <p class="text-base">{{ $user->created_at->format('d/m/Y H:i') }}</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500">Dernière mise à jour</h4>
+                            <p class="text-base">{{ $user->updated_at->format('d/m/Y H:i') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
         </div>
         
