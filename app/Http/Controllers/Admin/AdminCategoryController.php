@@ -62,7 +62,11 @@ class AdminCategoryController extends Controller
         }
     }
     
-    
+    public function edit($id)
+    {
+        $category = Categorie::findOrFail($id);
+        return view('admin.categories.edit', compact('category'));
+    }
     
    
     
