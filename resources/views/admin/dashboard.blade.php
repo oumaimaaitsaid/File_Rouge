@@ -143,7 +143,49 @@
             </div>
         </div>
         
-       
+        <!-- Produits les plus vendus -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-accent text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg">Produits les plus vendus</h3>
+                <a href="{{ route('admin.statistics.products') }}" class="text-white hover:text-secondary transition-colors duration-200">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produit</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantité vendue</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chiffre d'affaires</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($popularProducts as $product)
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap font-medium text-accent">
+                                    {{ $product->nom_produit }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900">
+                                    {{ $product->total_vendus }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" class="px-6 py-4 text-center text-gray-500">
+                                    Aucune donnée disponible
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            <div class="px-6 py-4 bg-gray-50">
+                <a href="{{ route('admin.statistics.products') }}" class="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors duration-200">
+                    Voir toutes les statistiques produits <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
     </div>
     
     
