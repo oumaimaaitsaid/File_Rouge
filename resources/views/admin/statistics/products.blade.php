@@ -50,7 +50,35 @@
     </form>
 </div>
 
-
+<!-- En-tête des résultats -->
+<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <h3 class="font-bold text-accent text-lg mb-4">Résultats pour la période : {{ $startDate->format('d/m/Y') }} - {{ $endDate->format('d/m/Y') }}</h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Total des produits vendus -->
+        <div class="bg-gray-50 rounded-lg p-4">
+            <div class="text-gray-500 text-sm mb-1">Produits vendus</div>
+            <div class="text-2xl font-bold text-accent">{{ $topProducts->sum('total_quantity') }}</div>
+            <div class="text-sm text-gray-500 mt-1">unités</div>
+        </div>
+        
+        <!-- Revenus générés -->
+        <div class="bg-gray-50 rounded-lg p-4">
+            <div class="text-gray-500 text-sm mb-1">Chiffre d'affaires</div>
+            <div class="text-2xl font-bold text-accent">{{ number_format($topProducts->sum('total_amount'), 2) }} MAD</div>
+            <div class="text-sm text-gray-500 mt-1">pour {{ $topProducts->count() }} produits différents</div>
+        </div>
+        
+        <!-- Produit le plus vendu -->
+        @if($topProducts->isNotEmpty())
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="text-gray-500 text-sm mb-1">Produit star</div>
+                <div class="text-lg font-bold text-accent">{{ $topProducts->first()->nom_produit }}</div>
+                <div class="text-sm text-gray-500 mt-1">{{ $topProducts->first()->total_quantity }} unités vendues</div>
+            </div>
+        @endif
+    </div>
+</div>
 
 
 
