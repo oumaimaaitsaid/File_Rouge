@@ -14,7 +14,11 @@
                 <div class="w-20 h-1 bg-primary"></div>
             </div>
             
-           
+            <div class="mt-4 md:mt-0">
+                <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition-colors duration-300">
+                    <i class="fas fa-arrow-left mr-2"></i> Retour à la liste
+                </a>
+            </div>
         </div>
     </div>
     
