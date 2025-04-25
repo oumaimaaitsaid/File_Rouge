@@ -138,7 +138,160 @@ public function salesStatistics(Request $request)
 
     return view('admin.statistics.sales', compact('sales', 'salesByPaymentMethod', 'period', 'startDate', 'endDate'));}
 
+public function productStatistics(Request $request)
+{
+    $period = $request->get('period', 'this_month');
+    
+    switch ($period) {
+        case 'today':
+            $startDate = now()->startOfDay();
+            $endDate = now()->endOfDay();
+            break;
+        case 'yesterday':
+            $startDate = now()->subDay()->startOfDay();
+            $endDate = now()->subDay()->endOfDay();
+            break;
+        case 'this_week':
+            $startDate = now()->startOfWeek();
+            $endDate = now()->endOfWeek();
+            break;
+        case 'last_week':
+            $startDate = now()->subWeek()->startOfWeek();
+            $endDate = now()->subWeek()->endOfWeek();
+            break;
+        case 'last_month':
+            $startDate = now()->subMonth()->startOfMonth();
+            $endDate = now()->subMonth()->endOfMonth();
+            break;
+        case 'this_year':
+            $startDate = now()->startOfYear();
+            $endDate = now()->endOfYear();
+            break;
+        case 'last_year':
+            $startDate = now()->subYear()->startOfYear();
+            $endDate = now()->subYear()->endOfYear();
+            break;
+        case 'custom':
+            $startDate = $request->has('start_date') ? \Carbon\Carbon::parse($request->start_date)->startOfDay() : now()->subDays(30)->startOfDay();
+            $endDate = $request->has('end_date') ? \Carbon\Carbon::parse($request->end_date)->endOfDay() : now()->endOfDay();
+            break;
+        default:
+            $startDate = now()->startOfMonth();
+            $endDate = now()->endOfMonth();
+    }
+    
+    $topProducts = DB::table('ligne_commandes')
+        ->join('commandes', 'ligne_commandes.commande_id', '=', 'commandes.id')
+        ->where('commandes.created_at', '>=', $startDate)
+        ->where('commandes.created_at', '<=', $endDate)
+        ->where('commandes.paiement_confirme', true)
+        ->select(
+            'ligne_commandes.produit_id',
+            'ligne_commandes.nom_produit',
+            DB::raw("SUM(ligne_commandes.quantite) as total_quantity"),
+            DB::raw("SUM(ligne_commandes.total) as total_amount")
+        )
+        ->groupBy('ligne_commandes.produit_id', 'ligne_commandes.nom_produit')
+        ->orderBy('total_quantity', 'desc')
+        ->take(10)
+        ->get();
+    
+    $topCategories = DB::table('ligne_commandes')
+        ->join('commandes', 'ligne_commandes.commande_id', '=', 'commandes.id')
+        ->join('produits', 'ligne_commandes.produit_id', '=', 'produits.id')
+        ->join('categories', 'produits.category_id', '=', 'categories.id')
+        ->where('commandes.created_at', '>=', $startDate)
+        ->where('commandes.created_at', '<=', $endDate)
+        ->where('commandes.paiement_confirme', true)
+        ->select(
+            'categories.id',
+            'categories.nom',
+            DB::raw("SUM(ligne_commandes.quantite) as total_quantity"),
+            DB::raw("SUM(ligne_commandes.total) as total_amount")
+        )
+        ->groupBy('categories.id', 'categories.nom')
+        ->orderBy('total_quantity', 'desc')
+        ->get();
+    
+    return view('admin.statistics.products', compact('topProducts', 'topCategories', 'period', 'startDate', 'endDate'));
+}
 
-
-
+public function userStatistics(Request $request)
+{
+    $period = $request->get('period', 'all_time');
+    
+    switch ($period) {
+        case 'this_month':
+            $startDate = now()->startOfMonth();
+            $endDate = now()->endOfMonth();
+            break;
+        case 'last_month':
+            $startDate = now()->subMonth()->startOfMonth();
+            $endDate = now()->subMonth()->endOfMonth();
+            break;
+        case 'this_year':
+            $startDate = now()->startOfYear();
+            $endDate = now()->endOfYear();
+            break;
+        case 'last_year':
+            $startDate = now()->subYear()->startOfYear();
+            $endDate = now()->subYear()->endOfYear();
+            break;
+        case 'custom':
+            $startDate = $request->has('start_date') ? \Carbon\Carbon::parse($request->start_date)->startOfDay() : null;
+            $endDate = $request->has('end_date') ? \Carbon\Carbon::parse($request->end_date)->endOfDay() : now()->endOfDay();
+            break;
+        default:
+            $startDate = null;
+            $endDate = now();
+    }
+    
+    $newUsersQuery = User::where('role', 'client');
+    if ($startDate) {
+        $newUsersQuery->where('created_at', '>=', $startDate);
+    }
+    $newUsersQuery->where('created_at', '<=', $endDate);
+    
+    $newUsers = $newUsersQuery->count();
+    
+    $topCustomers = DB::table('commandes')
+        ->join('users', 'commandes.user_id', '=', 'users.id')
+        ->where('commandes.paiement_confirme', true);
+    
+    if ($startDate) {
+        $topCustomers->where('commandes.created_at', '>=', $startDate);
+    }
+    $topCustomers->where('commandes.created_at', '<=', $endDate);
+    
+    $topCustomers = $topCustomers->select(
+            'users.id',
+            'users.name',
+            'users.prenom',
+            'users.email',
+            DB::raw("COUNT(commandes.id) as total_orders"),
+            DB::raw("SUM(commandes.montant_total) as total_spent")
+        )
+        ->groupBy('users.id', 'users.name', 'users.prenom', 'users.email')
+        ->orderBy('total_spent', 'desc')
+        ->take(10)
+        ->get();
+    
+    $userRegistrationByMonth = DB::table('users')
+        ->where('role', 'client');
+    
+    if ($startDate) {
+        $userRegistrationByMonth->where('created_at', '>=', $startDate);
+    }
+    $userRegistrationByMonth->where('created_at', '<=', $endDate);
+    
+    $userRegistrationByMonth = $userRegistrationByMonth->select(
+            DB::raw("to_char(created_at,'YYYY-MM') as month"),
+            DB::raw("COUNT(*) as count")
+        )
+        ->groupBy('month')
+        ->orderBy('month')
+        ->get();
+    
+    return view('admin.statistics.users', compact('newUsers', 'topCustomers', 'userRegistrationByMonth', 'period', 'startDate', 'endDate'));
+}
 }
