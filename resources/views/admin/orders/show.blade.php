@@ -92,6 +92,17 @@
                 </form>
                 
                 <!-- Formulaire de mise à jour du paiement -->
+                <form action="{{ route('admin.orders.update-payment', $order->id) }}" method="POST" class="inline-block">
+                    @csrf
+                    <input type="hidden" name="paiement_confirme" value="{{ $order->paiement_confirme ? '0' : '1' }}">
+                    <button type="submit" class="{{ $order->paiement_confirme ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700' }} text-white py-2 px-4 rounded-md transition-colors duration-300 text-sm">
+                        @if($order->paiement_confirme)
+                            <i class="fas fa-times-circle mr-1"></i> Marquer comme non payée
+                        @else
+                            <i class="fas fa-check-circle mr-1"></i> Marquer comme payée
+                        @endif
+                    </button>
+                </form>
             </div>
         </div>
     </div>
