@@ -80,7 +80,28 @@
     </div>
 </div>
 
-
+<!-- Graphiques -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- Graphique produits populaires -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="bg-accent text-white p-4">
+            <h3 class="font-bold text-lg">Top 10 des produits</h3>
+        </div>
+        <div class="p-4">
+            <canvas id="topProductsChart" height="300"></canvas>
+        </div>
+    </div>
+    
+    <!-- Graphique catégories populaires -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="bg-accent text-white p-4">
+            <h3 class="font-bold text-lg">Performance par catégorie</h3>
+        </div>
+        <div class="p-4">
+            <canvas id="topCategoriesChart" height="300"></canvas>
+        </div>
+    </div>
+</div>
 
 
 
