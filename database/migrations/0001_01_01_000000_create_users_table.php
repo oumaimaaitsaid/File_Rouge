@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('ville')->nullable();
             $table->string('code_postal')->nullable();
             $table->string('pays')->default('Maroc');
-            $table->enum('role', ['client', 'admin', 'partenaire'])->default('admin');
+            $table->enum('role', ['client', 'admin', 'partenaire'])->default('client');
             $table->rememberToken();
             $table->timestamps();
         });

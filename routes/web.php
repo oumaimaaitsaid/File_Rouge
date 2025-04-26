@@ -20,7 +20,7 @@ use App\Http\Controllers\Admin\AdminPromotionController;
 use App\Http\Controllers\Admin\AdminReviewController;
 
 //routes pour  l admin
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
     // Tableau de bord
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     
