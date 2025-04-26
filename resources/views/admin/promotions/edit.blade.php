@@ -198,3 +198,42 @@
 </div>
 @endsection
 
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialiser le sélecteur de dates
+        flatpickr(".datepicker", {
+            dateFormat: "Y-m-d",
+            allowInput: true
+        });
+        
+        // Gestion du type de remise
+        const typeSelect = document.getElementById('type');
+        const valeurContainer = document.getElementById('valeur-container');
+        const valeurInput = document.getElementById('valeur');
+        const valeurSuffix = document.getElementById('valeur-suffix');
+        
+        function updateValeurVisibility() {
+            if (typeSelect.value === 'livraison_gratuite') {
+                valeurContainer.classList.add('hidden');
+                valeurInput.removeAttribute('required');
+            } else {
+                valeurContainer.classList.remove('hidden');
+                valeurInput.setAttribute('required', 'required');
+                
+                if (typeSelect.value === 'pourcentage') {
+                    valeurSuffix.textContent = '%';
+                    valeurInput.setAttribute('max', '100');
+                } else if (typeSelect.value === 'montant') {
+                    valeurSuffix.textContent = 'MAD';
+                    valeurInput.removeAttribute('max');
+                }
+            }
+        }
+        
+        typeSelect.addEventListener('change', updateValeurVisibility);
+        updateValeurVisibility();
+    });
+</script>
+@endsection
