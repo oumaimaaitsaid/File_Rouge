@@ -15,7 +15,6 @@
         <div class="w-20 h-1 bg-primary"></div>
     </div>
     
-    <!-- Filtres de période -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-8">
         <form action="{{ route('admin.statistics.sales') }}" method="GET" class="space-y-4 md:space-y-0 md:flex md:items-end md:space-x-4">
             <div class="flex-1">
@@ -54,9 +53,7 @@
         </form>
     </div>
     
-    <!-- Résumé des ventes -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <!-- Statistique Commandes -->
         <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-blue-500 hover:shadow-lg transition-shadow duration-300">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-bold text-accent text-lg">Commandes</h3>
@@ -68,7 +65,6 @@
             <p class="text-gray-500 text-sm">Total des commandes</p>
         </div>
         
-        <!-- Statistique Revenus -->
         <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-green-500 hover:shadow-lg transition-shadow duration-300">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-bold text-accent text-lg">Revenus</h3>
@@ -80,7 +76,6 @@
             <p class="text-gray-500 text-sm">Revenus totaux</p>
         </div>
         
-        <!-- Statistique Commande moyenne -->
         <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-amber-500 hover:shadow-lg transition-shadow duration-300">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-bold text-accent text-lg">Panier moyen</h3>
@@ -95,7 +90,6 @@
             <p class="text-gray-500 text-sm">Valeur moyenne des commandes</p>
         </div>
         
-        <!-- Statistique clients -->
         <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-purple-500 hover:shadow-lg transition-shadow duration-300">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-bold text-accent text-lg">Période</h3>
@@ -110,9 +104,7 @@
         </div>
     </div>
     
-    <!-- Graphiques -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <!-- Graphique évolution des ventes -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="bg-accent text-white p-4">
                 <h3 class="font-bold text-lg">Évolution des ventes</h3>
@@ -122,7 +114,6 @@
             </div>
         </div>
         
-        <!-- Graphique des méthodes de paiement -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="bg-accent text-white p-4">
                 <h3 class="font-bold text-lg">Méthodes de paiement</h3>
@@ -133,7 +124,6 @@
         </div>
     </div>
     
-    <!-- Tableau détaillé -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
         <div class="bg-accent text-white p-4">
             <h3 class="font-bold text-lg">Détail des ventes par jour</h3>
@@ -176,7 +166,6 @@
         </div>
     </div>
     
-    <!-- Tableau méthodes de paiement -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="bg-accent text-white p-4">
             <h3 class="font-bold text-lg">Répartition par méthode de paiement</h3>
@@ -245,12 +234,10 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialiser le sélecteur de dates
         flatpickr(".datepicker", {
             dateFormat: "Y-m-d",
         });
         
-        // Afficher/masquer les champs de date personnalisée
         const periodSelect = document.getElementById('period');
         const customDateContainer = document.getElementById('custom-date-container');
         
