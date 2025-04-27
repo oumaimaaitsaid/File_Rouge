@@ -241,3 +241,146 @@
 </div>
 @endsection
 
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialiser le sélecteur de dates
+        flatpickr(".datepicker", {
+            dateFormat: "Y-m-d",
+        });
+        
+        // Afficher/masquer les champs de date personnalisée
+        const periodSelect = document.getElementById('period');
+        const customDateContainer = document.getElementById('custom-date-container');
+        
+        periodSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customDateContainer.classList.remove('hidden');
+            } else {
+                customDateContainer.classList.add('hidden');
+            }
+        });
+        
+        const salesData = @json($sales);
+        const salesLabels = salesData.map(item => {
+            const date = new Date(item.date);
+            return date.toLocaleDateString('fr-FR');
+        });
+        const salesValues = salesData.map(item => item.total);
+        const orderCounts = salesData.map(item => item.count);
+        
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: salesLabels,
+                datasets: [
+                    {
+                        label: 'Revenus (MAD)',
+                        data: salesValues,
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Nombre de commandes',
+                        data: orderCounts,
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Revenus (MAD)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                        title: {
+                            display: true,
+                            text: 'Nombre de commandes'
+                        }
+                    }
+                }
+            }
+        });
+        
+        const paymentData = @json($salesByPaymentMethod);
+        const paymentLabels = paymentData.map(item => {
+            switch(item.methode_paiement) {
+                case 'carte': return 'Carte bancaire';
+                case 'livraison': return 'Paiement à la livraison';
+                case 'virement': return 'Virement bancaire';
+                default: return item.methode_paiement;
+            }
+        });
+        const paymentValues = paymentData.map(item => item.total);
+        const paymentColors = [
+            'rgba(59, 130, 246, 0.7)',
+            'rgba(16, 185, 129, 0.7)',
+            'rgba(139, 92, 246, 0.7)',
+            'rgba(245, 158, 11, 0.7)',
+            'rgba(239, 68, 68, 0.7)'
+        ];
+        
+        const paymentCtx = document.getElementById('paymentMethodsChart').getContext('2d');
+        new Chart(paymentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: paymentLabels,
+                datasets: [{
+                    data: paymentValues,
+                    backgroundColor: paymentColors,
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                
+                                return `${label}: ${value.toFixed(2)} MAD (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+@endsection
