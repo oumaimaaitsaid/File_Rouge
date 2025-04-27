@@ -95,7 +95,19 @@
             <p class="text-gray-500 text-sm">Valeur moyenne des commandes</p>
         </div>
         
-     
+        <!-- Statistique clients -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-purple-500 hover:shadow-lg transition-shadow duration-300">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-accent text-lg">Période</h3>
+                <div class="rounded-full bg-purple-100 p-3 text-purple-500">
+                    <i class="fas fa-calendar text-xl"></i>
+                </div>
+            </div>
+            <div class="text-xl font-bold text-accent mb-2">
+                {{ $startDate->format('d/m/Y') }} - {{ $endDate->format('d/m/Y') }}
+            </div>
+            <p class="text-gray-500 text-sm">{{ $endDate->diffInDays($startDate) + 1 }} jours</p>
+        </div>
     </div>
     
    
