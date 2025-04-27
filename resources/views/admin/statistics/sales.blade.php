@@ -176,7 +176,68 @@
         </div>
     </div>
     
- 
+    <!-- Tableau méthodes de paiement -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="bg-accent text-white p-4">
+            <h3 class="font-bold text-lg">Répartition par méthode de paiement</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Méthode de paiement</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre de commandes</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenus</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">% des revenus</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @php
+                        $totalRevenue = $salesByPaymentMethod->sum('total');
+                    @endphp
+                    @forelse($salesByPaymentMethod as $method)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">
+                                @if($method->methode_paiement == 'carte')
+                                    <span class="inline-flex items-center">
+                                        <i class="fas fa-credit-card mr-2 text-blue-500"></i>
+                                        Carte bancaire
+                                    </span>
+                                @elseif($method->methode_paiement == 'livraison')
+                                    <span class="inline-flex items-center">
+                                        <i class="fas fa-money-bill-wave mr-2 text-green-500"></i>
+                                        Paiement à la livraison
+                                    </span>
+                                @elseif($method->methode_paiement == 'virement')
+                                    <span class="inline-flex items-center">
+                                        <i class="fas fa-university mr-2 text-purple-500"></i>
+                                        Virement bancaire
+                                    </span>
+                                @else
+                                    {{ ucfirst($method->methode_paiement) }}
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ $method->count }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">
+                                {{ number_format($method->total, 2) }} MAD
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ number_format($totalRevenue > 0 ? ($method->total / $totalRevenue) * 100 : 0, 2) }}%
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                                Aucune donnée disponible pour cette période
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 @endsection
 
