@@ -133,7 +133,49 @@
         </div>
     </div>
     
-   
+    <!-- Tableau détaillé -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <div class="bg-accent text-white p-4">
+            <h3 class="font-bold text-lg">Détail des ventes par jour</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre de commandes</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenus</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Panier moyen</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($sales as $day)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">
+                                {{ \Carbon\Carbon::parse($day->date)->format('d/m/Y') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ $day->count }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">
+                                {{ number_format($day->total, 2) }} MAD
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ number_format($day->count > 0 ? $day->total / $day->count : 0, 2) }} MAD
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                                Aucune donnée disponible pour cette période
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
  
 </div>
 @endsection
