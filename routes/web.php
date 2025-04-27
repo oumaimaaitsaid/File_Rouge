@@ -75,10 +75,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
     
-    // Route pour soumettre un nouvel avis sur un produit
     Route::post('/products/{productId}/reviews', [ReviewController::class, 'store'])->name('products.review');
     
-     // Routes pour les avis de l'utilisateur connecté
      Route::get('/user/reviews', [ReviewController::class, 'userReviews'])->name('user.reviews');
      Route::get('/reviews/{id}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
      Route::put('/reviews/{id}', [ReviewController::class, 'update'])->name('reviews.update');

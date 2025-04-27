@@ -50,7 +50,7 @@ class ReviewController extends Controller
                 'produit_id' => $productId,
                 'note' => $request->note,
                 'commentaire' => $request->commentaire,
-                'approuve' => false // L'avis doit être approuvé par un admin
+                'approuve' => false 
             ]);
             
             return redirect()->back()
@@ -62,7 +62,6 @@ class ReviewController extends Controller
         }
     }
     
-    // Formulaire pour modifier un avis
     public function edit($id)
     {
         $review = Avis::where('id', $id)
@@ -74,7 +73,6 @@ class ReviewController extends Controller
         return view('reviews.edit', compact('review', 'product'));
     }
     
-    // Mettre à jour un avis
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [

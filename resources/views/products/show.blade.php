@@ -84,7 +84,7 @@
                             @php
                                 $rating = $product->noteMoyenne();
                                 $fullStars = floor($rating);
-                                $halfStar = round($rating) > $fullStars;
+                                $halfStar = floor($rating) > $fullStars;
                             @endphp
                             
                             @for($i = 1; $i <= 5; $i++)
@@ -98,7 +98,7 @@
                             @endfor
                         </div>
                         <span class="text-sm text-gray-500 ml-2">
-                            {{ $rating }} ({{ $product->avis()->where('approuve', true)->count() }} avis)
+                            {{round($rating,1)}} ({{ $product->avis()->where('approuve', true)->count() }} avis)
                         </span>
                     </div>
                     
@@ -161,8 +161,11 @@
                         
                         <button 
                             onclick="addToCartWithQuantity({{ $product->id }}, '{{ $product->nom }}', {{ $product->prix_promo ?? $product->prix }}, '{{ $product->imagePrincipale ? asset('storage/' . $product->imagePrincipale->chemin) : asset('images/placeholder.jpg') }}')"
-                            class="flex-grow bg-primary hover:bg-primary-dark text-white py-3 px-4 rounded-md transition-colors duration-200 flex items-center justify-center">
-                            <i class="fas fa-shopping-cart mr-2"></i> Ajouter au panier
+                            class="flex-grow {{ $product->stock > 0 ? 'bg-primary hover:bg-primary-dark' : 'bg-gray-400 cursor-not-allowed'}} text-white py-3 px-4 rounded-md transition-colors duration-200 flex items-center justify-center"
+                            {{ $product->stock <= 0 ? 'disabled' : '' }}>
+                           
+                            <i class="fas fa-shopping-cart mr-2"></i> 
+                           {{ $product->stock > 0 ? 'Ajouter au panier' :'Rupture de stock'}} 
                         </button>
                         
                         <button class="bg-white border border-gray-300 hover:border-primary text-gray-700 hover:text-primary p-3 rounded-md transition-colors duration-200">
