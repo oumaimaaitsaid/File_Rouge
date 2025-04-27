@@ -110,7 +110,28 @@
         </div>
     </div>
     
-   
+    <!-- Graphiques -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- Graphique évolution des ventes -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-accent text-white p-4">
+                <h3 class="font-bold text-lg">Évolution des ventes</h3>
+            </div>
+            <div class="p-4">
+                <canvas id="salesChart" height="300"></canvas>
+            </div>
+        </div>
+        
+        <!-- Graphique des méthodes de paiement -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-accent text-white p-4">
+                <h3 class="font-bold text-lg">Méthodes de paiement</h3>
+            </div>
+            <div class="p-4">
+                <canvas id="paymentMethodsChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
     
    
  
