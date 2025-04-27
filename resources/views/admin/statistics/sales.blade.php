@@ -54,7 +54,49 @@
         </form>
     </div>
     
-   
+    <!-- Résumé des ventes -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Statistique Commandes -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-blue-500 hover:shadow-lg transition-shadow duration-300">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-accent text-lg">Commandes</h3>
+                <div class="rounded-full bg-blue-100 p-3 text-blue-500">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                </div>
+            </div>
+            <div class="text-3xl font-bold text-accent mb-2">{{ $sales->sum('count') }}</div>
+            <p class="text-gray-500 text-sm">Total des commandes</p>
+        </div>
+        
+        <!-- Statistique Revenus -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-green-500 hover:shadow-lg transition-shadow duration-300">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-accent text-lg">Revenus</h3>
+                <div class="rounded-full bg-green-100 p-3 text-green-500">
+                    <i class="fas fa-money-bill text-xl"></i>
+                </div>
+            </div>
+            <div class="text-3xl font-bold text-accent mb-2">{{ number_format($sales->sum('total'), 2) }} MAD</div>
+            <p class="text-gray-500 text-sm">Revenus totaux</p>
+        </div>
+        
+        <!-- Statistique Commande moyenne -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-amber-500 hover:shadow-lg transition-shadow duration-300">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-accent text-lg">Panier moyen</h3>
+                <div class="rounded-full bg-amber-100 p-3 text-amber-500">
+                    <i class="fas fa-shopping-basket text-xl"></i>
+                </div>
+            </div>
+            @php
+                $averageOrder = $sales->sum('count') > 0 ? $sales->sum('total') / $sales->sum('count') : 0;
+            @endphp
+            <div class="text-3xl font-bold text-accent mb-2">{{ number_format($averageOrder, 2) }} MAD</div>
+            <p class="text-gray-500 text-sm">Valeur moyenne des commandes</p>
+        </div>
+        
+     
+    </div>
     
    
     
