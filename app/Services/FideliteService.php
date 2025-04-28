@@ -72,6 +72,21 @@ class FideliteService
         $user = User::find($userId);
         return $user->a_recu_code_fidelite;
     }
-  
+    protected function marquerCodeEnvoye($userId)
+    {
+        $user = User::find($userId);
+        $user->a_recu_code_fidelite = true;
+        $user->date_code_fidelite = now();
+        $user->save();
+        
+        Log::info("Utilisateur #{$userId} marqué comme ayant reçu un code promo");
+    }
+    
+    /**
+     * Marquer qu'un utilisateur a reçu un code promo
+     * 
+     * @param int $userId
+     */
+   
   
 }
