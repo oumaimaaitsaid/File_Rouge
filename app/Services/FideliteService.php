@@ -61,7 +61,17 @@ class FideliteService
         }
     }
     
-  
+    /**
+     * Vérifier si un utilisateur a déjà reçu un code promo récemment
+     * 
+     * @param int $userId
+     * @return bool
+     */
+    protected function aDejaRecuCodePromo($userId)
+    {
+        $user = User::find($userId);
+        return $user->a_recu_code_fidelite;
+    }
   
   
 }
