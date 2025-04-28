@@ -88,5 +88,28 @@ class FideliteService
      * @param int $userId
      */
    
-  
+    
+    /**
+     * Envoyer un code promo à un utilisateur
+     *
+     * @param User $user
+     * @param string $codePromo
+     */
+    protected function envoyerCodePromo(User $user, $codePromo)
+    {
+        try {
+            Mail::send('emails.code-promo-fidelite', [
+                'user' => $user,
+                'codePromo' => $codePromo
+            ], function ($message) use ($user) {
+                $message->to($user->email)
+                        ->subject('Merci pour votre fidélité - Votre code promo');
+            });
+            
+            Log::info("Code promo envoyé à l'utilisateur #{$user->id} ({$user->email})");
+            
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de l'envoi du code promo: " . $e->getMessage());
+        }
+    }
 }
