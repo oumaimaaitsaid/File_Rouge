@@ -21,6 +21,8 @@ class User extends Authenticatable
     'code_postal',
     'pays',
     'role',
+    'a_recu_code_fidelite',
+    'date_code_fidelite',
    ];
 
    protected $hidden=[
@@ -31,6 +33,8 @@ class User extends Authenticatable
    protected $casts =[
     'email_verified_at' =>'datetime',
     'password' =>'hashed',
+    'a_recu_code_fidelite' => 'boolean',
+    'date_code_fidelite' => 'datetime',
    ];
 //check if user is admin
    public function isAdmin(){
