@@ -174,48 +174,97 @@ class CartController extends Controller
     }
 }
 
-    public function updateItem(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'cart_item_id' => 'required|exists:cart_items,id',
-            'quantity' => 'required|integer|min:1'
+     
+public function updateItem(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'cart_item_id' => 'required|exists:cart_items,id',
+        'quantity' => 'required|integer|min:1',
+    ]);
+
+    if ($validator->fails()) {
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput();
+    }
+
+    try {
+        $cartItem = CartItem::findOrFail($request->cart_item_id);
+        
+        if (Auth::check() && Auth::id() !== $cartItem->cart->user_id) {
+            throw new \Exception('Unauthorized');
+        }
+        
+        $product = Produit::findOrFail($cartItem->produit_id);
+        
+        if ($request->quantity > $product->stock) {
+            $message = "Quantité non disponible. Stock disponible: {$product->stock}";
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message
+                ]);
+            }
+            
+            return redirect()->back()->with('error', $message);
+        }
+        
+        $cartItem->update([
+            'quantite' => $request->quantity
         ]);
         
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+        $cart = $cartItem->cart;
+        $cartItems = $cart->items()->with('produit')->get();
+        $subtotal = $cart->total();
+        
+        $cartData = [
+            'subtotal' => $subtotal,
+            'total' => $subtotal, 
+            'items' => $cartItems->map(function($item) {
+                return [
+                    'id' => $item->id,
+                    'product_id' => $item->produit_id,
+                    'name' => $item->produit->nom,
+                    'price' => (float)$item->prix_unitaire,
+                    'quantity' => $item->quantite,
+                    'total' => (float)($item->prix_unitaire * $item->quantite),
+                    'image' => $item->produit->imagePrincipale ? 
+                            asset('storage/' . $item->produit->imagePrincipale->chemin) : 
+                            asset('images/placeholder.jpg')
+                ];
+            })
+        ];
+        
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Panier mis à jour avec succès',
+                'cart' => $cartData
+            ]);
         }
         
-        try {
-            $cartItem = CartItem::findOrFail($request->cart_item_id);
-            
-            $cart = $this->getOrCreateCart($request);
-            
-            if ($cartItem->cart_id != $cart->id) {
-                if (!Auth::check() || !Cart::where('id', $cartItem->cart_id)->where('user_id', Auth::id())->exists()) {
-                    return redirect()->back()
-                        ->with('error', 'Vous n\'êtes pas autorisé à modifier cet élément');
-                }
-            }
-            
-            if ($cartItem->produit->stock < $request->quantity) {
-                return redirect()->back()
-                    ->with('error', 'Stock insuffisant');
-            }
-            
-            $cartItem->update([
-                'quantite' => $request->quantity
+        return redirect()->back()->with('success', 'Panier mis à jour avec succès');
+        
+    } catch (\Exception $e) {
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour du panier: ' . $e->getMessage()
             ]);
-            
-            return redirect()->route('cart.index')
-                ->with('success', 'Panier mis à jour');
-            
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Erreur lors de la mise à jour de l\'article: ' . $e->getMessage());
         }
+        
+        return redirect()->back()->with('error', 'Erreur lors de la mise à jour du panier: ' . $e->getMessage());
     }
+}
+
 
     public function removeItem(Request $request, $id)
     {

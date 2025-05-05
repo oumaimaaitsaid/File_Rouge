@@ -188,15 +188,12 @@
         const cartItemId = form.querySelector('input[name="cart_item_id"]').value;
         const quantity = input.value;
         
-        // Create form data
         const formData = new FormData();
         formData.append('cart_item_id', cartItemId);
         formData.append('quantity', quantity);
         
-        // Get CSRF token
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         
-        // Send AJAX request
         fetch('/cart/update', {
             method: 'POST',
             headers: {
@@ -209,10 +206,8 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Update item price display and cart totals
                 updatePricesDisplay(data.cart);
                 
-                // Show success notification
                 showNotification('Panier mis à jour', 'success');
             } else {
                 showNotification(data.message || 'Erreur lors de la mise à jour du panier', 'error');
@@ -225,7 +220,6 @@
     }
 
     function updatePricesDisplay(cartData) {
-        // Update individual item totals
         if (cartData && cartData.items) {
             cartData.items.forEach(item => {
                 const itemTotalElement = document.querySelector(`tr[data-item-id="${item.id}"] .item-total`);
@@ -235,7 +229,6 @@
             });
         }
         
-        // Update cart summary
         if (cartData) {
             const subtotalElement = document.getElementById('cart-subtotal');
             const totalElement = document.getElementById('cart-total');
