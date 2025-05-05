@@ -125,8 +125,8 @@ Route::get('/', function () {
         ->get();
         
     $categories = \App\Models\Categorie::where('active', true)->take(4)->get();
-    
-    return view('home', compact('featuredProducts', 'recentProducts', 'categories'));
+    $avis =\App\Models\Avis::with('user')->where('approuve',true)->orderBy('note','desc')->take(3)->get();
+    return view('home', compact('featuredProducts', 'recentProducts', 'categories','avis'));
 })->name('home');
 
 // Routes pour les pages statiques

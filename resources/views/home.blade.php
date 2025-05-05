@@ -3,15 +3,11 @@
 @section('title', config('app.name') . ' - Accueil')
 
 @section('content')
-    <!-- Section Hero -->
     <div class="relative h-screen min-h-[600px] max-h-[800px] overflow-hidden">
-        <!-- Image de fond (remplacez l'URL par une image que vous avez) -->
         <div class="absolute inset-0 bg-cover bg-center" style="background-image: url({{asset('storage/images/home/banner.jpg')}});">
-            <!-- Overlay -->
             <div class="absolute inset-0 bg-black opacity-50"></div>
         </div>
         
-        <!-- Contenu -->
         <div class="container mx-auto px-4 h-full flex items-center relative z-10">
             <div class="max-w-2xl text-white">
                 <h6 class="text-secondary font-medium tracking-widest uppercase mb-4">
@@ -263,6 +259,7 @@
             <!-- Grille des témoignages -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Témoignage 1 -->
+                 @forelse($avis as $temoignage)
                 <div class="bg-gray-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
                     <!-- Icône de guillemet -->
                     <div class="text-primary opacity-20 mb-4">
@@ -271,103 +268,44 @@
                     
                     <!-- Étoiles -->
                     <div class="flex text-yellow-400 mb-4">
+                        @for($i =0 ;$i <$temoignage->note;$i++)
                         <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
+                        @endfor
+                        @for($i = $temoignage->note; $i < 5 ; $i++)
+                        <i class="far fa-star"></i>
+                        @endfor
+                      
                     </div>
                     
                     <!-- Témoignage -->
                     <p class="text-gray-600 italic mb-6">
-                        "Les pâtisseries sont absolument délicieuses ! On retrouve le goût authentique. La livraison était rapide et soignée. Je recommande vivement !"
+                        "{{ $temoignage->commentaire}}"
                     </p>
                     
                     <!-- Personne -->
                     <div class="flex items-center">
                         <div class="w-12 h-12 rounded-full bg-gray-300 mr-4 flex items-center justify-center text-gray-500">
+                        @if($temoignage->user && $temoignage->user->avatar)
+                        <img src="{{ asset($temoignage->user->avatar) }}" alt="{{ $temoignage->user->name }}" class="w-full h-full rounded-full object-cover">
+                        @else
                             <i class="fas fa-user"></i>
+                        @endif 
                         </div>
                         <div>
-                            <h4 class="font-bold text-accent">Client 1</h4>
-                            <p class="text-gray-500 text-sm">Client fidèle</p>
+                            <h4 class="font-bold text-accent">{{ $temoignage->user ? $temoignage->user->name : 'Client' }}</h4>
+                            <p class="text-gray-500 text-sm">{{ $temoignage->produit ? $temoignage->produit->nom : 'Client fidèle' }}</p>
                         </div>
                     </div>
                 </div>
+                @empty
+                <div class="col-span-3 text-center text-gray-500 py-8">
+                    <p>Aucun témoignage disponible pour le moment.</p>
+                </div>
+            @endforelse
                 
-                <!-- Témoignage 2 -->
-                <div class="bg-gray-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <!-- Icône de guillemet -->
-                    <div class="text-primary opacity-20 mb-4">
-                        <i class="fas fa-quote-left text-4xl"></i>
-                    </div>
-                    
-                    <!-- Étoiles -->
-                    <div class="flex text-yellow-400 mb-4">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-           <!-- Témoignage -->
-           <p class="text-gray-600 italic mb-6">
-                        "J'ai commandé un assortiment pour l'Aïd et toute ma famille a adoré. Les gâteaux sont frais, parfumés et rappellent ceux de ma grand-mère. Un vrai délice!"
-                    </p>
-                    
-                    <!-- Personne -->
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 rounded-full bg-gray-300 mr-4 flex items-center justify-center text-gray-500">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-accent">Client 2</h4>
-                            <p class="text-gray-500 text-sm">Événementiel</p>
-                        </div>
-                    </div>
-                </div>
                 
-                <!-- Témoignage 3 -->
-                <div class="bg-gray-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <!-- Icône de guillemet -->
-                    <div class="text-primary opacity-20 mb-4">
-                        <i class="fas fa-quote-left text-4xl"></i>
-                    </div>
-                    
-                    <!-- Étoiles -->
-                    <div class="flex text-yellow-400 mb-4">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    
-                    <!-- Témoignage -->
-                    <p class="text-gray-600 italic mb-6">
-                        "Première commande et je suis conquise ! La qualité est remarquable, les saveurs sont subtiles et équilibrées. Le service client est également impeccable."
-                    </p>
-                    
-                    <!-- Personne -->
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 rounded-full bg-gray-300 mr-4 flex items-center justify-center text-gray-500">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-accent">Client 3</h4>
-                            <p class="text-gray-500 text-sm">Nouvelle cliente</p>
-                        </div>
-                    </div>
-                </div>
             </div>
             
-            <!-- Invitation à laisser un avis -->
-            <div class="text-center mt-12">
-                <p class="text-gray-600 mb-4">Vous avez goûté nos pâtisseries ? Partagez votre expérience !</p>
-                <a href="#" class="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors duration-200">
-                    Laisser un avis <i class="fas fa-arrow-right ml-2"></i>
-                </a>
-            </div>
         </div>
     </section>
     

@@ -34,7 +34,7 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             @foreach($cartItems as $item)
-                                <tr>
+                                <tr data-item-id="{{ $item->id }}">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="h-16 w-16 flex-shrink-0">
@@ -74,7 +74,7 @@
                                         </form>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900 font-medium">{{ number_format($item->prix_unitaire * $item->quantite, 2) }} MAD</div>
+                                        <div class="text-sm text-gray-900 font-medium item-total">{{ number_format($item->prix_unitaire * $item->quantite, 2) }} MAD</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
                                         <form action="{{ route('cart.remove', $item->id) }}" method="POST" class="inline">
@@ -130,11 +130,11 @@
                     <div class="mt-4 bg-gray-50 p-4 rounded-md">
                         <div class="flex justify-between mb-2">
                             <span class="text-gray-600">Sous-total:</span>
-                            <span class="font-medium">{{ number_format($total, 2) }} MAD</span>
+                            <span id="cart-subtotal"  class="font-medium">{{ number_format($total, 2) }} MAD</span>
                         </div>
                         <div class="flex justify-between font-bold text-lg border-t border-gray-300 pt-3 mt-3">
                             <span class="text-gray-800">Total:</span>
-                            <span class="text-primary">{{ number_format($total, 2) }} MAD</span>
+                            <span id="cart-total" class="text-primary">{{ number_format($total, 2) }} MAD</span>
                         </div>
                     </div>
                     
@@ -169,6 +169,7 @@
         const currentValue = parseInt(input.value);
         if (currentValue > 1) {
             input.value = currentValue - 1;
+            updateCartItemQuantity(input); 
         }
     }
     
@@ -178,6 +179,74 @@
         const maxValue = parseInt(input.max);
         if (currentValue < maxValue) {
             input.value = currentValue + 1;
+            updateCartItemQuantity(input);
+        }
+    }
+
+    function updateCartItemQuantity(input) {
+        const form = input.closest('form');
+        const cartItemId = form.querySelector('input[name="cart_item_id"]').value;
+        const quantity = input.value;
+        
+        // Create form data
+        const formData = new FormData();
+        formData.append('cart_item_id', cartItemId);
+        formData.append('quantity', quantity);
+        
+        // Get CSRF token
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
+        // Send AJAX request
+        fetch('/cart/update', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update item price display and cart totals
+                updatePricesDisplay(data.cart);
+                
+                // Show success notification
+                showNotification('Panier mis à jour', 'success');
+            } else {
+                showNotification(data.message || 'Erreur lors de la mise à jour du panier', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            showNotification('Erreur lors de la mise à jour du panier', 'error');
+        });
+    }
+
+    function updatePricesDisplay(cartData) {
+        // Update individual item totals
+        if (cartData && cartData.items) {
+            cartData.items.forEach(item => {
+                const itemTotalElement = document.querySelector(`tr[data-item-id="${item.id}"] .item-total`);
+                if (itemTotalElement) {
+                    itemTotalElement.textContent = `${item.total.toFixed(2)} MAD`;
+                }
+            });
+        }
+        
+        // Update cart summary
+        if (cartData) {
+            const subtotalElement = document.getElementById('cart-subtotal');
+            const totalElement = document.getElementById('cart-total');
+            
+            if (subtotalElement) {
+                subtotalElement.textContent = `${cartData.subtotal.toFixed(2)} MAD`;
+            }
+            
+            if (totalElement) {
+                totalElement.textContent = `${cartData.total.toFixed(2)} MAD`;
+            }
         }
     }
 </script>

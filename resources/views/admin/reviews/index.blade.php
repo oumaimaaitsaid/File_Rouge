@@ -133,7 +133,8 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $review->created_at->format('d/m/Y H:i') }}
+                            {{ $review->created_at ? $review->created_at->format('d/m/Y H:i') : 'Date inconnue' }}
+
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if($review->approuve)

@@ -240,7 +240,7 @@
                                                     @endfor
                                                 </div>
                                             </div>
-                                            <span class="text-sm text-gray-500">{{ $avis->created_at->format('d/m/Y') }}</span>
+                                            <span class="text-sm text-gray-500">{{ $avis->created_at ?$avis->created_at->format('d/m/Y') :'date non trouve' }}</span>
                                         </div>
                                         <p class="text-gray-700 mt-2">{{ $avis->commentaire }}</p>
                                     </div>
