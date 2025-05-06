@@ -32,7 +32,7 @@
                         <button @click="open = !open" @click.away="open = false" class="font-medium text-accent hover:text-primary transition-colors duration-200 flex items-center {{ Request::is('categories*') ? 'text-primary' : '' }}">
                             Catégories <i class="fas fa-chevron-down ml-1 text-xs"></i>
                         </button>
-                        <div x-show="open" x-transition x-cloak class="absolute z-10 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
+                        <div x-show="open" x-transition x-cloak class="absolute z-20 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
                             @php
                                 $categories = \App\Models\Categorie::where('active', true)->orderBy('nom')->get();
                             @endphp
@@ -57,7 +57,7 @@
                         <button @click="open = !open" class="text-accent hover:text-primary transition-colors duration-200">
                             <i class="fas fa-search"></i>
                         </button>
-                        <div x-show="open" x-transition x-cloak class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg p-2 z-10">
+                        <div x-show="open" x-transition x-cloak class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg p-2 z-20">
                             <form action="{{ route('products.index') }}" method="GET" class="flex">
                                 <input type="text" name="search" placeholder="Rechercher..." class="flex-grow px-3 py-1 border border-gray-300 rounded-l focus:outline-none focus:ring-1 focus:ring-primary">
                                 <button type="submit" class="bg-primary text-white px-3 py-1 rounded-r hover:bg-primary-dark transition-colors duration-200">
@@ -97,7 +97,7 @@
                         <button @click="open = !open" class="text-accent hover:text-primary transition-colors duration-200">
                             <i class="fas fa-chevron-down text-xs ml-1"></i>
                         </button>
-                        <div x-show="open" x-transition x-cloak class="absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg p-3 z-10">
+                        <div x-show="open" x-transition x-cloak class="absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg p-3 z-20">
                             @if($cartCount == 0)
                                 <div class="text-center py-4">
                                     <p class="text-gray-500">Votre panier est vide</p>

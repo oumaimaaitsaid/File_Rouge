@@ -207,8 +207,10 @@
         .then(data => {
             if (data.success) {
                 updatePricesDisplay(data.cart);
+                updateCartDisplay();
                 
                 showNotification('Panier mis à jour', 'success');
+
             } else {
                 showNotification(data.message || 'Erreur lors de la mise à jour du panier', 'error');
             }

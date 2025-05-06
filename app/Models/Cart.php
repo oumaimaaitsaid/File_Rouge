@@ -33,6 +33,6 @@ class Cart extends Model
 
     public function itemCount()
     {
-        return $this->items->sum('quantite');
+        return $this->items->count();
     }
 }
