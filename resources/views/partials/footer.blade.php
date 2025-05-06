@@ -34,7 +34,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/catalog') }}" class="text-gray-300 hover:text-primary-light transition-colors duration-200">
+                        <a href="{{ url('/products') }}" class="text-gray-300 hover:text-primary-light transition-colors duration-200">
                             <i class="fas fa-angle-right mr-2 text-primary-light"></i>Catalogue
                         </a>
                     </li>
@@ -48,52 +48,37 @@
                             <i class="fas fa-angle-right mr-2 text-primary-light"></i>Contact
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ url('/terms') }}" class="text-gray-300 hover:text-primary-light transition-colors duration-200">
-                            <i class="fas fa-angle-right mr-2 text-primary-light"></i>Conditions générales
-                        </a>
-                    </li>
+                   
                 </ul>
             </div>
             
             <!-- Catégories -->
             <div>
-                <h3 class="font-playfair text-xl font-bold mb-4">Nos Catégories</h3>
-                <ul class="space-y-2">
-                    <li>
-                        <a href="{{ url('/catalog', ['category' => 'gateaux-amandes']) }}" class="text-gray-300 hover:text-primary-light transition-colors duration-200">
-                            <i class="fas fa-angle-right mr-2 text-primary-light"></i>Gâteaux aux Amandes
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url('/catalog', ['category' => 'gateaux-miel']) }}" class="text-gray-300 hover:text-primary-light transition-colors duration-200">
-                            <i class="fas fa-angle-right mr-2 text-primary-light"></i>Gâteaux au Miel
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url('/catalog', ['category' => 'gateaux-feuilletes']) }}" class="text-gray-300 hover:text-primary-light transition-colors duration-200">
-                            <i class="fas fa-angle-right mr-2 text-primary-light"></i>Gâteaux Feuilletés
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url('/catalog', ['category' => 'coffrets-cadeaux']) }}" class="text-gray-300 hover:text-primary-light transition-colors duration-200">
-                            <i class="fas fa-angle-right mr-2 text-primary-light"></i>Coffrets Cadeaux
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
+    <h3 class="font-playfair text-xl font-bold mb-4">Nos Catégories</h3>
+    <ul class="space-y-2">
+    @php
+        $categories = \App\Models\Categorie::where('active', true)->orderBy('nom')->get();
+                            @endphp
+        @foreach($categories as $category)
+            <li>
+                <a href="{{ route('products.index', ['category' => $category->slug]) }}" class="text-gray-300 hover:text-primary-light transition-colors duration-200">
+                    <i class="fas fa-angle-right mr-2 text-primary-light"></i>{{ $category->nom }}
+                </a>
+            </li>
+        @endforeach
+    </ul>
+</div>
             <!-- Contact -->
             <div>
                 <h3 class="font-playfair text-xl font-bold mb-4">Contactez-nous</h3>
                 <ul class="space-y-3">
                     <li class="flex items-start">
                         <i class="fas fa-map-marker-alt mt-1 mr-3 text-primary-light"></i>
-                        <span class="text-gray-300">123 Rue du Commerce, Casablanca, Maroc</span>
+                        <span class="text-gray-300">127 Rue kawki, Safi, Maroc</span>
                     </li>
                     <li class="flex items-center">
                         <i class="fas fa-phone mr-3 text-primary-light"></i>
-                        <span class="text-gray-300">+212 5 22 00 00 00</span>
+                        <span class="text-gray-300">+212 7 776 947 36 </span>
                     </li>
                     <li class="flex items-center">
                         <i class="fas fa-envelope mr-3 text-primary-light"></i>

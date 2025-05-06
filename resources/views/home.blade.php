@@ -84,7 +84,7 @@
                 <!-- Image avec effet de profondeur -->
                 <div class="relative">
                     <div class="relative z-10 rounded-lg overflow-hidden shadow-xl">
-                        <img src="https://images.unsplash.com/photo-1498654694080-47945e5d060f?q=80&w=2070&auto=format&fit=crop" alt="Préparation traditionnelle" class="w-full h-auto">
+                        <img src="{{ asset('storage/images/placeholder1.jpg') }}" alt="Préparation traditionnelle" class="w-full h-auto">
                     </div>
                     <!-- Éléments décoratifs -->
                     <div class="absolute w-64 h-64 bg-primary/10 rounded-full -bottom-10 -left-10 z-0"></div>
@@ -165,7 +165,7 @@
                     @endif
                     
                     <a href="{{ route('products.show', $product->slug) }}" class="block relative">
-                        <img src="{{ $product->imagePrincipale ? asset('storage/' . $product->imagePrincipale->chemin) : asset('images/placeholder.jpg') }}" 
+                        <img src="{{ $product->imagePrincipale ? asset('storage/' . $product->imagePrincipale->chemin) : asset('storage/produits/placeholder.jpg') }}" 
                              alt="{{ $product->nom }}" 
                              class="w-full h-64 object-cover">
                         <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">

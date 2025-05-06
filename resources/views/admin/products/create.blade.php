@@ -83,7 +83,7 @@
             
             <div>
                 <label for="ingredients" class="block text-sm font-medium text-gray-700 mb-1">Ingrédients</label>
-                <textarea id="ingredients" name="ingredients" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">{{ old('ingredients') }}</textarea>
+                <textarea id="ingredients" name="ingredients" required rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">{{ old('ingredients') }}</textarea>
                 <p class="mt-1 text-sm text-gray-500">Liste des ingrédients utilisés dans ce produit.</p>
             </div>
         </div>

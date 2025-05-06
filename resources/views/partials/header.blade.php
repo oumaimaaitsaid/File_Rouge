@@ -43,6 +43,7 @@
                                     {{ $category->nom }}
                                 </a>
                             @endforeach
+                            
                         </div>
                     </div>
                     
@@ -89,10 +90,14 @@
                             @endphp
                             
                             @if($cartCount > 0)
-                                <span class="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                                    {{ $cartCount }}
-                                </span>
-                            @endif
+                      <span id="cart-count" class="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                       {{ $cartCount }}
+                       </span>
+                       @else
+                         <span id="cart-count" class="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center" style="display: none;">
+                         0
+                        </span>
+                         @endif
                         </a>
                         <button @click="open = !open" class="text-accent hover:text-primary transition-colors duration-200">
                             <i class="fas fa-chevron-down text-xs ml-1"></i>
