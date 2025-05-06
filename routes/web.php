@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\AdminPromotionController;
 use App\Http\Controllers\Admin\AdminReviewController;
 
 //routes pour  l admin
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
     // Tableau de bord
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     
@@ -52,12 +53,15 @@ use App\Http\Controllers\Admin\AdminReviewController;
     Route::get('statistics/sales', [AdminDashboardController::class, 'salesStatistics'])->name('statistics.sales');
     Route::get('statistics/products', [AdminDashboardController::class, 'productStatistics'])->name('statistics.products');
     Route::get('statistics/users', [AdminDashboardController::class, 'userStatistics'])->name('statistics.users');
+});
 // Routes d'authentification
+Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
     
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
+});
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'addItem'])->name('cart.add');
@@ -66,6 +70,7 @@ Route::delete('/cart/{id}', [CartController::class, 'removeItem'])->name('cart.r
 Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 
 
+Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/profile', [UserController::class, 'showProfile'])->name('profile.show');
     Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
@@ -89,6 +94,7 @@ Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
      Route::post('/orders/{orderId}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
      
      
+    });
   
    
 
@@ -148,8 +154,10 @@ Route::get('/cart/info', [CartController::class, 'getCartInfo'])->name('cart.inf
 //payement 
 
 // Routes pour Stripe
+Route::middleware(['auth'])->group(function () {
     Route::post('/payment/stripe/{orderId}', [PaymentController::class, 'processCardPayment'])->name('payment.stripe.process');
     Route::get('/payment/stripe/success/{orderId}', [PaymentController::class, 'handleStripeSuccess'])->name('payment.stripe.success');
     Route::get('/payment/stripe/cancel/{orderId}', [PaymentController::class, 'handleStripeCancel'])->name('payment.stripe.cancel');
     Route::get('/payment/card/{orderId}', [PaymentController::class, 'showCardForm'])->name('payment.card');
     Route::post('/payment/confirm/{orderId}', [PaymentController::class, 'confirm'])->name('payment.confirm');
+});
